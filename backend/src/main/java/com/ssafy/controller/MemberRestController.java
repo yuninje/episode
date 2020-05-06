@@ -41,10 +41,9 @@ public class MemberRestController {
 	
 	@PostMapping("/regist")
 	ResponseEntity<Map<String, Object>> doRegist(@RequestBody Member member){
-		boolean result = mService.regist(member);
+		mService.regist(member);
 		
-		if(result) return handleSuccess("회원 가입에 성공하였습니다.");
-		else return handleFail("이미 존재하는 아이디입니다.", HttpStatus.OK);
+		return handleSuccess("회원 가입에 성공하였습니다.");
 	}
 	
 	public ResponseEntity<Map<String, Object>> handleSuccess(Object data) {

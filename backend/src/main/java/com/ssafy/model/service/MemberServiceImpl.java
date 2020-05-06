@@ -31,15 +31,46 @@ public class MemberServiceImpl implements MemberService{
 	}
 	
 	@Override
-	public boolean regist(Member member) {
-		if(mRepo.findByMemId(member.getMemId()) != null) return false;
-
+	public void regist(Member member) {
 		mRepo.save(member);
-		return true;
 	}
 	
 	@Override
 	public List<Member> getMembers(){
 		return mRepo.findAll();
+	}
+
+	@Override
+	public boolean checkId(String id) {
+		if(mRepo.findByMemId(id) == null) return true;
+		
+		return false;
+	}
+
+	@Override
+	public boolean checkPw(String pw) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean checkNick(String nick) {
+		if(mRepo.findByMemNick(nick) == null) return true;
+		
+		return false;
+	}
+
+	@Override
+	public boolean checkEmail(String email) {
+		if(mRepo.findByMemEmail(email) == null) return true;
+		
+		return false;
+	}
+
+	@Override
+	public boolean checkPhone(String phone) {
+		if(mRepo.findByMemPhone(phone) == null) return true;
+		
+		return false;
 	}
 }

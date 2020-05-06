@@ -8,4 +8,7 @@ import com.ssafy.model.dto.Member;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Integer> {
 	Member findByMemId(String mem_id);
+	Member findByMemEmail(String mem_email);
+	Member findByMemNick(String mem_nick);
+	Member findByMemPhone(String mem_phone);
 }

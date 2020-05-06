@@ -7,6 +7,11 @@ import com.ssafy.model.dto.Member;
 
 public interface MemberService {
 	Member login(Auth auth);
-	boolean regist(Member member);
+	void regist(Member member);
 	List<Member> getMembers();
+	boolean checkId(String id);
+	boolean checkPw(String pw);
+	boolean checkNick(String nick);
+	boolean checkEmail(String email);
+	boolean checkPhone(String phone);
 }
