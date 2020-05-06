@@ -7,6 +7,6 @@ import com.ssafy.model.dto.Member;
 
 public interface MemberService {
 	Member login(Auth auth);
-	Boolean regist(Member member);
+	boolean regist(Member member);
 	List<Member> getMembers();
 }

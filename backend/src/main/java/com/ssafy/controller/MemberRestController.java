@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.model.dto.Auth;
 import com.ssafy.model.dto.Member;
+import com.ssafy.model.repository.MemberRepository;
 import com.ssafy.model.service.MemberService;
 
 import io.swagger.annotations.Api;
@@ -23,28 +24,28 @@ import io.swagger.annotations.Api;
 @RestController
 @RequestMapping("/members")
 public class MemberRestController {
-	
 	@Autowired
 	MemberService mService;
 	
 	@GetMapping()
 	ResponseEntity<Map<String, Object>> getMembers(){
 		List<Member> members = mService.getMembers();
-		return handleSuccess(members);
+		return handleSuccess(mService.getMembers());
 	}
 
 	@PostMapping("/login")
 	ResponseEntity<Map<String, Object>> doLogin(@RequestBody Auth auth){
-		
 		Member member = mService.login(auth);
 
 		return handleSuccess(member);
 	}
+	
 	@PostMapping("/regist")
 	ResponseEntity<Map<String, Object>> doRegist(@RequestBody Member member){
 		Boolean result = mService.regist(member);
 		return handleSuccess(result);
 	}
+	
 	public ResponseEntity<Map<String, Object>> handleSuccess(Object data) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("state", "ok");

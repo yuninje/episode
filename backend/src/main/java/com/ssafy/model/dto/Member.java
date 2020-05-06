@@ -1,32 +1,43 @@
 package com.ssafy.model.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Entity
+@Table(name = "member")
 @Getter
 @Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class Member {
-	int mem_pk;			// PK
-	String mem_id;		// 아이디
-	String mem_email;	// 이메일
-	String mem_pw;		// 비밀번호
-	String mem_nick;	// 닉네임
-	String mem_phone;	// 전화번호
-	String mem_birth;  	// 생년월일
-	Boolean mem_gender; 	// 성별
-	
-	public Member() {}
-	public Member(int mem_pk, String mem_id, String mem_email, String mem_pw, String mem_nick, String mem_phone,
-			String mem_birth, Boolean mem_gender) {
-		super();
-		this.mem_pk = mem_pk;
-		this.mem_id = mem_id;
-		this.mem_email = mem_email;
-		this.mem_pw = mem_pw;
-		this.mem_nick = mem_nick;
-		this.mem_phone = mem_phone;
-		this.mem_birth = mem_birth;
-		
-		this.mem_gender = mem_gender;
-	}
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="mem_pk")
+	private int memPk;
+	@Column(name="mem_id", length = 100, nullable = false)
+	private String memId;
+	@Column(name="mem_email", length = 200, nullable = false)
+	private String memEmail;
+	@Column(name="mem_pw", length = 512, nullable = false)
+	private String memPw;
+	@Column(name="mem_nick", length = 100, nullable = false)
+	private String memNick;
+	@Column(name="mem_phone", length = 20, nullable = false)
+	private String memPhone;
+	@Column(name="mem_birth", length = 20, nullable = false)
+	private String memBirth;
+	@Column(name="mem_gender", nullable = false)
+	private boolean memGender;
 }
