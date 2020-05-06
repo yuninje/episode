@@ -24,9 +24,8 @@ import lombok.ToString;
 public class Member {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="mem_pk")
-	private int memPk;
-	@Column(name="mem_id", length = 100, nullable = false)
+	private int mem_pk;
+	@Column(name="mem_id", length = 100, nullable = false, unique=true)
 	private String memId;
 	@Column(name="mem_email", length = 200, nullable = false)
 	private String memEmail;
@@ -38,6 +37,6 @@ public class Member {
 	private String memPhone;
 	@Column(name="mem_birth", length = 20, nullable = false)
 	private String memBirth;
-	@Column(name="mem_gender", nullable = false)
+	@Column(name="mem_gender", nullable = false, columnDefinition="TINYINT(1)")
 	private boolean memGender;
 }

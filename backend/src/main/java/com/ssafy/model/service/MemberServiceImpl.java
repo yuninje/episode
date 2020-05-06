@@ -32,7 +32,6 @@ public class MemberServiceImpl implements MemberService{
 	
 	@Override
 	public boolean regist(Member member) {
-		System.out.println(member);
 		if(mRepo.findByMemId(member.getMemId()) != null) return false;
 
 		mRepo.save(member);

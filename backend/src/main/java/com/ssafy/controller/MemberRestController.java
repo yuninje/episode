@@ -29,7 +29,6 @@ public class MemberRestController {
 	
 	@GetMapping()
 	ResponseEntity<Map<String, Object>> getMembers(){
-		List<Member> members = mService.getMembers();
 		return handleSuccess(mService.getMembers());
 	}
 
@@ -42,8 +41,10 @@ public class MemberRestController {
 	
 	@PostMapping("/regist")
 	ResponseEntity<Map<String, Object>> doRegist(@RequestBody Member member){
-		Boolean result = mService.regist(member);
-		return handleSuccess(result);
+		boolean result = mService.regist(member);
+		
+		if(result) return handleSuccess("회원 가입에 성공하였습니다.");
+		else return handleFail("이미 존재하는 아이디입니다.", HttpStatus.OK);
 	}
 	
 	public ResponseEntity<Map<String, Object>> handleSuccess(Object data) {
@@ -52,6 +53,7 @@ public class MemberRestController {
 		resultMap.put("data", data);
 		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
 	}
+	
 	public ResponseEntity<Map<String, Object>> handleFail(Object data, HttpStatus status) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("state", "fail");
