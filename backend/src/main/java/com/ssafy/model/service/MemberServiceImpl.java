@@ -48,15 +48,15 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public boolean checkPw(String pw) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public boolean checkNick(String nick) {
 		if(mRepo.findByMemNick(nick) == null) return true;
 		
+		return false;
+	}
+	
+	@Override
+	public boolean checkPw(String pw) {
+		// TODO Auto-generated method stub
 		return false;
 	}
 

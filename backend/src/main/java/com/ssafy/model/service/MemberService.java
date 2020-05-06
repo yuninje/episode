@@ -10,8 +10,8 @@ public interface MemberService {
 	void regist(Member member);
 	List<Member> getMembers();
 	boolean checkId(String id);
-	boolean checkPw(String pw);
 	boolean checkNick(String nick);
+	boolean checkPw(String pw);
 	boolean checkEmail(String email);
 	boolean checkPhone(String phone);
 }

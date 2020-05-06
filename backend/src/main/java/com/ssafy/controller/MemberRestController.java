@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +45,33 @@ public class MemberRestController {
 		mService.regist(member);
 		
 		return handleSuccess("회원 가입에 성공하였습니다.");
+	}
+	
+	@PostMapping("/check/{key}")
+	ResponseEntity<Map<String, Object>> check(@PathVariable int key, @RequestBody String input){
+		boolean res = false;
+		String fail[] = {"중복된 아이디입니다.", "중복된 닉네임입니다.", "올바르지 않은 비밀번호입니다.", 
+				"중복된 이메일입니다.", "중복된 전화번호입니다."};
+		
+		switch(key) {
+		case 1:			// 아이디
+			res = mService.checkId(input);
+			break;
+		case 2:			// 닉네임
+			res = mService.checkNick(input);
+			break;
+		case 3:			// 비밀번호
+			break;
+		case 4:			// 이메일
+			res = mService.checkEmail(input);
+			break;
+		case 5:			// 전화번호
+			res = mService.checkPhone(input);
+			break;
+		}
+		
+		if(res) return handleSuccess("");
+		else return handleFail(fail[key - 1], HttpStatus.OK);
 	}
 	
 	public ResponseEntity<Map<String, Object>> handleSuccess(Object data) {
