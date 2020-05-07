@@ -27,13 +27,13 @@ public class Member {
 	private int mem_pk;
 	@Column(name="mem_id", length = 100, nullable = false, unique=true)
 	private String memId;
-	@Column(name="mem_email", length = 200, nullable = false)
+	@Column(name="mem_email", length = 200, nullable = false, unique=true)
 	private String memEmail;
 	@Column(name="mem_pw", length = 512, nullable = false)
 	private String memPw;
-	@Column(name="mem_nick", length = 100, nullable = false)
+	@Column(name="mem_nick", length = 100, nullable = false, unique=true)
 	private String memNick;
-	@Column(name="mem_phone", length = 20, nullable = false)
+	@Column(name="mem_phone", length = 20, nullable = false, unique=true)
 	private String memPhone;
 	@Column(name="mem_birth", length = 20, nullable = false)
 	private String memBirth;
