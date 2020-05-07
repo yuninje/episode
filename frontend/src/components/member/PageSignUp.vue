@@ -2,7 +2,6 @@
   <div class="signup">
     <div class="title-signup">회원가입</div>
     <br>
-
     <div class="signup-wrap">
       <div class="input-wrap">
         <!-- 입력받을 정보: 아이디, 닉네임, 비밀번호, 비밀번호확인, 이메일, 휴대전화, 생년월일, 성별, 동의 -->
