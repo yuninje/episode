@@ -1,7 +1,6 @@
 package com.ssafy.controller;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +55,7 @@ public class MemberRestController {
 	
 	@ApiOperation("회원가입 | /check/{key}를 통해 중복, 유효성 검사를 마친 후라고 판단하여 무조건 회원가입이 성공했다고 간주")
 	@PutMapping("/regist")
+	@PostMapping("/regist")
 	ResponseEntity<Map<String, Object>> doRegist(@RequestBody Member member){
 		mService.regist(member);
 		
