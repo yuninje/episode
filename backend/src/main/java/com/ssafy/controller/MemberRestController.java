@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.model.dto.Auth;
 import com.ssafy.model.dto.Member;
-import com.ssafy.model.repository.MemberRepository;
 import com.ssafy.model.service.MemberService;
 
 import io.swagger.annotations.Api;
