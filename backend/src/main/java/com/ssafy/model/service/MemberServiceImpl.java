@@ -2,6 +2,8 @@ package com.ssafy.model.service;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +41,11 @@ public class MemberServiceImpl implements MemberService{
 	public List<Member> getMembers(){
 		return mRepo.findAll();
 	}
+	
+	@Override
+	public Member getMember(String id) {
+		return mRepo.findByMemId(id);
+	}
 
 	@Override
 	public boolean checkId(String id) {
@@ -56,8 +63,9 @@ public class MemberServiceImpl implements MemberService{
 	
 	@Override
 	public boolean checkPw(String pw) {
-		// TODO Auto-generated method stub
-		return false;
+		String regex = "^(?=.*[0-9])(?=.*[a-zA-Z]).{10,20}$";
+		
+		return pw.matches(regex);
 	}
 
 	@Override
@@ -72,5 +80,23 @@ public class MemberServiceImpl implements MemberService{
 		if(mRepo.findByMemPhone(phone) == null) return true;
 		
 		return false;
+	}
+	
+	@Override
+	public Member updateMember(Member member) {
+		Member updateM = mRepo.findByMemId(member.getMemId());
+		
+		updateM.setMemEmail(member.getMemEmail());
+		updateM.setMemNick(member.getMemNick());
+		updateM.setMemPhone(member.getMemPhone());
+		updateM.setMemBirth(member.getMemBirth());
+		updateM.setMemGender(member.isMemGender());
+		
+		return mRepo.save(updateM);
+	}
+	
+	@Override
+	public void deleteMember(String id) {
+		mRepo.deleteByMemId(id);
 	}
 }
