@@ -54,7 +54,6 @@ public class MemberRestController {
 	}
 	
 	@ApiOperation("회원가입 | /check/{key}를 통해 중복, 유효성 검사를 마친 후라고 판단하여 무조건 회원가입이 성공했다고 간주")
-	@PutMapping("/regist")
 	@PostMapping("/regist")
 	ResponseEntity<Map<String, Object>> doRegist(@RequestBody Member member){
 		mService.regist(member);
@@ -94,7 +93,7 @@ public class MemberRestController {
 	}
 	
 	@ApiOperation("멤버 한 명의 정보를 수정 | 변경된 멤버 객체 반환")
-	@PostMapping("/updateMember")
+	@PutMapping("/updateMember")
 	ResponseEntity<Map<String, Object>> updateMember(@RequestBody Member member){
 		return handleSuccess(mService.updateMember(member));
 	}
