@@ -4,7 +4,8 @@
     <div class="input-wrap">
       <div class="input-row">
         <label for="id">아이디</label>
-        <input type="text" v-model="mem_id" id="id" placeholder="아이디(이메일)">
+        <input type="text" v-model="mem_id" v-if="!idSaveCheck" id="id" placeholder="아이디(이메일)">
+        <input type="text" v-model="mem_id" v-if="idSaveCheck">
       </div>
       <div class="input-row">
         <label for="password">비밀번호</label>
@@ -18,8 +19,8 @@
       </div>
     </div>
     <div class="check-row">
-      <input type="checkbox" id="save_id" name="save_id" value="save_id">
-      <label for="save_id">아이디 저장</label>
+      <input type="checkbox" id="idSaveCheck" v-model="idSaveCheck">
+      <label for="idSaveCheck">아이디 저장</label>
     </div>
     <div class="btn-wrap">
       <button class="btn-signin" v-on:click="signin">로그인</button>
@@ -40,8 +41,15 @@ export default {
   data() {
     return {
       mem_id: "",
-      mem_pw: ""
+      mem_pw: "",
+      idSaveCheck: false,
     };
+  },
+  computed: {
+    if(checked) {
+      console.log("checked")
+      this.mem_id="test2"
+    }
   },
   methods: {
     ...mapActions(["postSignin"]),
@@ -53,9 +61,7 @@ export default {
           mem_id,
           mem_pw
         };
-        console.log("1:", data);
         this.postSignin(data);
-
       }
     },
     check(id, pw) {

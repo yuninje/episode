@@ -1,15 +1,98 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from "vue";
+import Vuex from "vuex";
+import axios from "axios";
+import router from "@/router/index";
 
-Vue.use(Vuex)
+import moduleSession from "./modules/moduleSession";
+
+Vue.use(Vuex);
 
 export default new Vuex.Store({
+  modules: {
+    moduleSession: moduleSession
+  },
   state: {
+    server: "http://localhost:8080",
+
+    isLogin: false,
+    session: ""
+  },
+  getters: {
+    getServer: state => {
+      return state.server;
+    },
+    getIsLogin: state => {
+      return state.isLogin;
+    },
+    getSession: state => {
+      return state.session;
+    }
   },
   mutations: {
+    changeSession(state, payload) {
+      state.session = payload;
+      state.isLogin = true;
+    },
+    changeLogout(state) {
+      state.isLogin = false;
+      state.session = "";
+      // localStorage.removeItem('savedToken');
+    }
   },
   actions: {
+    // 로그아웃
+    signout({ state, dispatch, commit, getters, rootGetters }) {
+      dispatch("deleteSession");
+      commit("changeLogout");
+    },
+
+    // 로그인
+    postSignin({ state, dispatch, commit, getters, rootGetters }, data) {
+      axios
+        .post(`${getters.getServer}/api/members/login`, data)
+        .then(res => {
+          let session = res.data.data;
+          this._vm.$session.set("login_info", { user: session });
+          
+          // localStorage.setItem("savedSession", token);
+          dispatch("checkSession")
+
+          if (res.data.state == "ok") {
+            commit("changeSession", session);
+            // router.push("/");
+          } else {
+            alert("아이디와 비밀번호가 일치하지 않습니다.");
+          }
+        })
+        .catch(err => {
+          console.error("postSignin()", err);
+        });
+    },
+
+    checkSession({ state, dispatch, commit, getters, rootGetters }, callBack) {
+      // 세션 값이 있을 경우
+      if(this._vm.$session.exists()) {
+        // 세션이 유효한지 체크
+        // console.log(this._vm.$session.id())
+        
+        // 시간이 지났을 경우
+        // dispatch("deleteSession")
+        // alert('로그인 세션이 만료되었습니다.\n다시 로그인해주세요')
+        // router.push("/signin");
+        return false;
+      }else { // 세션 값이 없을 경우
+        // alert('로그인해야 이용 가능합니다.')
+        // router.push("/signin");
+        return false;
+      }
+    },
+    refreshSession({ state, dispatch, commit, getters, rootGetters }, callBack) {
+      // 세션이 만료되기 전에 세션을 refresh함
+    },
+    deleteSession({ state, dispatch, commit, getters, rootGetters }, callBack) {
+      // 시간이 지났거나 로그아웃하면 세션 만료
+      this._vm.$session.destroy()
+    }
   },
-  modules: {
-  }
-})
+  modules: {}
+});
