@@ -224,16 +224,16 @@ export default {
               })
               .then(response => {
                 // 일단 이 부분은 백엔드에서 어떤걸 보내줄지에 따라 함수를 구현해야함.
-                if (response.data.success === true) {
+                if (response.data.state === "ok") {
                   alert('회원 가입 완료!')
                   console.log(response.data)
                   this.$router.push('/')
                 } else {
-                  alert(response.data.message)
+                  alert("이거 뜨면 뭔가 문제")
                 }
               })
               .catch(() => {
-                alert('아이디나 닉네임이 중복됩니다.')
+                alert("에러발생!!")
                 this.errored = true
               })
               .finally(() => {
