@@ -94,13 +94,13 @@
                                         <v-radio
                                             label="남성"
                                             color="rgba(192,0,0,1)"
-                                            value="남성"
+                                            value=true
                                         >
                                         </v-radio>
                                         <v-radio
                                             label="여성"
                                             color="rgba(192,0,0,1)"
-                                            value="여성"
+                                            value=false
                                         >
                                         </v-radio>
                                     </v-radio-group>
@@ -118,7 +118,7 @@
                     </v-card-text>
                     <v-card-actions >
                         <v-row justify="center">
-                          <v-btn rounded color="rgba(192,0,0,1)" width="80%" @click="signin()" class="signup-btn">가입완료</v-btn>
+                          <v-btn rounded color="rgba(192,0,0,1)" width="80%" @click="signup()" class="signup-btn">가입완료</v-btn>
                         </v-row>
                     </v-card-actions>
                     <br/>
@@ -190,7 +190,7 @@ export default {
       mem_email: '',
       mem_phone: '',
       mem_birth: '',
-      mem_gender: '',
+      mem_gender: false,
       terms1: false,
       terms2: false,
       terms3: false,
@@ -201,18 +201,25 @@ export default {
   methods: {
     signup () {
       if (this.mem_id && this.mem_nick && this.mem_pw && this.mem_pw_check && this.mem_email && this.mem_phone && this.mem_birth && this.mem_gender) {
+        console.log("mem_id : " + this.mem_id)
+        console.log("mem_nick : " + this.mem_nick)
+        console.log("mem_pw : " + this.mem_pw)
+        console.log("mem_email : " + this.mem_email)
+        console.log("mem_phone : " + this.mem_phone)
+        console.log("mem_birth : " + this.mem_birth)
+        console.log("mem_gender : " + this.mem_gender)
         if (this.terms1) {
           if (this.mem_pw === this.mem_pw_check) {
             // 여기에서 axios post 함수 시작
             http
-              .post('/singup', {
-                mem_id: this.mem_id,
-                mem_email: this.mem_email,
-                mem_pw: this.mem_pw,
-                mem_nick: this.mem_nick,
-                mem_phone: this.mem_phone,
-                mem_birth: this.mem_birth,
-                mem_gender: this.mem_gender
+              .post('/members/regist', {
+                memId: this.mem_id,
+                memEmail: this.mem_email,
+                memPw: this.mem_pw,
+                memNick: this.mem_nick,
+                memPhone: this.mem_phone,
+                memBirth: this.mem_birth,
+                memGender: this.mem_gender
                 // 일단 terms1, 2, 3은 따로 저장하지 않음
               })
               .then(response => {
