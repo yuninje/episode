@@ -1,9 +1,9 @@
 <template>
-  <div id="app">
+  <v-app id="app">
     <div id="nav">
     </div>
     <router-view/>
-  </div>
+  </v-app>
 </template>
 
 <style lang="scss" scoped>

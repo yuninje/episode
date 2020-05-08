@@ -2,7 +2,7 @@
     <div class="signup">
         <v-form action="" method="post" id="_signupForm" name="signupForm" @submit.prevent="signup">
             <v-row justify="center">
-                <v-card max-width="100%" style="margin-bottom:50px" outlined>
+                <v-card class="signup-card" max-width="100%" style="margin-bottom:50px" outlined >
                     <v-card-title>
                         <span style="margin: 10px;">회원가입</span>
                     </v-card-title>
@@ -10,7 +10,7 @@
                         <v-container>
                             <v-row>
                                 <v-col cols="12">
-                                    <p class="item-title">아이디</p>
+                                    <p class="item-title">아이디<span class="item-required">*</span></p>
                                     <ValidationProvider rules="required|alpha_num|min:5|max:20" v-slot="{errors}">
                                     <v-text-field
                                         v-model="mem_id"
@@ -21,7 +21,7 @@
                                     </ValidationProvider>
                                 </v-col>
                                 <v-col cols="12">
-                                    <p class="item-title">닉네임</p>
+                                    <p class="item-title">닉네임<span class="item-required">*</span></p>
                                     <ValidationProvider rules="required|min:2" v-slot="{errors}">
                                     <v-text-field
                                         v-model="mem_nick"
@@ -32,7 +32,7 @@
                                     </ValidationProvider>
                                 </v-col>
                                 <v-col cols="12">
-                                    <p class="item-title">비밀번호</p>
+                                    <p class="item-title">비밀번호<span class="item-required">*</span></p>
                                     <ValidationProvider rules="required|min:10|max:20" v-slot="{errors}">
                                     <v-text-field
                                         v-model="mem_pw"
@@ -44,7 +44,7 @@
                                     </ValidationProvider>
                                 </v-col>
                                 <v-col cols="12">
-                                    <p class="item-title">비밀번호 확인</p>
+                                    <p class="item-title">비밀번호 확인<span class="item-required">*</span></p>
                                     <ValidationProvider rules="required|min:10|max:20" v-slot="{errors}">
                                     <v-text-field
                                         v-model="mem_pw_check"
@@ -56,7 +56,7 @@
                                     </ValidationProvider>
                                 </v-col>
                                 <v-col cols="12">
-                                    <p class="item-title">이메일</p>
+                                    <p class="item-title">이메일<span class="item-required">*</span></p>
                                     <ValidationProvider rules="required|email" v-slot="{errors}">
                                     <v-text-field
                                         v-model="mem_email"
@@ -67,7 +67,7 @@
                                     </ValidationProvider>
                                 </v-col>
                                 <v-col cols="12">
-                                    <p class="item-title">휴대전화</p>
+                                    <p class="item-title">휴대전화<span class="item-required">*</span></p>
                                     <ValidationProvider rules="required|numeric" v-slot="{errors}">
                                     <v-text-field
                                         v-model="mem_phone"
@@ -78,7 +78,7 @@
                                     </ValidationProvider>
                                 </v-col>
                                 <v-col cols="12">
-                                    <p class="item-title">생년월일</p>
+                                    <p class="item-title">생년월일<span class="item-required">*</span></p>
                                     <ValidationProvider rules="required|numeric|length:8" v-slot="{errors}">
                                     <v-text-field
                                         v-model="mem_birth"
@@ -89,28 +89,39 @@
                                     </ValidationProvider>
                                 </v-col>
                                 <v-col cols="12">
-                                    <p class="item-title">성별</p>
+                                    <p class="item-title">성별<span class="item-required">*</span></p>
                                     <v-radio-group v-model="mem_gender" row>
                                         <v-radio
                                             label="남성"
+                                            color="rgba(192,0,0,1)"
                                             value="남성"
                                         >
                                         </v-radio>
                                         <v-radio
                                             label="여성"
+                                            color="rgba(192,0,0,1)"
                                             value="여성"
                                         >
                                         </v-radio>
                                     </v-radio-group>
                                 </v-col>
-                                <v-col cols="12">
-                                    <v-checkbox v-model="terms1" class="mx-0 px-0" label="(필수) EPISODE 서비스약관, 유료이용약관, 개인정보 취급방침에 동의합니다."></v-checkbox>
-                                    <v-checkbox v-model="terms2" class="mx-0 px-0" label="(선택) APP PUSH 알림"></v-checkbox>
-                                    <v-checkbox v-model="terms3" class="mx-0 px-0" label="(선택) 뉴스레터, 문자안내 수신"></v-checkbox>
+                                <v-col cols="12" class="pa-0">
+                                    <v-checkbox color="rgba(192,0,0,1)" v-model="terms1" class="signup-checkbox" label="(필수) EPISODE 서비스약관, 유료이용약관, 개인정보 취급방침에 동의합니다."></v-checkbox>
+                                    <v-checkbox color="rgba(192,0,0,1)" v-model="terms2" class="signup-checkbox" label="(선택) APP PUSH 알림"></v-checkbox>
+                                    <v-checkbox color="rgba(192,0,0,1)" v-model="terms3" class="signup-checkbox" label="(선택) 뉴스레터, 문자안내 수신"></v-checkbox>
+                                </v-col>
+                                <v-col cols="12" class="pa-0">
+                                    <span class="check-notice">* 수신 동의 시 다양한 이벤트 정보와 무료 쿠폰 등의 혜택을 받으실 수 있습니다.</span>
                                 </v-col>
                             </v-row>
                         </v-container>
                     </v-card-text>
+                    <v-card-actions >
+                        <v-row justify="center">
+                          <v-btn rounded color="rgba(192,0,0,1)" width="80%" @click="signin()" class="signup-btn">가입완료</v-btn>
+                        </v-row>
+                    </v-card-actions>
+                    <br/>
                 </v-card>
             </v-row>
         </v-form>
@@ -249,69 +260,6 @@ export default {
   padding-top: 10px;
   padding-bottom: 125px;
 }
-.signup .title-signup {
-  margin-top: 60px;
-  margin-bottom: 40px;
-  font-weight: 500;
-  font-size: 22px;
-}
-.input-wrap {
-  padding-bottom: 16px;
-}
-
-.input-row {
-  width: 100%;
-  height: 56px;
-
-  label {
-    width: 100%;
-  }
-  input {
-    border: none;
-    border-right: 0px;
-    border-top: 0px;
-    width: 100%;
-    border-bottom: solid 1px #8590996e;
-    float: right;
-    background: 0 0; //? 이게 무슨 속성일까!
-    box-sizing: border-box;
-    padding: 7px 8px 7px;
-    outline-style: none; /* 포커스시 발생하는 효과 제거 */
-
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-  }
-  input::placeholder {
-    color: #424b536e;
-  }
-}
-.btn-wrap {
-  text-align: center;
-  margin-top: 30px;
-}
-.btn-signup {
-  width: 80%;
-  height: 42px;
-  border: 0;
-  outline: 0;
-  border-radius: 21px;
-  background: rgb(196, 40, 40);
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  text-align: center;
-  -webkit-transition: all 0.1s;
-  -moz-transition: all 0.1s;
-  -o-transition: all 0.1s;
-  transition: all 0.1s;
-  transition: all 0.1s;
-
-  &:hover {
-    color: #fff;
-    box-shadow: 71vw 0 0 0 rgba(230, 12, 12, 0.493) inset;
-  }
-}
 
 @media (min-width: 600px) {
   .signup {
@@ -325,7 +273,23 @@ export default {
     font-size: 1.2rem;
     font-weight: bold;
 }
+.item-required {
+    color: rgb(192, 0, 0);
+}
 .error-message {
-    color: red;
+    color: rgb(192, 0, 0);
+}
+.check-notice {
+    color: rgb(196, 196, 196);
+}
+.signup-checkbox {
+    margin-top : 0px !important;
+    padding-top: 0px !important;
+}
+.signup-btn {
+  color:white !important;
+}
+.signup-card {
+  border-color: rgb(192, 0, 0) !important;
 }
 </style>
