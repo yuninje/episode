@@ -16,8 +16,10 @@
                                         v-model="mem_id"
                                         placeholder="5글자 이상 20글자 이하의 영문 및 숫자를 입력해주세요"
                                         required
+                                        v-on:blur="checkInput(1)"
                                     ></v-text-field>
                                     <span class="error-message">{{errors[0]}}</span>
+                                    <span>{{error_msg[1]}}</span>
                                     </ValidationProvider>
                                 </v-col>
                                 <v-col cols="12">
@@ -27,8 +29,10 @@
                                         v-model="mem_nick"
                                         placeholder="2글자 이상 입력해주세요"
                                         required
+                                        v-on:blur="checkInput(2)"
                                     ></v-text-field>
                                     <span class="error-message">{{errors[0]}}</span>
+                                    <span>{{error_msg[2]}}</span>
                                     </ValidationProvider>
                                 </v-col>
                                 <v-col cols="12">
@@ -39,8 +43,10 @@
                                         type="password"
                                         placeholder="영문, 숫자 포함 10자리 이상 20자리 이하로 입력해주세요"
                                         required
+                                        v-on:blur="checkInput(3)"
                                     ></v-text-field>
                                     <span class="error-message">{{errors[0]}}</span>
+                                    <span>{{error_msg[3]}}</span>
                                     </ValidationProvider>
                                 </v-col>
                                 <v-col cols="12">
@@ -62,8 +68,10 @@
                                         v-model="mem_email"
                                         placeholder="사용중인 이메일 주소를 입력해주세요"
                                         required
+                                        v-on:blur="checkInput(4)"
                                     ></v-text-field>
                                     <span class="error-message">{{errors[0]}}</span>
+                                    <span>{{error_msg[4]}}</span>
                                     </ValidationProvider>
                                 </v-col>
                                 <v-col cols="12">
@@ -73,8 +81,10 @@
                                         v-model="mem_phone"
                                         placeholder="'-'를 제외한 숫자를 입력해주세요."
                                         required
+                                        v-on:blur="checkInput(5)"
                                     ></v-text-field>
                                     <span class="error-message">{{errors[0]}}</span>
+                                    <span>{{error_msg[5]}}</span>
                                     </ValidationProvider>
                                 </v-col>
                                 <v-col cols="12">
@@ -94,13 +104,13 @@
                                         <v-radio
                                             label="남성"
                                             color="rgba(192,0,0,1)"
-                                            value=true
+                                            value="male"
                                         >
                                         </v-radio>
                                         <v-radio
                                             label="여성"
                                             color="rgba(192,0,0,1)"
-                                            value=false
+                                            value="female"
                                         >
                                         </v-radio>
                                     </v-radio-group>
@@ -144,6 +154,39 @@ import {required, email, alpha_num, numeric, min, max, length} from 'vee-validat
 //   params: ['length']
 // });
 
+// extend('checkInput', {
+//   validate(value, args) {
+//     let msg = '';
+//     if(value !== '') {
+//       console.log(value);
+//       let argsNum = Number(args);
+//       console.log(args);
+//       http
+//         .post(`/members/check/${argsNum}`, value)
+//         .then(response => {
+//           console.log(response.data);
+//           if(response.data.state == "ok"){
+//             msg = "사용 가능합니다!!"
+//             return true;
+//           }else {
+//             msg = response.data.data;
+//             return false;
+//           }
+//         })
+//         .catch((e) => {
+//           console.log(e);
+//         })
+//       console.log(msg);
+//       // msg = this.checkInput(args);
+//       // if(msg == "사용 가능합니다!!"){
+//       //   return true;
+//       // }else{
+//       //   return false;
+//       // }
+//     }
+//   }
+// })
+
 extend('min', {
     ...min,
     message: (field, args) => `${args.length}글자 이상 입력해야 합니다.`
@@ -183,6 +226,7 @@ export default {
   name: 'signup',
   data () {
     return {
+      error_msg: ['', '', '', '', '', ''],
       mem_id: '',
       mem_nick: '',
       mem_pw: '',
@@ -190,7 +234,7 @@ export default {
       mem_email: '',
       mem_phone: '',
       mem_birth: '',
-      mem_gender: false,
+      mem_gender: '',
       terms1: false,
       terms2: false,
       terms3: false,
@@ -201,13 +245,16 @@ export default {
   methods: {
     signup () {
       if (this.mem_id && this.mem_nick && this.mem_pw && this.mem_pw_check && this.mem_email && this.mem_phone && this.mem_birth && this.mem_gender) {
-        console.log("mem_id : " + this.mem_id)
-        console.log("mem_nick : " + this.mem_nick)
-        console.log("mem_pw : " + this.mem_pw)
-        console.log("mem_email : " + this.mem_email)
-        console.log("mem_phone : " + this.mem_phone)
-        console.log("mem_birth : " + this.mem_birth)
-        console.log("mem_gender : " + this.mem_gender)
+        // console.log("mem_id : " + this.mem_id)
+        // console.log("mem_nick : " + this.mem_nick)
+        // console.log("mem_pw : " + this.mem_pw)
+        // console.log("mem_email : " + this.mem_email)
+        // console.log("mem_phone : " + this.mem_phone)
+        // console.log("mem_birth : " + this.mem_birth)
+        // console.log("mem_gender : " + this.mem_gender)
+        let gender = false;
+        if(this.mem_gender === "male") gender = true;
+        else if(this.mem_gender == "female") gender = false;
         if (this.terms1) {
           if (this.mem_pw === this.mem_pw_check) {
             // 여기에서 axios post 함수 시작
@@ -219,7 +266,7 @@ export default {
                 memNick: this.mem_nick,
                 memPhone: this.mem_phone,
                 memBirth: this.mem_birth,
-                memGender: this.mem_gender
+                memGender: gender
                 // 일단 terms1, 2, 3은 따로 저장하지 않음
               })
               .then(response => {
@@ -248,7 +295,78 @@ export default {
       } else {
         alert('필수 항목들을 입력하지 않으셨습니다.')
       }
-    }
+    },
+    async checkInput(item) {
+      let sendString = '';
+      let result;
+      if(item == 1) {
+        console.log("아이디 체크");
+        sendString = this.mem_id;
+      } else if(item == 2) {
+        console.log("닉네임 체크");
+        sendString = this.mem_nick;
+      } else if(item == 3) {
+        console.log("비밀번호 체크");
+        sendString = this.mem_pw;
+      } else if(item == 4) {
+        console.log("이메일 체크");
+        sendString = this.mem_email;
+      } else if(item == 5) {
+        console.log("전화번호 체크");
+        sendString = this.mem_phone;
+      }
+      if(sendString) {
+        result = await http.post(`/members/check/${item}`, sendString)
+        if(result.data.state == "ok") {
+          this.error_msg[item] = "사용가능합니다.";
+        } else {
+          this.error_msg[item] = result.data.data;
+        }
+      }
+    },
+    // checkInput(item) {
+    //   let sendString ='';
+    //   if(item == 1) {
+    //     console.log("아이디 체크");
+    //     sendString = this.mem_id;
+    //   } else if(item == 2) {
+    //     console.log("닉네임 체크");
+    //     sendString = this.mem_nick;
+    //   } else if(item == 3) {
+    //     console.log("비밀번호 체크");
+    //     sendString = this.mem_pw;
+    //   } else if(item == 4) {
+    //     console.log("이메일 체크");
+    //     sendString = this.mem_email;
+    //   } else if(item == 5) {
+    //     console.log("전화번호 체크");
+    //     sendString = this.mem_phone;
+    //   }
+    //   if(sendString){
+    //     http
+    //       .post(`/members/check/${item}`, sendString)
+    //       .then(response => {
+    //         // console.log(response.data);
+    //         if(response.data.state == "ok") {
+    //           this.error_msg[item] = "사용가능합니다.";
+    //           console.log('문제 없음!')
+    //         } else {
+    //           this.error_msg[item] = response.data.data;
+    //           console.log("response단의 에러 발생!");
+    //           // alert('에러 발생!!');
+    //         }
+    //       })
+    //       .catch((e) => {
+    //         console.log(e);
+    //         console.log("catch단의 에러 발생!");
+    //         // alert("에러 발생!!")
+    //         this.errored = true;
+    //       })
+    //       .finally(() => {
+    //         this.loading = false;
+    //       })
+    //   }
+    // }
   },
   components: {
     ValidationProvider
