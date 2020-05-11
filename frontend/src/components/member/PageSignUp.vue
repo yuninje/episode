@@ -16,7 +16,10 @@
         </div>
         <div class="input-row">
           <label for="password">비밀번호</label>
+          <ValidationProvider rules="min:10" v-slot="{errors}">
           <input type="password" id="pw" v-model="mem_pw" placeholder="영문, 숫자 포함 10자리 이상 입력해주세요">
+          <span>{{errors[0]}}</span>
+          </ValidationProvider>
         </div>
         <div class="input-row">
           <label for="password">비밀번호확인</label>
@@ -24,7 +27,10 @@
         </div>
         <div class="input-row">
           <label for="id">이메일</label>
+          <ValidationProvider rules="email" v-slot="{errors}">
           <input type="text" id="email" v-model="mem_email" placeholder="사용중인 이메일 주소를 입력해주세요">
+          <span>{{errors[0]}}</span>
+          </ValidationProvider>
         </div>
         <div class="input-row">
           <label for="id">휴대전화</label>
@@ -73,6 +79,15 @@
 
 <script>
 import http from '../../http-common'
+import { ValidationProvider, extend } from 'vee-validate';
+
+extend('min', {
+  validate(mem_pw, args) {
+    return mem_pw.length >= args.length;
+  },
+  params: ['length']
+})
+
 export default {
   name: 'signup',
   data () {
@@ -136,6 +151,9 @@ export default {
         alert('필수 항목들을 입력하지 않으셨습니다.')
       }
     }
+  },
+  components: {
+    ValidationProvider
   }
 }
 </script>
