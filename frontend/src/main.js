@@ -11,9 +11,9 @@ Vue.use(VueSession, {persist: true})
 new Vue({
   router,
   store,
+  vuetify,
   beforeCreate(){
     this.$store.dispatch('checkSession');
   },
-  vuetify,
   render: h => h(App)
 }).$mount('#app')
