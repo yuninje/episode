@@ -1,10 +1,10 @@
 <template>
-  <div id="app">
+  <v-app id="app">
     <div id="nav">
       <TestLogin />
     </div>
     <router-view/>
-  </div>
+  </v-app>
 </template>
 
 <script>
@@ -21,4 +21,3 @@ export default {
 <style lang="scss" scoped>
 
 </style>
-
