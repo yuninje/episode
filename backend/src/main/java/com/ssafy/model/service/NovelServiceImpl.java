@@ -41,6 +41,17 @@ public class NovelServiceImpl implements NovelService{
 		
 		return modelMapper.map(novel, NovelDTO.class);
 	}
+	
+	@Override
+	public List<NovelDTO> getNovelsByName(String novelName) {
+		List<Novel> results = nRepo.findByNovelNameContaining(novelName);
+		List<NovelDTO> novels = 
+				results.stream().map(novel -> modelMapper.map(novel, NovelDTO.class))
+				.collect(Collectors.toList());
+		System.out.println(results.size());
+		
+		return novels;
+	}
 
 	@Override
 	public void registNovel(NovelDTO novel) {

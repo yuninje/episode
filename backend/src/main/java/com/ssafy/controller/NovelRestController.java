@@ -42,6 +42,12 @@ public class NovelRestController {
 	ResponseEntity<Map<String, Object>> getNovel(@PathVariable int novel_pk) {
 		return handleSuccess(nService.getNovel(novel_pk));
 	}
+	
+	@ApiOperation("해당 문자열을 포함하고 있는 제목을 가진 소설들 조회")
+	@GetMapping("/getNovelsByName/{novel_name}")
+	ResponseEntity<Map<String, Object>> getNovelsByName(@PathVariable String novel_name) {
+		return handleSuccess(nService.getNovelsByName(novel_name));
+	}
 
 	@ApiOperation("소설 등록")
 	@PostMapping("/regist")
