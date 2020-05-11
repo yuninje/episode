@@ -1,4 +1,4 @@
-package com.ssafy.model.dto;
+package com.ssafy.model.entity;
 
 public class MemberException extends RuntimeException {
 	public MemberException() {}

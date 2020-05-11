@@ -1,6 +1,4 @@
-package com.ssafy.model.dto;
-
-import java.util.Date;
+package com.ssafy.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,9 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,27 +16,25 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "search")
+@Table(name = "like_episode")
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Search {
+public class LikeEpisode { // 에피소드 좋아요 
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "search_pk")
-	private int searchPk;
+	@Column(name = "like_episode_pk")
+	private int likeEpisodePk;
 	
-	@Column(name = "search_word", length = 30, nullable = false)
-	private String searchWord;
-
-	@CreatedDate
-	@Column(name = "search_created_at", nullable = false)
-	private Date searchCreatedAt;
-
-	// search <-> member >> N : 1 관계
+	// like_episode <-> member
 	@ManyToOne
 	@JoinColumn(name = "mem_pk", nullable = false)
 	private Member member;
+
+	// like_episode <-> episode
+	@ManyToOne
+	@JoinColumn(name = "episode_pk", nullable = false)
+	private Episode episode;
 }

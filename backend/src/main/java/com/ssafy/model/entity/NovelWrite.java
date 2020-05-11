@@ -1,4 +1,4 @@
-package com.ssafy.model.dto;
+package com.ssafy.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,25 +16,23 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "like_comment")
+@Table(name = "novel_write")
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class LikeComment { // 댓글 좋아요
+public class NovelWrite {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "like_comment_pk")
-	private int likeCommentPk;
+	@Column(name = "novel_write_pk")
+	private int novelWritePk;
 	
-	// like_comment <-> member
 	@ManyToOne
-	@JoinColumn(name = "mem_pk", nullable = false)
-	private Member member;
+	@JoinColumn(name = "novel_pk", nullable = false)
+	private Novel novel;
 	
-	// like_comment <-> comment
 	@ManyToOne
-	@JoinColumn(name = "comment_pk", nullable = false)
-	private Comment comment;
+	@JoinColumn(name = "wrd_pk", nullable = false)
+	private WriteDay writeDay;
 }

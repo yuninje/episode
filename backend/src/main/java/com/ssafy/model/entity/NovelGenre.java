@@ -1,10 +1,12 @@
-package com.ssafy.model.dto;
+package com.ssafy.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -14,18 +16,23 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "genre")
+@Table(name = "novel_genre")
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Genre {
+public class NovelGenre {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "genre_pk")
-	private int genrePk;
+	@Column(name = "novel_genre_pk")
+	private int novelGenrePk;
 	
-	@Column(name = "genre_name", length = 30, nullable = false)
-	private String genreName;
+	@ManyToOne
+	@JoinColumn(name = "genre_pk", nullable = false)
+	private Genre genre;
+	
+	@ManyToOne
+	@JoinColumn(name = "novel_pk", nullable = false)
+	private Novel novel;
 }

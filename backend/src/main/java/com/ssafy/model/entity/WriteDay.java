@@ -1,12 +1,10 @@
-package com.ssafy.model.dto;
+package com.ssafy.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -16,23 +14,18 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "novel_hashtag")
+@Table(name = "writeday")
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class NovelHashTag {
+public class WriteDay {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "novel_hashtag_pk")
-	private int novelHashTagPk;
+	@Column(name = "wrd_pk")
+	private int wrdPk;
 	
-	@ManyToOne
-	@JoinColumn(name = "novel_pk", nullable = false)
-	private Novel novel;
-	
-	@ManyToOne
-	@JoinColumn(name = "hashtag_pk", nullable = false)
-	private HashTag hashtag;
+	@Column(name = "wrd_day", nullable = false)
+	private int wrdDay;
 }

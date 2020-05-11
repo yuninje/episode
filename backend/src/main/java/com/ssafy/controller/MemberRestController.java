@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.model.dto.Auth;
-import com.ssafy.model.dto.Member;
+import com.ssafy.model.dto.MemberDTO;
+import com.ssafy.model.entity.Member;
 import com.ssafy.model.service.MemberService;
 
 import io.swagger.annotations.Api;
@@ -47,7 +48,7 @@ public class MemberRestController {
 	@ApiOperation("로그인 | 성공 시 해당 멤버 객체 반환(패스워드는 비워져 있음)")
 	@PostMapping("/login")
 	ResponseEntity<Map<String, Object>> doLogin(@RequestBody Auth auth){
-		Member member = mService.login(auth);
+		MemberDTO member = mService.login(auth);
 		member.setMemPw("");
 
 		return handleSuccess(member);
@@ -55,7 +56,7 @@ public class MemberRestController {
 	
 	@ApiOperation("회원가입 | /check/{key}를 통해 중복, 유효성 검사를 마친 후라고 판단하여 무조건 회원가입이 성공했다고 간주")
 	@PostMapping("/regist")
-	ResponseEntity<Map<String, Object>> doRegist(@RequestBody Member member){
+	ResponseEntity<Map<String, Object>> doRegist(@RequestBody MemberDTO member){
 		mService.regist(member);
 		
 		return handleSuccess("회원 가입에 성공하였습니다.");
@@ -94,7 +95,7 @@ public class MemberRestController {
 	
 	@ApiOperation("멤버 한 명의 정보를 수정 | 변경된 멤버 객체 반환")
 	@PutMapping("/updateMember")
-	ResponseEntity<Map<String, Object>> updateMember(@RequestBody Member member){
+	ResponseEntity<Map<String, Object>> updateMember(@RequestBody MemberDTO member){
 		return handleSuccess(mService.updateMember(member));
 	}
 	

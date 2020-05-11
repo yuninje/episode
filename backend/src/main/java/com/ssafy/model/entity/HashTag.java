@@ -1,4 +1,4 @@
-package com.ssafy.model.dto;
+package com.ssafy.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

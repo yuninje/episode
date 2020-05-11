@@ -1,4 +1,4 @@
-package com.ssafy.model.dto;
+package com.ssafy.model.entity;
 
 import java.util.ArrayList;
 import java.util.List;

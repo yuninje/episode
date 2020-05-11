@@ -1,23 +1,28 @@
 package com.ssafy.model.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.model.dto.Auth;
 import com.ssafy.model.dto.AuthException;
-import com.ssafy.model.dto.Member;
+import com.ssafy.model.dto.MemberDTO;
+import com.ssafy.model.entity.Member;
 import com.ssafy.model.repository.MemberRepository;
 
 @Service
 public class MemberServiceImpl implements MemberService{
 	@Autowired
 	MemberRepository mRepo;
+	@Autowired
+	ModelMapper modelMapper;
 	
 	@Override
-	public Member login(Auth auth) {
-		Member member = mRepo.findByMemId(auth.getMemId());
+	public MemberDTO login(Auth auth) {
+		MemberDTO member = modelMapper.map(mRepo.findByMemId(auth.getMemId()), MemberDTO.class);
 		if(member == null) {
 			throw new AuthException("존재하지 않는 아이디입니다.");	
 		}
@@ -31,18 +36,27 @@ public class MemberServiceImpl implements MemberService{
 	}
 	
 	@Override
-	public void regist(Member member) {
-		mRepo.save(member);
+	public void regist(MemberDTO member) {
+		mRepo.save(modelMapper.map(member, Member.class));
 	}
 	
 	@Override
-	public List<Member> getMembers(){
-		return mRepo.findAll();
+	public List<MemberDTO> getMembers(){
+		List<Member> results = mRepo.findAll();
+		List<MemberDTO> members = 
+				results.stream().map(member -> modelMapper.map(member, MemberDTO.class))
+				.collect(Collectors.toList());
+		
+		return members;
 	}
 	
 	@Override
-	public Member getMember(String id) {
-		return mRepo.findByMemId(id);
+	public MemberDTO getMember(String id) {
+		Member member = mRepo.findByMemId(id);
+		
+		if(member == null) return null;
+		
+		return modelMapper.map(member, MemberDTO.class);
 	}
 
 	@Override
@@ -81,7 +95,7 @@ public class MemberServiceImpl implements MemberService{
 	}
 	
 	@Override
-	public Member updateMember(Member member) {
+	public MemberDTO updateMember(MemberDTO member) {
 		Member updateM = mRepo.findByMemId(member.getMemId());
 		
 		updateM.setMemEmail(member.getMemEmail());
@@ -90,7 +104,7 @@ public class MemberServiceImpl implements MemberService{
 		updateM.setMemBirth(member.getMemBirth());
 		updateM.setMemGender(member.isMemGender());
 		
-		return mRepo.save(updateM);
+		return modelMapper.map(mRepo.save(updateM), MemberDTO.class);
 	}
 	
 	@Override
