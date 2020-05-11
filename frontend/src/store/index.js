@@ -59,7 +59,7 @@ export default new Vuex.Store({
 
           if (res.data.state == "ok") {
             commit("changeSession", session);
-            // router.push("/");
+            router.push("/");
           } else {
             alert("아이디와 비밀번호가 일치하지 않습니다.");
           }
