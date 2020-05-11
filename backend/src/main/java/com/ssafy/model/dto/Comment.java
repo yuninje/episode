@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -49,6 +50,6 @@ public class Comment {
 
 	// comment <-> like_comment >> 댓글 좋아요
 	// 이 댓글을 좋아하는 멤버들 
-	@OneToMany(mappedBy = "comment")
+	@OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
 	private List<LikeComment> MembersLikeComment = new ArrayList<>();
 }
