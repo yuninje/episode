@@ -1,5 +1,6 @@
 package com.ssafy.model.dto;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,20 +16,23 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "novel_genre")
+@Table(name = "novel_hashtag")
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Novel_Genre {
+public class NovelHashTag {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int novel_genre_pk;
-	@ManyToOne
-	@JoinColumn(name = "genre_pk", nullable = false)
-	private Genre genre;
+	@Column(name = "novel_hashtag_pk")
+	private int novelHashTagPk;
+	
 	@ManyToOne
 	@JoinColumn(name = "novel_pk", nullable = false)
 	private Novel novel;
+	
+	@ManyToOne
+	@JoinColumn(name = "hashtag_pk", nullable = false)
+	private HashTag hashtag;
 }

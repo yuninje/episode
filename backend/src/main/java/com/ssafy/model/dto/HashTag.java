@@ -23,7 +23,9 @@ import lombok.ToString;
 public class HashTag {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int hashtag_pk;
+	@Column(name = "hashtag_pk")
+	private int hashtagPk;
+	
 	@Column(name = "hashtag_name", length = 30, nullable = false)
 	private String hashtagName;
 }

@@ -32,30 +32,23 @@ import lombok.ToString;
 public class Comment {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "comment_pk")
 	private int commentPk;
 	
-	@Column(name="comment_content", length = 30, nullable = false)
+	@Column(name = "comment_content", length = 30, nullable = false)
 	private String commentContent;
 
 	@CreatedDate
-	@Column(name="comment_created_at", nullable = false)
+	@Column(name = "comment_created_at", nullable = false)
 	private Date commentCreatedAt;
-	
-
-	// comment <-> member >> N : 1 관계
-	@ManyToOne
-	@JoinColumn(name="mem_pk")
-	private Member member;
 	
 	// comment <-> episode >> N : 1 관계
 	@ManyToOne
-	@JoinColumn(name="episode_pk")
+	@JoinColumn(name = "episode_pk", nullable = false)
 	private Episode episode;
 
 	// comment <-> like_comment >> 댓글 좋아요
 	// 이 댓글을 좋아하는 멤버들 
-	@OneToMany(mappedBy="comment")
+	@OneToMany(mappedBy = "comment")
 	private List<LikeComment> MembersLikeComment = new ArrayList<>();
-	
-	
 }

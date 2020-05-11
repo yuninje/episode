@@ -23,7 +23,9 @@ import lombok.ToString;
 public class WriteDay {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int wrd_pk;
+	@Column(name = "wrd_pk")
+	private int wrdPk;
+	
 	@Column(name = "wrd_day", nullable = false)
 	private int wrdDay;
 }

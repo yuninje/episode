@@ -1,5 +1,6 @@
 package com.ssafy.model.dto;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,17 +25,16 @@ import lombok.ToString;
 public class LikeComment { // 댓글 좋아요
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "like_comment_pk")
 	private int likeCommentPk;
-	
 	
 	// like_comment <-> member
 	@ManyToOne
-	@JoinColumn(name="mem_pk")
+	@JoinColumn(name = "mem_pk", nullable = false)
 	private Member member;
 	
-
 	// like_comment <-> comment
 	@ManyToOne
-	@JoinColumn(name="comment_pk")
+	@JoinColumn(name = "comment_pk", nullable = false)
 	private Comment comment;
 }

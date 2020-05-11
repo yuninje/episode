@@ -30,18 +30,18 @@ import lombok.ToString;
 public class Search {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "search_pk")
 	private int searchPk;
 	
-	@Column(name="search_word", length = 30, nullable = false)
+	@Column(name = "search_word", length = 30, nullable = false)
 	private String searchWord;
 
 	@CreatedDate
-	@Column(name="search_created_at", nullable = false)
+	@Column(name = "search_created_at", nullable = false)
 	private Date searchCreatedAt;
-	
 
 	// search <-> member >> N : 1 관계
 	@ManyToOne
-	@JoinColumn(name="mem_pk")
+	@JoinColumn(name = "mem_pk", nullable = false)
 	private Member member;
 }

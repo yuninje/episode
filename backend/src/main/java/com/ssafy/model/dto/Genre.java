@@ -21,11 +21,11 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Genre {
-	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int genre_pk;
+	@Column(name = "genre_pk")
+	private int genrePk;
 	
 	@Column(name = "genre_name", length = 30, nullable = false)
-	private String genre_name;
+	private String genreName;
 }
