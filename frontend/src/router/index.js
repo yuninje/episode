@@ -4,6 +4,8 @@ import Main from '../components/main/PageMain'
 import Signup from '../components/member/PageSignUp'
 import SignupTemp from '../components/member/PageSignUpTemp'
 import Signin from '../components/member/PageSignIn'
+import Editor from '../components/editor/PageEditor'
+import TestEditor from '../components/editor/TestEditor1'
 
 Vue.use(VueRouter)
 
@@ -27,7 +29,17 @@ const routes = [
     path: '/signin',
     name: 'Signin',
     component: Signin
-  }
+  },
+  {
+    path: '/editor',
+    name: 'Editor',
+    component: Editor
+  },
+  {
+    path: '/testeditor',
+    name: 'TestEditor',
+    component: TestEditor
+  },
 
 ]
 
