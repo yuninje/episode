@@ -17,12 +17,12 @@ public class MemberServiceImpl implements MemberService{
 	
 	@Override
 	public Member login(Auth auth) {
-		Member member = mRepo.findByMemId(auth.getMem_id());
+		Member member = mRepo.findByMemId(auth.getMemId());
 		if(member == null) {
 			throw new AuthException("존재하지 않는 아이디입니다.");	
 		}
 		else {
-			if(!member.getMemPw().equals(auth.getMem_pw())) {
+			if(!member.getMemPw().equals(auth.getMemPw())) {
 				throw new AuthException("올바르지 않은 비밀번호입니다.");
 			}
 			

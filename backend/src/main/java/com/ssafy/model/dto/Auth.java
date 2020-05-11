@@ -10,6 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Auth {	// 로그인 관련 클래스
-	String mem_id;		// 아이디
-	String mem_pw;		// 비밀번호
+	String memId;		// 아이디
+	String memPw;		// 비밀번호
 }
