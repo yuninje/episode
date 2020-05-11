@@ -4,22 +4,24 @@
     <div class="input-wrap">
       <div class="input-row">
         <label for="id">아이디</label>
-        <input type="text" v-model="mem_id" id="id" placeholder="아이디(이메일)">
+        <input type="text" name="id" v-model.lazy="mem_id" id="id" placeholder="아이디(이메일)">
+        <!-- <span v-if="idSaveCheck">{{ savedId }}</span> -->
       </div>
       <div class="input-row">
         <label for="password">비밀번호</label>
         <input
           type="password"
           id="pw"
-          v-model="mem_pw"
+          v-model.lazy="mem_pw"
           @keyup.enter="signin"
           placeholder="비밀번호를 입력하세요."
         >
       </div>
     </div>
     <div class="check-row">
-      <input type="checkbox" id="save_id" name="save_id" value="save_id">
-      <label for="save_id">아이디 저장</label>
+      <input type="checkbox" id="idSaveCheck" v-model="idSaveCheck">
+      <!-- {{ idSaveCheck }} -->
+      <label for="idSaveCheck">아이디 저장</label>
     </div>
     <div class="btn-wrap">
       <button class="btn-signin" v-on:click="signin">로그인</button>
@@ -40,9 +42,21 @@ export default {
   data() {
     return {
       mem_id: "",
-      mem_pw: ""
+      mem_pw: "",
+      idSaveCheck: "",
+      savedId: "",
     };
   },
+  created() {
+    // 쿠키에 아이디 저장된 값이 있으면!
+    // savedId값을 보여준다.
+    // this.$session.set("savedId", "TESTSAVE")
+    savedId: this.$session.get("savedId");
+    mem_id:"test3";
+
+    // mem_id=test3;
+  },
+  computed: {},
   methods: {
     ...mapActions(["postSignin"]),
 
@@ -53,9 +67,7 @@ export default {
           mem_id,
           mem_pw
         };
-        console.log("1:", data);
         this.postSignin(data);
-
       }
     },
     check(id, pw) {
@@ -67,7 +79,8 @@ export default {
         alert("비밀번호를 입력해주세요");
         return;
       }
-    }
+    },
+
   }
 };
 </script>
@@ -103,7 +116,8 @@ export default {
     line-height: 56px;
     max-width: 100%;
   }
-  input {
+  input,
+  span {
     border: none;
     border-right: 0px;
     border-top: 0px;
