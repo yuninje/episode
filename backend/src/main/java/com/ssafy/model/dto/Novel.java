@@ -3,7 +3,6 @@ package com.ssafy.model.dto;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,8 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -63,9 +60,9 @@ public class Novel {
 	@Column(name="novel_updated_at")
 	private Date novelUpdatedAt;
 	
-	// novel <-> member >> N : 1 관계
+	// novel <-> member >> N : 1 관계  
 	@ManyToOne
-	@JoinColumn(name="mem_pk")
+	@JoinColumn(name="mem_pk", nullable = false)
 	private Member member;
 
 	// novel <-> like_novel >> 소설 즐겨찾기 ( = 소설 좋아요 )
