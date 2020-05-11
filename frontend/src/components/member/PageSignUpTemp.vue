@@ -11,47 +11,41 @@
                             <v-row>
                                 <v-col cols="12">
                                     <p class="item-title">아이디<span class="item-required">*</span></p>
-                                    <ValidationProvider rules="required|alpha_num|min:5|max:20" v-slot="{errors}">
+                                    <ValidationProvider rules="required|alpha_num|min:5|max:20|checkInput:1" v-slot="{errors}">
                                     <v-text-field
                                         v-model="mem_id"
                                         placeholder="5글자 이상 20글자 이하의 영문 및 숫자를 입력해주세요"
                                         required
-                                        v-on:blur="checkInput(1)"
                                     ></v-text-field>
                                     <span class="error-message">{{errors[0]}}</span>
-                                    <span>{{error_msg[1]}}</span>
                                     </ValidationProvider>
                                 </v-col>
                                 <v-col cols="12">
                                     <p class="item-title">닉네임<span class="item-required">*</span></p>
-                                    <ValidationProvider rules="required|min:2" v-slot="{errors}">
+                                    <ValidationProvider rules="required|min:2|checkInput:2" v-slot="{errors}">
                                     <v-text-field
                                         v-model="mem_nick"
                                         placeholder="2글자 이상 입력해주세요"
                                         required
-                                        v-on:blur="checkInput(2)"
                                     ></v-text-field>
                                     <span class="error-message">{{errors[0]}}</span>
-                                    <span>{{error_msg[2]}}</span>
                                     </ValidationProvider>
                                 </v-col>
                                 <v-col cols="12">
                                     <p class="item-title">비밀번호<span class="item-required">*</span></p>
-                                    <ValidationProvider rules="required|min:10|max:20" v-slot="{errors}">
+                                    <ValidationProvider rules="required|min:10|max:20|checkInput:3" v-slot="{errors}" vid="pw">
                                     <v-text-field
                                         v-model="mem_pw"
                                         type="password"
                                         placeholder="영문, 숫자 포함 10자리 이상 20자리 이하로 입력해주세요"
                                         required
-                                        v-on:blur="checkInput(3)"
                                     ></v-text-field>
                                     <span class="error-message">{{errors[0]}}</span>
-                                    <span>{{error_msg[3]}}</span>
                                     </ValidationProvider>
                                 </v-col>
                                 <v-col cols="12">
                                     <p class="item-title">비밀번호 확인<span class="item-required">*</span></p>
-                                    <ValidationProvider rules="required|min:10|max:20" v-slot="{errors}">
+                                    <ValidationProvider rules="required|min:10|max:20|confirmed:pw" v-slot="{errors}">
                                     <v-text-field
                                         v-model="mem_pw_check"
                                         type="password"
@@ -63,28 +57,24 @@
                                 </v-col>
                                 <v-col cols="12">
                                     <p class="item-title">이메일<span class="item-required">*</span></p>
-                                    <ValidationProvider rules="required|email" v-slot="{errors}">
+                                    <ValidationProvider rules="required|email|checkInput:4" v-slot="{errors}">
                                     <v-text-field
                                         v-model="mem_email"
                                         placeholder="사용중인 이메일 주소를 입력해주세요"
                                         required
-                                        v-on:blur="checkInput(4)"
                                     ></v-text-field>
                                     <span class="error-message">{{errors[0]}}</span>
-                                    <span>{{error_msg[4]}}</span>
                                     </ValidationProvider>
                                 </v-col>
                                 <v-col cols="12">
                                     <p class="item-title">휴대전화<span class="item-required">*</span></p>
-                                    <ValidationProvider rules="required|numeric" v-slot="{errors}">
+                                    <ValidationProvider rules="required|numeric|checkInput:5" v-slot="{errors}">
                                     <v-text-field
                                         v-model="mem_phone"
                                         placeholder="'-'를 제외한 숫자를 입력해주세요."
                                         required
-                                        v-on:blur="checkInput(5)"
                                     ></v-text-field>
                                     <span class="error-message">{{errors[0]}}</span>
-                                    <span>{{error_msg[5]}}</span>
                                     </ValidationProvider>
                                 </v-col>
                                 <v-col cols="12">
@@ -141,7 +131,7 @@
 <script>
 import http from '../../http-common'
 import { ValidationProvider, extend } from 'vee-validate';
-import {required, email, alpha_num, numeric, min, max, length} from 'vee-validate/dist/rules';
+import {required, email, alpha_num, numeric, min, max, length, confirmed} from 'vee-validate/dist/rules';
 
 // extend('min', {
 //   getMessage(field, args) {
@@ -154,38 +144,34 @@ import {required, email, alpha_num, numeric, min, max, length} from 'vee-validat
 //   params: ['length']
 // });
 
-// extend('checkInput', {
-//   validate(value, args) {
-//     let msg = '';
-//     if(value !== '') {
-//       console.log(value);
-//       let argsNum = Number(args);
-//       console.log(args);
-//       http
-//         .post(`/members/check/${argsNum}`, value)
-//         .then(response => {
-//           console.log(response.data);
-//           if(response.data.state == "ok"){
-//             msg = "사용 가능합니다!!"
-//             return true;
-//           }else {
-//             msg = response.data.data;
-//             return false;
-//           }
-//         })
-//         .catch((e) => {
-//           console.log(e);
-//         })
-//       console.log(msg);
-//       // msg = this.checkInput(args);
-//       // if(msg == "사용 가능합니다!!"){
-//       //   return true;
-//       // }else{
-//       //   return false;
-//       // }
-//     }
-//   }
-// })
+extend('checkInput', async (value, args) => {
+  let response = await http.post(`/members/check/${args}`, value);
+  if(response.data.state == "ok"){
+    return true;
+  }
+  else {
+    if(args == 1){
+      return "중복된 아이디입니다.";
+    }
+    else if(args == 2){
+      return "중복된 닉네임입니다.";
+    }
+    else if(args == 3){
+      return "올바르지 않은 암호입니다. 영어와 숫자가 각각 최소 1개씩 반드시 포함되어야 합니다.";
+    }
+    else if(args == 4){
+      return "중복된 이메일입니다.";
+    }
+    else if(args == 5){
+      return "중복된 전화번호입니다.";
+    }
+  }
+});
+
+extend('confirmed', {
+  ...confirmed,
+  message: "비밀번호가 일치하지 않습니다."
+});
 
 extend('min', {
     ...min,
@@ -220,7 +206,7 @@ extend('numeric', {
 extend('length', {
     ...length,
     message: (field, args) => `'-'를 제외한 ${args.length}자리의 숫자를 입력해주세요 예) 19991231`
-})
+});
 
 export default {
   name: 'signup',
@@ -280,7 +266,7 @@ export default {
                 }
               })
               .catch(() => {
-                alert("에러발생!!")
+                alert("중복된 아이디, 닉네임, 전화번호, 이메일 혹은 잘못된 비밀번호입니다.")
                 this.errored = true
               })
               .finally(() => {
@@ -295,78 +281,7 @@ export default {
       } else {
         alert('필수 항목들을 입력하지 않으셨습니다.')
       }
-    },
-    async checkInput(item) {
-      let sendString = '';
-      let result;
-      if(item == 1) {
-        console.log("아이디 체크");
-        sendString = this.mem_id;
-      } else if(item == 2) {
-        console.log("닉네임 체크");
-        sendString = this.mem_nick;
-      } else if(item == 3) {
-        console.log("비밀번호 체크");
-        sendString = this.mem_pw;
-      } else if(item == 4) {
-        console.log("이메일 체크");
-        sendString = this.mem_email;
-      } else if(item == 5) {
-        console.log("전화번호 체크");
-        sendString = this.mem_phone;
-      }
-      if(sendString) {
-        result = await http.post(`/members/check/${item}`, sendString)
-        if(result.data.state == "ok") {
-          this.error_msg[item] = "사용가능합니다.";
-        } else {
-          this.error_msg[item] = result.data.data;
-        }
-      }
-    },
-    // checkInput(item) {
-    //   let sendString ='';
-    //   if(item == 1) {
-    //     console.log("아이디 체크");
-    //     sendString = this.mem_id;
-    //   } else if(item == 2) {
-    //     console.log("닉네임 체크");
-    //     sendString = this.mem_nick;
-    //   } else if(item == 3) {
-    //     console.log("비밀번호 체크");
-    //     sendString = this.mem_pw;
-    //   } else if(item == 4) {
-    //     console.log("이메일 체크");
-    //     sendString = this.mem_email;
-    //   } else if(item == 5) {
-    //     console.log("전화번호 체크");
-    //     sendString = this.mem_phone;
-    //   }
-    //   if(sendString){
-    //     http
-    //       .post(`/members/check/${item}`, sendString)
-    //       .then(response => {
-    //         // console.log(response.data);
-    //         if(response.data.state == "ok") {
-    //           this.error_msg[item] = "사용가능합니다.";
-    //           console.log('문제 없음!')
-    //         } else {
-    //           this.error_msg[item] = response.data.data;
-    //           console.log("response단의 에러 발생!");
-    //           // alert('에러 발생!!');
-    //         }
-    //       })
-    //       .catch((e) => {
-    //         console.log(e);
-    //         console.log("catch단의 에러 발생!");
-    //         // alert("에러 발생!!")
-    //         this.errored = true;
-    //       })
-    //       .finally(() => {
-    //         this.loading = false;
-    //       })
-    //   }
-    // }
+    }
   },
   components: {
     ValidationProvider
