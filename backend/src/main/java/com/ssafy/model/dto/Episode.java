@@ -55,10 +55,12 @@ public class Episode {
 	@JoinColumn(name="novel_pk")
 	private Novel novel;
 	
+	// member <-> comment
+	@OneToMany(mappedBy="episode")
+	private List<Comment> comments = new ArrayList<Comment>();
 
 	// episode <-> like_episode >> 에피소드 좋아요
 	// 이 에피소드를 좋아하는 멤버들 
 	@OneToMany(mappedBy="episode")
 	private List<LikeEpisode> MembersLikeEpisode = new ArrayList<>();
-	
 }

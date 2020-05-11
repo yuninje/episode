@@ -38,10 +38,10 @@ public class Novel {
 	@Column(name="novel_name", length = 30, nullable = false)
 	private String novelName;
 	
-	@Column(name="novel_intro", length = 100, nullable = false)
+	@Column(name="novel_intro", length = 100)
 	private String novelIntro;
 	
-	@Column(name="novel_image", length = 50, nullable = false)
+	@Column(name="novel_image", length = 50)
 	private String novelImage;
 	
 	@Column(name="novel_limit", columnDefinition="TINYINT(1)", nullable = false)
@@ -57,7 +57,7 @@ public class Novel {
 	private boolean novelOnly;
 	
 	@LastModifiedDate
-	@Column(name="novel_updated_at")
+	@Column(name="novel_updated_at", nullable = false)
 	private Date novelUpdatedAt;
 	
 	// novel <-> member >> N : 1 관계  
@@ -73,5 +73,4 @@ public class Novel {
 	// novel <-> episode
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="novel")
 	private List<Episode> episodes = new ArrayList<Episode>();
-
 }

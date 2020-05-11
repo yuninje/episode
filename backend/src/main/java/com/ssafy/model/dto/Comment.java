@@ -46,9 +46,16 @@ public class Comment {
 	@ManyToOne
 	@JoinColumn(name="mem_pk")
 	private Member member;
+	
+	// comment <-> episode >> N : 1 관계
+	@ManyToOne
+	@JoinColumn(name="episode_pk")
+	private Episode episode;
 
 	// comment <-> like_comment >> 댓글 좋아요
 	// 이 댓글을 좋아하는 멤버들 
 	@OneToMany(mappedBy="comment")
 	private List<LikeComment> MembersLikeComment = new ArrayList<>();
+	
+	
 }
