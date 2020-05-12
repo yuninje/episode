@@ -212,7 +212,6 @@ export default {
   name: 'signup',
   data () {
     return {
-      error_msg: ['', '', '', '', '', ''],
       mem_id: '',
       mem_nick: '',
       mem_pw: '',
