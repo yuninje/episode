@@ -1,6 +1,7 @@
 package com.ssafy.model.entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -82,6 +83,8 @@ public class Novel {
 	
 	@Transient
 	private String genreName;
+	@Transient
+	private List<String> genreList;
 
 	public Novel(Integer novelPk, String novelName, String novelIntro, String novelImage, Boolean novelLimit,
 			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, Date novelUpdatedAt, Member member,
@@ -98,5 +101,6 @@ public class Novel {
 		this.novelUpdatedAt = novelUpdatedAt;
 		this.member = member;
 		this.genreName = genreName;
+		this.genreList = Arrays.asList(genreName.split(","));
 	}
 }
