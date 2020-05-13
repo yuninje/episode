@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ssafy.model.dto.NovelDTO;
 
 public interface NovelService {
-	List<NovelDTO> getNovels();
+	Page<NovelDTO> getNovels(Pageable pageable);
 	NovelDTO getNovel(int novelPk);
 	Page<NovelDTO> getNovelsByName(String novelName, Pageable pageable);
 	Page<NovelDTO> getNovlesByNick(String memNick, Pageable pageable);

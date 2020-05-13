@@ -73,4 +73,10 @@ public class Member {
 	// member <-> search
 	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
 	private List<Search> searchs = new ArrayList<Search>();
+
+	public Member(int memPk, String memNick) {
+		super();
+		this.memPk = memPk;
+		this.memNick = memNick;
+	}
 }

@@ -14,10 +14,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.springframework.data.annotation.LastModifiedDate;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -74,4 +76,24 @@ public class Novel {
 	// novel <-> episode
 	@OneToMany(mappedBy = "novel", cascade = CascadeType.REMOVE)
 	private List<Episode> episodes = new ArrayList<Episode>();
+	
+	@Transient
+	private String genreName;
+
+	public Novel(int novelPk, String novelName, String novelIntro, String novelImage, boolean novelLimit,
+			boolean novelOpen, int novelStatus, boolean novelOnly, Date novelUpdatedAt, Member member,
+			String genreName) {
+		super();
+		this.novelPk = novelPk;
+		this.novelName = novelName;
+		this.novelIntro = novelIntro;
+		this.novelImage = novelImage;
+		this.novelLimit = novelLimit;
+		this.novelOpen = novelOpen;
+		this.novelStatus = novelStatus;
+		this.novelOnly = novelOnly;
+		this.novelUpdatedAt = novelUpdatedAt;
+		this.member = member;
+		this.genreName = genreName;
+	}
 }

@@ -22,4 +22,10 @@ public class NovelDTO {
 	private boolean novelOnly;
 	private Date novelUpdatedAt;
 	private Author member;
+	private String genreName;
+	
+	public NovelDTO(String genreName) {
+		super();
+		this.genreName = genreName;
+	}
 }

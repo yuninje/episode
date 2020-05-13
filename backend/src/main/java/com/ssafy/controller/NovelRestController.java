@@ -37,8 +37,8 @@ public class NovelRestController {
 
 	@ApiOperation("소설 전체 조회")
 	@GetMapping()
-	ResponseEntity<Map<String, Object>> getNovels(){
-		return handleSuccess(nService.getNovels());
+	ResponseEntity<Map<String, Object>> getNovels(@PageableDefault(page=0, size=10) Pageable pageable){
+		return handleSuccess(nService.getNovels(pageable));
 	}
 	
 	@ApiOperation("소설 한 개의 정보를 조회")

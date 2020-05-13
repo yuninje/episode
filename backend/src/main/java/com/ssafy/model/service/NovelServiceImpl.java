@@ -29,11 +29,11 @@ public class NovelServiceImpl implements NovelService{
 	ModelMapper modelMapper;
 	
 	@Override
-	public List<NovelDTO> getNovels() {
-		List<Novel> results = nRepo.findAll();
-		List<NovelDTO> novels = 
-				results.stream().map(novel -> modelMapper.map(novel, NovelDTO.class))
-				.collect(Collectors.toList());
+	public Page<NovelDTO> getNovels(Pageable pageable) {
+		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("novelUpdatedAt").descending());
+		
+		Page<Novel> results = nRepo.findAll(pageRequest);
+		Page<NovelDTO> novels = results.map(Novel -> modelMapper.map(Novel, NovelDTO.class));
 		
 		return novels;
 	}
@@ -49,7 +49,7 @@ public class NovelServiceImpl implements NovelService{
 	
 	@Override
 	public Page<NovelDTO> getNovelsByName(String novelName, Pageable pageable) {
-		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("novel_updated_at").descending());
+		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("novelUpdatedAt").descending());
 		
 		Page<Novel> results = nRepo.findByNovelNameContaining(novelName, pageRequest);
 		Page<NovelDTO> novels = results.map(Novel -> modelMapper.map(Novel, NovelDTO.class));
@@ -59,7 +59,7 @@ public class NovelServiceImpl implements NovelService{
 	
 	@Override
 	public Page<NovelDTO> getNovlesByNick(String memNick, Pageable pageable) {
-		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("novel_updated_at").descending());
+		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("novelUpdatedAt").descending());
 		
 		Page<Novel> results = nRepo.findByMemNickContaining(memNick, pageRequest);
 		Page<NovelDTO> novels = results.map(Novel -> modelMapper.map(Novel, NovelDTO.class));
