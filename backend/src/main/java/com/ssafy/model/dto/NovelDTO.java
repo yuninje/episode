@@ -21,5 +21,5 @@ public class NovelDTO {
 	private int novelStatus;
 	private boolean novelOnly;
 	private Date novelUpdatedAt;
-	private MemberDTO member;
+	private Author member;
 }

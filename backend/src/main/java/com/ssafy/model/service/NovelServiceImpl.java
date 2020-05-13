@@ -8,6 +8,11 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,12 +48,21 @@ public class NovelServiceImpl implements NovelService{
 	}
 	
 	@Override
-	public List<NovelDTO> getNovelsByName(String novelName) {
-		List<Novel> results = nRepo.findByNovelNameContaining(novelName);
-		List<NovelDTO> novels = 
-				results.stream().map(novel -> modelMapper.map(novel, NovelDTO.class))
-				.collect(Collectors.toList());
-		System.out.println(results.size());
+	public Page<NovelDTO> getNovelsByName(String novelName, Pageable pageable) {
+		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("novel_updated_at").descending());
+		
+		Page<Novel> results = nRepo.findByNovelNameContaining(novelName, pageRequest);
+		Page<NovelDTO> novels = results.map(Novel -> modelMapper.map(Novel, NovelDTO.class));
+		
+		return novels;
+	}
+	
+	@Override
+	public Page<NovelDTO> getNovlesByNick(String memNick, Pageable pageable) {
+		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("novel_updated_at").descending());
+		
+		Page<Novel> results = nRepo.findByMemNickContaining(memNick, pageRequest);
+		Page<NovelDTO> novels = results.map(Novel -> modelMapper.map(Novel, NovelDTO.class));
 		
 		return novels;
 	}
@@ -60,8 +74,10 @@ public class NovelServiceImpl implements NovelService{
 	}
 
 	@Override
-	public NovelDTO updateNovel(NovelDTO novel) {
-		Novel updateN = nRepo.findById(novel.getNovelPk()).orElse(null);
+	public NovelDTO updateNovel(int novelPk, NovelDTO novel) {
+		Novel updateN = nRepo.findById(novelPk).orElse(null);
+		
+		if(updateN == null) return null;
 		
 		updateN.setNovelName(novel.getNovelName());
 		updateN.setNovelIntro(novel.getNovelIntro());
