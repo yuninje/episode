@@ -26,7 +26,7 @@ public class LikeEpisode { // 에피소드 좋아요
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "like_episode_pk")
-	private int likeEpisodePk;
+	private Integer likeEpisodePk;
 	
 	// like_episode <-> member
 	@ManyToOne

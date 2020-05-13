@@ -17,6 +17,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.util.Assert;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,7 +37,7 @@ public class Novel {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "novel_pk")
-	private int novelPk;
+	private Integer novelPk;
 	
 	@Column(name = "novel_name", length = 30, nullable = false)
 	private String novelName;
@@ -48,16 +49,16 @@ public class Novel {
 	private String novelImage;
 	
 	@Column(name = "novel_limit", columnDefinition="TINYINT(1)", nullable = false)
-	private boolean novelLimit;
+	private Boolean novelLimit;
 	
 	@Column(name = "novel_open", columnDefinition="TINYINT(1)", nullable = false)
-	private boolean novelOpen;
+	private Boolean novelOpen;
 
 	@Column(name = "novel_status", columnDefinition="TINYINT(1)", nullable = false)
-	private int novelStatus;
+	private Integer novelStatus;
 	
 	@Column(name = "novel_only", columnDefinition="TINYINT(1)", nullable = false)
-	private boolean novelOnly;
+	private Boolean novelOnly;
 	
 	@LastModifiedDate
 	@Column(name = "novel_updated_at", nullable = false)
@@ -80,8 +81,8 @@ public class Novel {
 	@Transient
 	private String genreName;
 
-	public Novel(int novelPk, String novelName, String novelIntro, String novelImage, boolean novelLimit,
-			boolean novelOpen, int novelStatus, boolean novelOnly, Date novelUpdatedAt, Member member,
+	public Novel(Integer novelPk, String novelName, String novelIntro, String novelImage, Boolean novelLimit,
+			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, Date novelUpdatedAt, Member member,
 			String genreName) {
 		super();
 		this.novelPk = novelPk;

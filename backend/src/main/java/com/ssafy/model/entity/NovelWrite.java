@@ -26,7 +26,7 @@ public class NovelWrite {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "novel_write_pk")
-	private int novelWritePk;
+	private Integer novelWritePk;
 	
 	@ManyToOne
 	@JoinColumn(name = "novel_pk", nullable = false)

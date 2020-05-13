@@ -46,20 +46,6 @@ public class NovelRestController {
 	ResponseEntity<Map<String, Object>> getNovel(@PathVariable int novelPk) {
 		return handleSuccess(nService.getNovel(novelPk));
 	}
-	
-	@ApiOperation("해당 문자열을 포함하고 있는 제목을 가진 소설들 조회")
-	@GetMapping("/novel-name={novelName}")
-	ResponseEntity<Map<String, Object>> getNovelsByName(@PathVariable String novelName, 
-			@PageableDefault(page=0, size=10) Pageable pageable) {
-		return handleSuccess(nService.getNovelsByName(novelName, pageable));
-	}
-	
-	@ApiOperation("해당 문자열을 포함하고 있는 닉네임 소유의 소설들 조회")
-	@GetMapping("/author={memNick}")
-	ResponseEntity<Map<String, Object>> getNovelsByNick(@PathVariable String memNick, 
-			@PageableDefault(page=0, size=10) Pageable pageable) {
-		return handleSuccess(nService.getNovlesByNick(memNick, pageable));
-	}
 
 	@ApiOperation("소설 등록")
 	@PostMapping()

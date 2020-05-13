@@ -34,7 +34,7 @@ public class Comment {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "comment_pk")
-	private int commentPk;
+	private Integer commentPk;
 	
 	@Column(name = "comment_content", length = 30, nullable = false)
 	private String commentContent;

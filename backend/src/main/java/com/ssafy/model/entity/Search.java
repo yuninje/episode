@@ -31,7 +31,7 @@ public class Search {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "search_pk")
-	private int searchPk;
+	private Integer searchPk;
 	
 	@Column(name = "search_word", length = 30, nullable = false)
 	private String searchWord;

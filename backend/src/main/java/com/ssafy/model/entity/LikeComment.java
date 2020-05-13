@@ -26,7 +26,7 @@ public class LikeComment { // 댓글 좋아요
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "like_comment_pk")
-	private int likeCommentPk;
+	private Integer likeCommentPk;
 	
 	// like_comment <-> member
 	@ManyToOne
