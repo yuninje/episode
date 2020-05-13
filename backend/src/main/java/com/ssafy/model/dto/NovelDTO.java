@@ -1,6 +1,9 @@
 package com.ssafy.model.dto;
 
 import java.util.Date;
+import java.util.List;
+
+import com.ssafy.model.entity.Genre;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +14,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class NovelDTO {
+public class NovelDTO{
 	private int novelPk;
 	private String novelName;
 	private String novelIntro;
@@ -22,4 +25,5 @@ public class NovelDTO {
 	private boolean novelOnly;
 	private Date novelUpdatedAt;
 	private MemberDTO member;
+	private List<GenreDTO> genreDTOs;
 }

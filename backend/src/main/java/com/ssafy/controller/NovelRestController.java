@@ -1,6 +1,7 @@
 package com.ssafy.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.model.dto.Auth;
 import com.ssafy.model.dto.NovelDTO;
-import com.ssafy.model.entity.Member;
-import com.ssafy.model.entity.Novel;
 import com.ssafy.model.service.NovelService;
 
 import io.swagger.annotations.Api;
@@ -48,6 +46,13 @@ public class NovelRestController {
 	ResponseEntity<Map<String, Object>> getNovelsByName(@PathVariable String novel_name) {
 		return handleSuccess(nService.getNovelsByName(novel_name));
 	}
+	
+	@ApiOperation("해당 장르에 속한 소설들 조회")
+	@GetMapping("/genre-pk={genrePk}")
+	ResponseEntity<Map<String, Object>> getNovelsByGenre(@PathVariable int genrePk) {
+		return handleSuccess(nService.getNovelsByGenre(genrePk));
+	}
+	
 
 	@ApiOperation("소설 등록")
 	@PostMapping("/regist")
@@ -67,7 +72,21 @@ public class NovelRestController {
 	ResponseEntity<Map<String, Object>> deleteNovel(@PathVariable int novel_pk) {
 		nService.deleteNovel(novel_pk);
 		return handleSuccess("");
+	}	
+
+	@ApiOperation("소설의 장르 업데이트 | 체크된 모든 장르의 PK 값을 배열이나 리스트로 보내면 됨")
+	@PutMapping("/genre/{novelPk}") // url 바꿔야함
+	ResponseEntity<Map<String, Object>> updateGenreOfNovel(@PathVariable int novelPk, @RequestBody List<Integer> genrePks) {
+		nService.updateGenreOfNovel(novelPk, genrePks);
+		return handleSuccess("소설의 장르 업데이트 성공");
 	}
+	
+	@ApiOperation("해당 멤버의 소설 조회")
+	@GetMapping("/member-pk={memPk}") // url 바꿔야함
+	ResponseEntity<Map<String, Object>> getNovelByMember(@PathVariable int memPk) {
+		return handleSuccess(nService.getNovelByMember(memPk));
+	}
+	
 	
 	public ResponseEntity<Map<String, Object>> handleSuccess(Object data) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();

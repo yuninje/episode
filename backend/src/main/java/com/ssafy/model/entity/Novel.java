@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -66,12 +67,23 @@ public class Novel {
 	@JoinColumn(name = "mem_pk", nullable = false)
 	private Member member;
 
+	// novel <-> episode >> 1: N 관계
+	@OneToMany(mappedBy = "novel")
+	private List<Episode> episodes = new ArrayList<Episode>();
+	
+
 	// novel <-> like_novel >> 소설 즐겨찾기 ( = 소설 좋아요 )
 	// 이 소설을 좋아하는 멤버들 
-	@OneToMany(mappedBy = "novel", cascade = CascadeType.REMOVE)
-	private List<LikeNovel> MembersLikeNovel = new ArrayList<>();
+	@OneToMany(mappedBy = "novel")
+	private List<LikeNovel> membersLikeNovel = new ArrayList<>();
 	
-	// novel <-> episode
-	@OneToMany(mappedBy = "novel", cascade = CascadeType.REMOVE)
-	private List<Episode> episodes = new ArrayList<Episode>();
+//	// novel <-> NovelGenre >> 소설의 장르
+//	// 이 소설의 장르들
+//	@OneToMany(mappedBy = "novel")
+//	private List<NovelGenre> genres = new ArrayList<>();
+	
+	@ManyToMany(mappedBy="novels")
+	private List<Genre> genres = new ArrayList<Genre>();
+	
+
 }

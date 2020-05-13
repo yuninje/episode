@@ -55,11 +55,11 @@ public class Episode {
 	private int episodeView;
 
 	// episode <-> novel
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "novel_pk", nullable = false)
 	private Novel novel;
 	
-	// member <-> comment
+	// episode <-> comment
 	@OneToMany(mappedBy = "episode", cascade = CascadeType.REMOVE)
 	private List<Comment> comments = new ArrayList<Comment>();
 
