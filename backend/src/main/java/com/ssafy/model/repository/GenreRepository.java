@@ -7,5 +7,5 @@ import com.ssafy.model.entity.Genre;
 
 @Repository
 public interface GenreRepository extends JpaRepository<Genre, Integer>  {
-
+	
 }

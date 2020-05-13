@@ -26,7 +26,7 @@ public class NovelHashTag {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "novel_hashtag_pk")
-	private int novelHashTagPk;
+	private Integer novelHashTagPk;
 	
 	@ManyToOne
 	@JoinColumn(name = "novel_pk", nullable = false)

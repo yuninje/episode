@@ -24,6 +24,11 @@ public class NovelDTO{
 	private int novelStatus;
 	private boolean novelOnly;
 	private Date novelUpdatedAt;
-	private MemberDTO member;
-	private List<GenreDTO> genreDTOs;
+	private Author member;
+	private String genreName;
+	
+	public NovelDTO(String genreName) {
+		super();
+		this.genreName = genreName;
+	}
 }

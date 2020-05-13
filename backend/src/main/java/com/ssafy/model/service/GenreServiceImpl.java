@@ -17,7 +17,6 @@ import com.ssafy.model.repository.NovelRepository;
 
 @Service
 public class GenreServiceImpl implements GenreService{
-
 	@Autowired
 	GenreRepository gRepo;
 	@Autowired
@@ -57,7 +56,6 @@ public class GenreServiceImpl implements GenreService{
 		gRepo.deleteById(genrePk);
 	}
 
-	
 	
 	List<NovelDTO> setNovelDTOs(List<Novel> novels) {
 		return novels.stream().map(novel -> {

@@ -51,8 +51,8 @@ public class MemberServiceImpl implements MemberService{
 	}
 	
 	@Override
-	public MemberDTO getMember(String id) {
-		Member member = mRepo.findByMemId(id);
+	public MemberDTO getMember(int memPk) {
+		Member member = mRepo.findById(memPk).orElse(null);
 		
 		if(member == null) return null;
 		
@@ -60,43 +60,45 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public boolean checkId(String id) {
-		if(mRepo.findByMemId(id) == null) return true;
+	public boolean checkId(String memId) {
+		if(mRepo.findByMemId(memId) == null) return true;
 		
 		return false;
 	}
 
 	@Override
-	public boolean checkNick(String nick) {
-		if(mRepo.findByMemNick(nick) == null) return true;
+	public boolean checkNick(String memNick) {
+		if(mRepo.findByMemNick(memNick) == null) return true;
 		
 		return false;
 	}
 	
 	@Override
-	public boolean checkPw(String pw) {
+	public boolean checkPw(String memPw) {
 		String regex = "^(?=.*[0-9])(?=.*[a-zA-Z]).{10,20}$";
 		
-		return pw.matches(regex);
+		return memPw.matches(regex);
 	}
 
 	@Override
-	public boolean checkEmail(String email) {
-		if(mRepo.findByMemEmail(email) == null) return true;
+	public boolean checkEmail(String memEmail) {
+		if(mRepo.findByMemEmail(memEmail) == null) return true;
 		
 		return false;
 	}
 
 	@Override
-	public boolean checkPhone(String phone) {
-		if(mRepo.findByMemPhone(phone) == null) return true;
+	public boolean checkPhone(String memPhone) {
+		if(mRepo.findByMemPhone(memPhone) == null) return true;
 		
 		return false;
 	}
 	
 	@Override
-	public MemberDTO updateMember(MemberDTO member) {
-		Member updateM = mRepo.findByMemId(member.getMemId());
+	public MemberDTO updateMember(int memPk, MemberDTO member) {
+		Member updateM = mRepo.findById(memPk).orElse(null);
+		
+		if(updateM == null) return null;
 		
 		updateM.setMemEmail(member.getMemEmail());
 		updateM.setMemNick(member.getMemNick());
@@ -108,7 +110,7 @@ public class MemberServiceImpl implements MemberService{
 	}
 	
 	@Override
-	public void deleteMember(String id) {
-		mRepo.deleteByMemId(id);
+	public void deleteMember(int memPk) {
+		mRepo.deleteById(memPk);
 	}
 }

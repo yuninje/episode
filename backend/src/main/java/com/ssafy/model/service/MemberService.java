@@ -12,13 +12,13 @@ public interface MemberService {
 	MemberDTO login(Auth auth);
 	void regist(MemberDTO member);
 	List<MemberDTO> getMembers();
-	MemberDTO getMember(String id);
-	boolean checkId(String id);
-	boolean checkNick(String nick);
-	boolean checkPw(String pw);
-	boolean checkEmail(String email);
-	boolean checkPhone(String phone);
-	MemberDTO updateMember(MemberDTO member);
+	MemberDTO getMember(int memPk);
+	boolean checkId(String memId);
+	boolean checkNick(String memNick);
+	boolean checkPw(String memPw);
+	boolean checkEmail(String memEmail);
+	boolean checkPhone(String memPhone);
+	MemberDTO updateMember(int memPk, MemberDTO member);
 	@Transactional
-	void deleteMember(String id);
+	void deleteMember(int memPk);
 }

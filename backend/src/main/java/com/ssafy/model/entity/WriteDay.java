@@ -24,8 +24,8 @@ public class WriteDay {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "wrd_pk")
-	private int wrdPk;
+	private Integer wrdPk;
 	
 	@Column(name = "wrd_day", nullable = false)
-	private int wrdDay;
+	private Integer wrdDay;
 }

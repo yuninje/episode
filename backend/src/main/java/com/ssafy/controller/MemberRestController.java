@@ -39,10 +39,32 @@ public class MemberRestController {
 		return handleSuccess(mService.getMembers());
 	}
 	
+	@ApiOperation("회원가입 | /check/{key}를 통해 중복, 유효성 검사를 마친 후라고 판단하여 무조건 회원가입이 성공했다고 간주")
+	@PostMapping("")
+	ResponseEntity<Map<String, Object>> doRegist(@RequestBody MemberDTO member){
+		mService.regist(member);
+		
+		return handleSuccess("회원 가입에 성공하였습니다.");
+	}
+	
 	@ApiOperation("멤버 한 명의 정보를 조회")
-	@GetMapping("/getMember/{mem_id}")
-	ResponseEntity<Map<String, Object>> getMember(@PathVariable String mem_id){
-		return handleSuccess(mService.getMember(mem_id));
+	@GetMapping("/{memPk}")
+	ResponseEntity<Map<String, Object>> getMember(@PathVariable int memPk){
+		return handleSuccess(mService.getMember(memPk));
+	}
+	
+	@ApiOperation("멤버 한 명의 정보를 수정 | 변경된 멤버 객체 반환")
+	@PutMapping("/{memPk}")
+	ResponseEntity<Map<String, Object>> updateMember(@PathVariable int memPk, @RequestBody MemberDTO member){
+		return handleSuccess(mService.updateMember(memPk, member));
+	}
+	
+	@ApiOperation("멤버 삭제 | 반환되는 data는 비어져있음")
+	@DeleteMapping("/{memPk}")
+	ResponseEntity<Map<String, Object>> deleteMember(@PathVariable int memPk){
+		mService.deleteMember(memPk);
+		
+		return handleSuccess("");
 	}
 
 	@ApiOperation("로그인 | 성공 시 해당 멤버 객체 반환(패스워드는 비워져 있음)")
@@ -52,14 +74,6 @@ public class MemberRestController {
 		member.setMemPw("");
 
 		return handleSuccess(member);
-	}
-	
-	@ApiOperation("회원가입 | /check/{key}를 통해 중복, 유효성 검사를 마친 후라고 판단하여 무조건 회원가입이 성공했다고 간주")
-	@PostMapping("/regist")
-	ResponseEntity<Map<String, Object>> doRegist(@RequestBody MemberDTO member){
-		mService.regist(member);
-		
-		return handleSuccess("회원 가입에 성공하였습니다.");
 	}
 	
 	@ApiOperation("아이디/닉네임/이메일/전화번호 중복 검사, 비밀번호 유효성 검사 | 성공 시 data는 비어있으며(state는 ok) 실패시 data에는 에러 문구가 들어감(state는 fail)")
@@ -91,20 +105,6 @@ public class MemberRestController {
 		
 		if(res) return handleSuccess("");
 		else return handleFail(fail[key - 1], HttpStatus.OK);
-	}
-	
-	@ApiOperation("멤버 한 명의 정보를 수정 | 변경된 멤버 객체 반환")
-	@PutMapping("/updateMember")
-	ResponseEntity<Map<String, Object>> updateMember(@RequestBody MemberDTO member){
-		return handleSuccess(mService.updateMember(member));
-	}
-	
-	@ApiOperation("멤버 삭제 | 반환되는 data는 비어져있음")
-	@DeleteMapping("/deleteMember/{mem_id}")
-	ResponseEntity<Map<String, Object>> deleteMember(@PathVariable String mem_id){
-		mService.deleteMember(mem_id);
-		
-		return handleSuccess("");
 	}
 	
 	public ResponseEntity<Map<String, Object>> handleSuccess(Object data) {

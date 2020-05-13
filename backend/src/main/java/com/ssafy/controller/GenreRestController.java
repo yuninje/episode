@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.model.dto.GenreDTO;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import com.ssafy.model.service.GenreService;
 
 import io.swagger.annotations.Api;
@@ -53,6 +54,7 @@ public class GenreRestController {
 		return handleSuccess("장르 삭제 완료");
 	}
 	
+
 	public ResponseEntity<Map<String, Object>> handleSuccess(Object data) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("state", "ok");

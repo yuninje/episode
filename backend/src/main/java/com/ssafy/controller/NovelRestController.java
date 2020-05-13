@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.model.dto.NovelDTO;
@@ -31,20 +35,14 @@ public class NovelRestController {
 
 	@ApiOperation("소설 전체 조회")
 	@GetMapping()
-	ResponseEntity<Map<String, Object>> getNovels(){
-		return handleSuccess(nService.getNovels());
+	ResponseEntity<Map<String, Object>> getNovels(@PageableDefault(page=0, size=10) Pageable pageable){
+		return handleSuccess(nService.getNovels(pageable));
 	}
 	
 	@ApiOperation("소설 한 개의 정보를 조회")
-	@GetMapping("/getNovel/{novel_pk}")
-	ResponseEntity<Map<String, Object>> getNovel(@PathVariable int novel_pk) {
-		return handleSuccess(nService.getNovel(novel_pk));
-	}
-	
-	@ApiOperation("해당 문자열을 포함하고 있는 제목을 가진 소설들 조회")
-	@GetMapping("/getNovelsByName/{novel_name}")
-	ResponseEntity<Map<String, Object>> getNovelsByName(@PathVariable String novel_name) {
-		return handleSuccess(nService.getNovelsByName(novel_name));
+	@GetMapping("/{novelPk}")
+	ResponseEntity<Map<String, Object>> getNovel(@PathVariable int novelPk) {
+		return handleSuccess(nService.getNovel(novelPk));
 	}
 	
 	@ApiOperation("해당 장르에 속한 소설들 조회")
@@ -55,22 +53,22 @@ public class NovelRestController {
 	
 
 	@ApiOperation("소설 등록")
-	@PostMapping("/regist")
+	@PostMapping()
 	ResponseEntity<Map<String, Object>> registNovel(@RequestBody NovelDTO novel) {
 		nService.registNovel(novel);
 		return handleSuccess("소설 생성 완료");
 	}
 	
-	@ApiOperation("소설 한 개를 정보를 수정 | 변경된 소설 객체 반환")
-	@PutMapping("/updateNovel")
-	ResponseEntity<Map<String, Object>> updateNovel(@RequestBody NovelDTO novel) {
-		return handleSuccess(nService.updateNovel(novel));
+	@ApiOperation("소설 한 개의 정보를 수정 | 변경된 소설 객체 반환")
+	@PutMapping("/{novelPk}")
+	ResponseEntity<Map<String, Object>> updateNovel(@PathVariable int novelPk, @RequestBody NovelDTO novel) {
+		return handleSuccess(nService.updateNovel(novelPk, novel));
 	}
 	
 	@ApiOperation("소설 삭제 | 반환되는 data는 비어져있음")
-	@DeleteMapping("/deleteNovel/{novel_pk}")
-	ResponseEntity<Map<String, Object>> deleteNovel(@PathVariable int novel_pk) {
-		nService.deleteNovel(novel_pk);
+	@DeleteMapping("/{novelPk}")
+	ResponseEntity<Map<String, Object>> deleteNovel(@PathVariable int novelPk) {
+		nService.deleteNovel(novelPk);
 		return handleSuccess("");
 	}	
 

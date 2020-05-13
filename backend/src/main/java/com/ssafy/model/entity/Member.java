@@ -28,7 +28,7 @@ public class Member {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "mem_pk")
-	private int memPk;
+	private Integer memPk;
 	
 	@Column(name = "mem_id", length = 100, nullable = false, unique=true)
 	private String memId;
@@ -49,7 +49,7 @@ public class Member {
 	private String memBirth;
 	
 	@Column(name = "mem_gender", nullable = false, columnDefinition="TINYINT(1)")
-	private boolean memGender;
+	private Boolean memGender;
 
 	// member <-> like_novel >> 소설 즐겨찾기 ( = 소설 좋아요 )
 	// 이 멤버가 좋아하는 소설들
@@ -73,4 +73,10 @@ public class Member {
 	// member <-> search
 	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
 	private List<Search> searchs = new ArrayList<Search>();
+
+	public Member(Integer memPk, String memNick) {
+		super();
+		this.memPk = memPk;
+		this.memNick = memNick;
+	}
 }

@@ -35,7 +35,7 @@ public class Episode {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "episode_pk")
-	private int episodePk;
+	private Integer episodePk;
 	
 	@Column(name = "episode_title", length = 30, nullable = false)
 	private String episodeTitle;

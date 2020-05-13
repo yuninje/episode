@@ -7,9 +7,9 @@ import com.ssafy.model.entity.Member;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Integer> {
-	Member findByMemId(String mem_id);
-	Member findByMemEmail(String mem_email);
-	Member findByMemNick(String mem_nick);
-	Member findByMemPhone(String mem_phone);
-	void deleteByMemId(String mem_id);
+	Member findByMemId(String memId);
+	Member findByMemEmail(String memEmail);
+	Member findByMemNick(String memNick);
+	Member findByMemPhone(String memPhone);
+	void deleteByMemId(String memId);
 }

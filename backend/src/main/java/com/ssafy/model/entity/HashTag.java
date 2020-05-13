@@ -24,7 +24,7 @@ public class HashTag {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "hashtag_pk")
-	private int hashtagPk;
+	private Integer hashtagPk;
 	
 	@Column(name = "hashtag_name", length = 30, nullable = false)
 	private String hashtagName;

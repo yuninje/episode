@@ -26,7 +26,7 @@ public class LikeNovel {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "like_novel")
-	private int likeNovelPk;
+	private Integer likeNovelPk;
 	
 	// like_novel <-> member
 	@ManyToOne
