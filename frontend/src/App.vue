@@ -1,17 +1,19 @@
 <template>
   <v-app id="app">
     <div id="nav">
-      <TestLogin />
+      <NavigationBar/>
     </div>
     <router-view/>
   </v-app>
 </template>
 
 <script>
+import NavigationBar from "@/components/main/NavigationBar"
 import TestLogin from "@/components/member/TestLoginC"
 export default {
   components: {
-    TestLogin
+    TestLogin,
+    NavigationBar
   },
 
   
