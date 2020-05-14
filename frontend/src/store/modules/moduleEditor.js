@@ -30,5 +30,5 @@ export default {
           console.log(red.data.data)
         })
     }
-  }
+  } 
 };
