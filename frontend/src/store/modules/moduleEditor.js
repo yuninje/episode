@@ -25,7 +25,7 @@ export default {
     // 서버에 저장
     fetchPostSave({ state, dispatch, commit, getters, rootGetters }, data) {
       axios
-        .post(`${rootGetters.getServer}/api/`, data)
+        .post(`${rootGetters.getServer}/api/episodes/1`, data)
         .then( res => {
           console.log(red.data.data)
         })

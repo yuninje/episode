@@ -115,7 +115,8 @@ export default {
 
       // 자동 저장
       autoSave: null, // 자동 저장 함수
-      savingContent: ""
+      savingContent: "",
+      episodeContent:""
     };
   },
   filters: {
@@ -149,8 +150,8 @@ export default {
   },
   methods: {
     ...mapActions("storeEditor", {
-      postsave : "fetchPostSave",
-      fetchAutoSave : "fetchAutoSave"
+      fetchAutoSave : "fetchAutoSave",
+      fetchPostsave : "fetchPostSave",
     }),
 
     // 타이머
@@ -180,11 +181,22 @@ export default {
 
     // 자동 저장
     startAutoSave() {
-      this.autoSave = setInterval(() => this.save(), 300000); // 1000 = 1초 ->  주기 변경  // (5분 * 60초 * 1000 = 300000)
+      this.autoSave = setInterval(() => this.saveTmp(), 300000); // 1000 = 1초 ->  주기 변경  // (5분 * 60초 * 1000 = 300000)
     },
-    save() {
+    // 임시 저장
+    saveTmp() {
       this.savingContent = this.htmlContent;
       this.fetchAutoSave(this.savingContent)
+      this.save()
+    },
+    // 진짜 저장
+    save() {
+      let { episodeContent } = this.savingContent;
+      let data = {
+        episodeContent
+      };
+      this.fetchPostsave(this.savingContent)
+
     },
 
     // 에디터
