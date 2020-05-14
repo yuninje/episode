@@ -1,7 +1,7 @@
 <template>
   <div class="test-login">
     <span>테스트 라인입니다.</span>
-    <span id="greeting" v-if="getIsLogin">{{ this.$store.getters.getSession.memId }} 님 환영합니다.</span>
+    <span id="greeting" v-if="getIsLogin">{{ getSession.memId }} 님 환영합니다.</span>
     <span>
       <button v-if="!getIsLogin">
         <router-link to="/signin">로그인</router-link>
@@ -21,7 +21,8 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["getIsLogin"])
+    ...mapGetters(["getIsLogin"]),
+    ...mapGetters(["getSession"])
   },
   methods: {
     signout() {

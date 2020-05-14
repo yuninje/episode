@@ -3,14 +3,14 @@ import Vuex from "vuex";
 import axios from "axios";
 import router from "@/router/index";
 
-import moduleSession from "./modules/moduleSession"
+import moduleMember from "./modules/moduleMember"
 import moduleEditor from "./modules/moduleEditor";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
-    storeSession: moduleSession,
+    storeMember: moduleMember,
     storeEditor: moduleEditor
   },
   state: {
