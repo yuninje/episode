@@ -3,19 +3,21 @@ import Vuex from "vuex";
 import axios from "axios";
 import router from "@/router/index";
 
-import moduleSession from "./modules/moduleSession";
+import moduleSession from "./modules/moduleSession"
+import moduleEditor from "./modules/moduleEditor";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
-    moduleSession: moduleSession
+    storeSession: moduleSession,
+    storeEditor: moduleEditor
   },
   state: {
     server: "http://localhost:8080",
 
     isLogin: false,
-    session: ""
+    session: "",
   },
   getters: {
     getServer: state => {
@@ -37,7 +39,7 @@ export default new Vuex.Store({
       state.isLogin = false;
       state.session = "";
       // localStorage.removeItem('savedToken');
-    }
+    },
   },
   actions: {
     // 로그아웃
@@ -94,5 +96,4 @@ export default new Vuex.Store({
       this._vm.$session.destroy()
     }
   },
-  modules: {}
 });
