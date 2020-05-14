@@ -69,6 +69,16 @@ public class NovelServiceImpl implements NovelService{
 		
 		return novels;
 	}
+	
+	@Override
+	public Page<NovelDTO> getNovelsByNameOrNick(String word, Pageable pageable) {
+		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("novelUpdatedAt").descending());
+		
+		Page<Novel> results = nRepo.find("author_or_novel", word, pageRequest);
+		Page<NovelDTO> novels = results.map(Novel -> modelMapper.map(Novel, NovelDTO.class));
+		
+		return novels;
+	}
 
 	@Override
 	public void registNovel(NovelDTO novel) {

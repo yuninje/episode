@@ -55,7 +55,6 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 					novel.novelOnly.as("novelOnly"),
 					novel.novelUpdatedAt.as("novelUpdatedAt"),
 					novel.member.as("member"), 
-//					SQLExpressions.groupConcat(genre.genreName).as("novelName"),
 					simpleTemplate.as("genreName"),
 					ExpressionUtils.as(
 						JPAExpressions.select(likeNovel.likeNovelPk.count())
@@ -74,6 +73,9 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 		case "mem_pk":
 			query.where(novel.member.memPk.eq(Integer.parseInt(word)));
 			break;
+		case "author_or_novel":
+			query.where(novel.member.memNick.containsIgnoreCase(word)
+					.or(novel.novelName.containsIgnoreCase(word)));
 		case "author_name":
 			query.where(novel.member.memNick.containsIgnoreCase(word));
 			break;
