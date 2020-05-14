@@ -14,7 +14,8 @@ new Vue({
   router,
   store,
   vuetify,
-  beforeCreate(){
+  
+  beforeCreate(){ // 렌더링 직전
     this.$store.dispatch('checkSession');
   },
   render: h => h(App)
