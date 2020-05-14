@@ -81,8 +81,8 @@ public class NovelRestController {
 	
 	@ApiOperation("해당 멤버의 소설 조회")
 	@GetMapping("/member-pk={memPk}") // url 바꿔야함
-	ResponseEntity<Map<String, Object>> getNovelByMember(@PathVariable int memPk) {
-		return handleSuccess(nService.getNovelByMember(memPk));
+	ResponseEntity<Map<String, Object>> getNovelByMember(@PathVariable int memPk, @PageableDefault(page=0, size=10) Pageable pageable) {
+		return handleSuccess(nService.getNovelByMember(memPk, pageable));
 	}
 	
 	

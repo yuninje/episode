@@ -20,5 +20,5 @@ public interface NovelService {
 	@Transactional
 	void deleteNovel(int novelPk);
 	void updateGenreOfNovel(int novelPk, List<Integer> genrePks);
-	Object getNovelByMember(int memPk);
+	Page<NovelDTO> getNovelByMember(int memPk, Pageable pageable);
 }
