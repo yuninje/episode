@@ -4,7 +4,8 @@ import Main from '../components/main/PageMain'
 import Signup from '../components/member/PageSignUp'
 import Signin from '../components/member/PageSignIn'
 import Editor from '../components/editor/PageEditor'
-import TestEditor from '../components/editor/TestEditor1'
+import TestEditor1 from '../components/editor/TestEditor1'
+import TestTest from '../components/editor/TestTest'
 
 Vue.use(VueRouter)
 
@@ -30,9 +31,14 @@ const routes = [
     component: Editor
   },
   {
-    path: '/testeditor',
-    name: 'TestEditor',
-    component: TestEditor
+    path: '/testeditor1',
+    name: 'TestEditor1',
+    component: TestEditor1
+  },
+  {
+    path: '/testtest',
+    name: 'TestTest',
+    component: TestTest
   },
 
 ]

@@ -8,6 +8,8 @@ import vuetify from './plugins/vuetify'
 Vue.config.productionTip = false
 Vue.use(VueSession, {persist: true})
 
+// Vue.component('editor', require('./components/editor/Editor'));
+
 new Vue({
   router,
   store,
