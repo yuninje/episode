@@ -4,7 +4,7 @@
     <div class="input-wrap">
       <div class="input-row">
         <label for="id">아이디</label>
-        <input type="text" name="id" v-model.lazy="mem_id" id="id" placeholder="아이디(이메일)">
+        <input type="text" name="id" v-model.lazy="memId" id="id" placeholder="아이디(이메일)">
         <!-- <span v-if="idSaveCheck">{{ savedId }}</span> -->
       </div>
       <div class="input-row">
@@ -12,7 +12,7 @@
         <input
           type="password"
           id="pw"
-          v-model.lazy="mem_pw"
+          v-model.lazy="memPw"
           @keyup.enter="signin"
           placeholder="비밀번호를 입력하세요."
         >
@@ -41,8 +41,8 @@ import { mapActions, mapMutations, mapGetters } from "vuex";
 export default {
   data() {
     return {
-      mem_id: "",
-      mem_pw: "",
+      memId: "",
+      memPw: "",
       idSaveCheck: "",
       savedId: "",
     };
@@ -52,7 +52,7 @@ export default {
     // savedId값을 보여준다.
     // this.$session.set("savedId", "TESTSAVE")
     savedId: this.$session.get("savedId");
-    mem_id:"test3";
+    // mem_id:"test3";
 
     // mem_id=test3;
   },
@@ -61,11 +61,11 @@ export default {
     ...mapActions(["postSignin"]),
 
     signin() {
-      let { mem_id, mem_pw } = this;
-      if (this.check(mem_id, mem_pw)) {
+      let { memId, memPw } = this;
+      if (this.check(memId, memPw)) {
         let data = {
-          mem_id,
-          mem_pw
+          memId,
+          memPw
         };
         this.postSignin(data);
       }

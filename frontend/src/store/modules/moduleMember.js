@@ -1,4 +1,4 @@
-// Session 정보와 관련된 Vuex Store Module
+// Member 정보와 관련된 Vuex Store Module
 import axios from "axios";
 
 export default {
