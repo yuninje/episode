@@ -65,4 +65,6 @@ public interface NovelRepository extends JpaRepository<Novel, Integer> {
 			+ "inner join n.member m "
 			+ "where memNick like %?1% ")
 	Page<Novel> findByMemNickContaining(String memNick, Pageable pageable);
+	
+	
 }

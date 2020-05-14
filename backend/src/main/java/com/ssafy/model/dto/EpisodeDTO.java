@@ -18,4 +18,5 @@ public class EpisodeDTO {
 	private Date episodeCreatedAt;
 	private String episodeWriter;
 	private int episodeView;
+	private NovelDTO novelDTO;
 }

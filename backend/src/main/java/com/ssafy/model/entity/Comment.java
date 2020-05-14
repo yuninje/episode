@@ -11,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -43,6 +45,12 @@ public class Comment {
 	@Column(name = "comment_created_at", nullable = false)
 	private Date commentCreatedAt;
 	
+	// comment <-> member >> N : 1 관계
+	@ManyToOne
+	@JoinColumn(name = "mem_pk", nullable = false)
+	private Member member;
+	
+	
 	// comment <-> episode >> N : 1 관계
 	@ManyToOne
 	@JoinColumn(name = "episode_pk", nullable = false)
@@ -50,6 +58,16 @@ public class Comment {
 
 	// comment <-> like_comment >> 댓글 좋아요
 	// 이 댓글을 좋아하는 멤버들 
-	@OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
-	private List<LikeComment> MembersLikeComment = new ArrayList<>();
+//	@OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
+//	private List<LikeComment> MembersLikeComment = new ArrayList<>();
+	
+	@ManyToMany
+	@JoinTable(
+			name = "like_comment",
+			joinColumns = @JoinColumn(name = "comment_pk"),
+			inverseJoinColumns = @JoinColumn(name = "mem_pk") 
+			)	
+	private List<Member> likedMembers = new ArrayList<Member>();
+
+
 }

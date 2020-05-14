@@ -9,8 +9,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -63,12 +65,16 @@ public class Member {
 
 	// member <-> like_comment >> 댓글 좋아요
 	// 이 멤버가 좋아하는 댓글들
-	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
-	private List<LikeComment> CommentsLikedMember = new ArrayList<>();
+	@ManyToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+	private List<Comment> likeComments = new ArrayList<>();
 	
 	// member <-> novel 
 	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
 	private List<Novel> novels = new ArrayList<Novel>();
+
+	// member <-> comment 
+	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+	private List<Comment> comments = new ArrayList<Comment>();
 	
 	// member <-> search
 	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)

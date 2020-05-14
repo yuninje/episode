@@ -11,7 +11,7 @@ import com.ssafy.model.dto.NovelDTO;
 public interface NovelService {
 	Page<NovelDTO> getNovels(Pageable pageable);
 	NovelDTO getNovel(int novelPk);
-	List<NovelDTO> getNovelsByName(String novelName);
+//	List<NovelDTO> getNovelsByName(String novelName);
 	List<NovelDTO> getNovelsByGenre(int genrePk);
 	Page<NovelDTO> getNovelsByName(String novelName, Pageable pageable);
 	Page<NovelDTO> getNovlesByNick(String memNick, Pageable pageable);

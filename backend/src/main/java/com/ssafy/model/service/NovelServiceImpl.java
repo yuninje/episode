@@ -35,7 +35,6 @@ public class NovelServiceImpl implements NovelService{
 	@Override
 	public Page<NovelDTO> getNovels(Pageable pageable) {
 		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("novelUpdatedAt").descending());
-		
 		Page<Novel> results = nRepo.findAll(pageRequest);
 		Page<NovelDTO> novels = results.map(Novel -> modelMapper.map(Novel, NovelDTO.class));
 		
@@ -112,35 +111,35 @@ public class NovelServiceImpl implements NovelService{
 	
 	@Override
 	public void updateGenreOfNovel(int novelPk, List<Integer> genrePks) {
-		Novel novel = nRepo.findById(novelPk).orElse(null);
-		List<Genre> oGenres = novel.getGenres(); // 원래 장르들
-		// 새로운 장로들
-		List<Genre> uGenres = genrePks.stream().map(genrePk -> {
-			Genre genre = gRepo.findById(genrePk).orElse(null);
-			if(oGenres.contains(genre)) {
-				// 넘어가고
-			}else {
-				// 추가
-				oGenres.add(genre);
-				genre.getNovels().add(novel);
-			}
-			return genre;
-		}).collect(Collectors.toList());
-		
-		List<Genre> removeGenres = new ArrayList<Genre>();
-		for(Genre genre : oGenres) {
-			if(uGenres.contains(genre)) {
-				// 넘어가고 
-			}else {
-				// 삭제 
-				genre.getNovels().remove(novel);
-				removeGenres.add(genre);
-			}
-		}
-		for(Genre genre : removeGenres) {
-			oGenres.remove(genre);
-		}
-		nRepo.save(novel);
+//		Novel novel = nRepo.findById(novelPk).orElse(null);
+//		List<Genre> oGenres = novel.getGenres(); // 원래 장르들
+//		// 새로운 장로들
+//		List<Genre> uGenres = genrePks.stream().map(genrePk -> {
+//			Genre genre = gRepo.findById(genrePk).orElse(null);
+//			if(oGenres.contains(genre)) {
+//				// 넘어가고
+//			}else {
+//				// 추가
+//				oGenres.add(genre);
+//				genre.getNovels().add(novel);
+//			}
+//			return genre;
+//		}).collect(Collectors.toList());
+//		
+//		List<Genre> removeGenres = new ArrayList<Genre>();
+//		for(Genre genre : oGenres) {
+//			if(uGenres.contains(genre)) {
+//				// 넘어가고 
+//			}else {
+//				// 삭제 
+//				genre.getNovels().remove(novel);
+//				removeGenres.add(genre);
+//			}
+//		}
+//		for(Genre genre : removeGenres) {
+//			oGenres.remove(genre);
+//		}
+//		nRepo.save(novel);
 	}
 
 	@Override

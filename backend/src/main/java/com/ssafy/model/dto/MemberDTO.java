@@ -1,5 +1,10 @@
 package com.ssafy.model.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.ssafy.model.entity.Comment;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,4 +23,5 @@ public class MemberDTO {
 	private String memPhone;
 	private String memBirth;
 	private boolean memGender;
+	private List<CommentDTO> likeCommentDTOs = new ArrayList<>();
 }

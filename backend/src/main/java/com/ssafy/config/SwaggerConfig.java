@@ -57,7 +57,7 @@ public class SwaggerConfig {
 	@Setter
 	@ApiModel
 	static class Page {
-	    @ApiModelProperty(value = "페이지 번호(0..N)")
+	    @ApiModelProperty(value = "페이지 번호(1..N)")
 	    private Integer page;
 
 	    @ApiModelProperty(value = "페이지 크기", allowableValues="range[0, 100]")

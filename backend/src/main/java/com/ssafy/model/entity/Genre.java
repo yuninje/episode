@@ -49,13 +49,13 @@ public class Genre {
 			)	
 	private List<Novel> novels = new ArrayList<Novel>();
 	
-	public void addGenreOfNovel(Novel novel) {
-		novels.add(novel);
-		novel.getGenres().add(this);
-	}
-	
-	public void removeGenreOfNovel(Novel novel) {
-		novels.remove(novel);
-		novel.getGenres().remove(this);
-	}
+//	public void addGenreOfNovel(Novel novel) {
+//		novels.add(novel);
+//		novel.getGenres().add(this);
+//	}
+//	
+//	public void removeGenreOfNovel(Novel novel) {
+//		novels.remove(novel);
+//		novel.getGenres().remove(this);
+//	}
 }
