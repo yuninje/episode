@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -44,4 +45,13 @@ public class Search {
 	@ManyToOne
 	@JoinColumn(name = "mem_pk", nullable = false)
 	private Member member;
+	
+	@Transient
+	private Long searchCnt;
+
+	public Search(String searchWord, Long searchCnt) {
+		super();
+		this.searchWord = searchWord;
+		this.searchCnt = searchCnt;
+	}
 }

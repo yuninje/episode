@@ -1,5 +1,6 @@
 package com.ssafy.model.repository;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.SimpleTemplate;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -36,8 +38,10 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 	}
 	
 	@Override
-	public Page<Novel> find(String type, String word, Pageable pageable) {
+	public Page<Novel> find(String type, String word, Pageable pageable, String sort) {
 		SimpleTemplate<String> simpleTemplate = Expressions.simpleTemplate(String.class, "group_concat({0})", genre.genreName);
+		NumberPath<Long> likes = Expressions.numberPath(Long.class, "likes"); 
+		
 		JPAQuery<Novel> query = 
 			queryFactory.select(
 				Projections.constructor(Novel.class, 
@@ -56,7 +60,7 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 						JPAExpressions.select(likeNovel.likeNovelPk.count())
 							.from(likeNovel)
 							.where(likeNovel.novel.novelPk.eq(novel.novelPk)),
-							"likes"
+							likes
 					)
 				)
 			)
@@ -65,6 +69,13 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 			.join(novelGenre).on(novelGenre.novel.novelPk.eq(novel.novelPk))
 			.join(genre).on(novelGenre.genre.genrePk.eq(genre.genrePk))
 			.groupBy(novel.novelPk);
+		
+		switch(sort) {
+		case "likes":
+			query.orderBy(likes.desc());
+			break;
+		}
+		
 		switch(type) {
 		case "mem_pk":
 			query.where(novel.member.memPk.eq(Integer.parseInt(word)));
@@ -101,7 +112,6 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 					novel.novelOnly.as("novelOnly"),
 					novel.novelUpdatedAt.as("novelUpdatedAt"),
 					novel.member.as("member"), 
-//					SQLExpressions.groupConcat(genre.genreName).as("novelName"),
 					simpleTemplate.as("genreName"),
 					ExpressionUtils.as(
 						JPAExpressions.select(likeNovel.likeNovelPk.count())

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import com.ssafy.model.service.NovelService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 @Api(tags = { "2. Novel" })
 @RestController
@@ -35,8 +37,11 @@ public class NovelRestController {
 
 	@ApiOperation("소설 전체 조회")
 	@GetMapping()
-	ResponseEntity<Map<String, Object>> getNovels(@PageableDefault(page=0, size=10) Pageable pageable){
-		return handleSuccess(nService.getNovels(pageable));
+	ResponseEntity<Map<String, Object>> getNovels(
+			@PageableDefault(page=0, size=10) Pageable pageable, 
+			@ApiParam("비어있을 경우 업데이트 순서대로, likes 입력시 선호작 순서대로 정렬")
+			@RequestParam(required=false, defaultValue="") String sort){
+		return handleSuccess(nService.getNovels(pageable, sort));
 	}
 	
 	@ApiOperation("소설 한 개의 정보를 조회")
@@ -80,8 +85,11 @@ public class NovelRestController {
 	
 	@ApiOperation("해당 멤버의 소설 조회")
 	@GetMapping("/member-pk={memPk}") // url 바꿔야함
-	ResponseEntity<Map<String, Object>> getNovelByMember(@PathVariable int memPk, @PageableDefault(page=0, size=10) Pageable pageable) {
-		return handleSuccess(nService.getNovelByMember(memPk, pageable));
+	ResponseEntity<Map<String, Object>> getNovelByMember(@PathVariable int memPk, 
+			@PageableDefault(page=0, size=10) Pageable pageable,
+			@ApiParam("비어있을 경우 업데이트 순서대로, likes 입력시 선호작 순서대로 정렬")
+			@RequestParam(required=false, defaultValue="") String sort) {
+		return handleSuccess(nService.getNovelByMember(memPk, pageable, sort));
 	}
 	
 	public ResponseEntity<Map<String, Object>> handleSuccess(Object data) {
