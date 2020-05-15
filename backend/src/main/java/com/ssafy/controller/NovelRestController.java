@@ -50,7 +50,6 @@ public class NovelRestController {
 	ResponseEntity<Map<String, Object>> getNovelsByGenre(@PathVariable int genrePk) {
 		return handleSuccess(nService.getNovelsByGenre(genrePk));
 	}
-	
 
 	@ApiOperation("소설 등록")
 	@PostMapping()
@@ -81,10 +80,9 @@ public class NovelRestController {
 	
 	@ApiOperation("해당 멤버의 소설 조회")
 	@GetMapping("/member-pk={memPk}") // url 바꿔야함
-	ResponseEntity<Map<String, Object>> getNovelByMember(@PathVariable int memPk) {
-		return handleSuccess(nService.getNovelByMember(memPk));
+	ResponseEntity<Map<String, Object>> getNovelByMember(@PathVariable int memPk, @PageableDefault(page=0, size=10) Pageable pageable) {
+		return handleSuccess(nService.getNovelByMember(memPk, pageable));
 	}
-	
 	
 	public ResponseEntity<Map<String, Object>> handleSuccess(Object data) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();

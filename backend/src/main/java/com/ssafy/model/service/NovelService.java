@@ -15,10 +15,11 @@ public interface NovelService {
 	List<NovelDTO> getNovelsByGenre(int genrePk);
 	Page<NovelDTO> getNovelsByName(String novelName, Pageable pageable);
 	Page<NovelDTO> getNovlesByNick(String memNick, Pageable pageable);
+	Page<NovelDTO> getNovelsByNameOrNick(String word, Pageable pageable);
 	void registNovel(NovelDTO novel);
 	NovelDTO updateNovel(int novelPk, NovelDTO novel);
 	@Transactional
 	void deleteNovel(int novelPk);
 	void updateGenreOfNovel(int novelPk, List<Integer> genrePks);
-	Object getNovelByMember(int memPk);
+	Page<NovelDTO> getNovelByMember(int memPk, Pageable pageable);
 }

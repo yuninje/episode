@@ -11,18 +11,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.util.Assert;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -85,7 +81,9 @@ public class Novel {
 	private String genreName;
 	@Transient
 	private List<String> genreList;
-
+	@Transient
+	private Long likes;
+	
 	public Novel(Integer novelPk, String novelName, String novelIntro, String novelImage, Boolean novelLimit,
 			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, Date novelUpdatedAt, Member member,
 			String genreName) {
@@ -102,5 +100,24 @@ public class Novel {
 		this.member = member;
 		this.genreName = genreName;
 		this.genreList = Arrays.asList(genreName.split(","));
+	}
+	
+	public Novel(Integer novelPk, String novelName, String novelIntro, String novelImage, Boolean novelLimit,
+			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, Date novelUpdatedAt, Member member,
+			String genreName, Long likes) {
+		super();
+		this.novelPk = novelPk;
+		this.novelName = novelName;
+		this.novelIntro = novelIntro;
+		this.novelImage = novelImage;
+		this.novelLimit = novelLimit;
+		this.novelOpen = novelOpen;
+		this.novelStatus = novelStatus;
+		this.novelOnly = novelOnly;
+		this.novelUpdatedAt = novelUpdatedAt;
+		this.member = member;
+		this.genreName = genreName;
+		this.genreList = Arrays.asList(genreName.split(","));
+		this.likes = likes;
 	}
 }
