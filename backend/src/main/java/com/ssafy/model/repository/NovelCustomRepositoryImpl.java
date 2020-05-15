@@ -118,7 +118,6 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 					novel.novelOnly.as("novelOnly"),
 					novel.novelUpdatedAt.as("novelUpdatedAt"),
 					novel.member.as("member"), 
-//					SQLExpressions.groupConcat(genre.genreName).as("novelName"),
 					simpleTemplate.as("genreName"),
 					ExpressionUtils.as(
 						JPAExpressions.select(likeNovel.likeNovelPk.count())

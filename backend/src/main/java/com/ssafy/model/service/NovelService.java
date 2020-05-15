@@ -13,9 +13,9 @@ public interface NovelService {
 	NovelDTO getNovel(int novelPk);
 	List<NovelDTO> getNovelsByName(String novelName);
 	List<NovelDTO> getNovelsByGenre(int genrePk);
-	Page<NovelDTO> getNovelsByName(String novelName, Pageable pageable, String sort);
-	Page<NovelDTO> getNovlesByNick(String memNick, Pageable pageable, String sort);
-	Page<NovelDTO> getNovelsByNameOrNick(String word, Pageable pageable, String sort);
+	Page<NovelDTO> getNovelsByName(String novelName, Pageable pageable, String sort, int memPk);
+	Page<NovelDTO> getNovlesByNick(String memNick, Pageable pageable, String sort, int memPk);
+	Page<NovelDTO> getNovelsByNameOrNick(String word, Pageable pageable, String sort, int memPk);
 	void registNovel(NovelDTO novel);
 	NovelDTO updateNovel(int novelPk, NovelDTO novel);
 	@Transactional

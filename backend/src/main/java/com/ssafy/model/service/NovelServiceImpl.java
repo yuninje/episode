@@ -19,8 +19,10 @@ import com.ssafy.model.dto.NovelDTO;
 import com.ssafy.model.entity.Genre;
 import com.ssafy.model.entity.Member;
 import com.ssafy.model.entity.Novel;
+import com.ssafy.model.entity.Search;
 import com.ssafy.model.repository.GenreRepository;
 import com.ssafy.model.repository.NovelRepository;
+import com.ssafy.model.repository.SearchRepository;
 
 @Service
 public class NovelServiceImpl implements NovelService{
@@ -28,6 +30,8 @@ public class NovelServiceImpl implements NovelService{
 	NovelRepository nRepo;
 	@Autowired
 	GenreRepository gRepo;
+	@Autowired
+	SearchRepository sRepo;
 	
 	@Autowired
 	ModelMapper modelMapper;
@@ -53,10 +57,26 @@ public class NovelServiceImpl implements NovelService{
 	}
 	
 	@Override
-	public Page<NovelDTO> getNovelsByName(String novelName, Pageable pageable, String sort) {
+	public Page<NovelDTO> getNovelsByName(String novelName, Pageable pageable, String sort, int memPk) {
 		PageRequest pageRequest 
 			= PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), 
 					Sort.by("novelUpdatedAt").descending());
+		
+		if(memPk != 0) {
+			Member m = new Member();
+			m.setMemPk(memPk);
+			
+			Date date = new Date();
+			
+			String[] words = novelName.split(" ");
+			for(String word : words) {
+				Search search = new Search();
+				search.setMember(m);
+				search.setSearchWord(word);
+				search.setSearchCreatedAt(date);
+				sRepo.save(search);
+			}
+		}
 		
 		Page<Novel> results = nRepo.find("novel_name", novelName, pageRequest, sort);
 		Page<NovelDTO> novels = results.map(Novel -> modelMapper.map(Novel, NovelDTO.class));
@@ -65,8 +85,24 @@ public class NovelServiceImpl implements NovelService{
 	}
 	
 	@Override
-	public Page<NovelDTO> getNovlesByNick(String memNick, Pageable pageable, String sort) {
+	public Page<NovelDTO> getNovlesByNick(String memNick, Pageable pageable, String sort, int memPk) {
 		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("novelUpdatedAt").descending());
+		
+		if(memPk != 0) {
+			Member m = new Member();
+			m.setMemPk(memPk);
+			
+			Date date = new Date();
+			
+			String[] words = memNick.split(" ");
+			for(String word : words) {
+				Search search = new Search();
+				search.setMember(m);
+				search.setSearchWord(word);
+				search.setSearchCreatedAt(date);
+				sRepo.save(search);
+			}
+		}
 		
 		Page<Novel> results = nRepo.find("author_name", memNick, pageRequest, sort);
 		Page<NovelDTO> novels = results.map(Novel -> modelMapper.map(Novel, NovelDTO.class));
@@ -75,8 +111,24 @@ public class NovelServiceImpl implements NovelService{
 	}
 	
 	@Override
-	public Page<NovelDTO> getNovelsByNameOrNick(String word, Pageable pageable, String sort) {
+	public Page<NovelDTO> getNovelsByNameOrNick(String word, Pageable pageable, String sort, int memPk) {
 		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("novelUpdatedAt").descending());
+		
+		if(memPk != 0) {
+			Member m = new Member();
+			m.setMemPk(memPk);
+			
+			Date date = new Date();
+			
+			String[] words = word.split(" ");
+			for(String word_ : words) {
+				Search search = new Search();
+				search.setMember(m);
+				search.setSearchWord(word_);
+				search.setSearchCreatedAt(date);
+				sRepo.save(search);
+			}
+		}
 		
 		Page<Novel> results = nRepo.find("author_or_novel", word, pageRequest, sort);
 		Page<NovelDTO> novels = results.map(Novel -> modelMapper.map(Novel, NovelDTO.class));
