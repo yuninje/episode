@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 import com.ssafy.model.dto.Author;
 import com.ssafy.model.dto.CommentDTO;
 import com.ssafy.model.dto.EpisodeDTO;
+import com.ssafy.model.dto.MemberDTO;
 import com.ssafy.model.entity.Comment;
 import com.ssafy.model.entity.Episode;
-import com.ssafy.model.entity.Member;
 import com.ssafy.model.repository.CommentRepository;
 import com.ssafy.model.repository.EpisodeRepository;
 
@@ -38,13 +38,13 @@ public class CommentServiceImpl implements CommentService{
 					CommentDTO commentDTO = modelMapper.map(comment, CommentDTO.class);
 					
 					EpisodeDTO episodeDTO = modelMapper.map(comment.getEpisode(), EpisodeDTO.class);
-					Author author = modelMapper.map(comment.getMember(), Author.class);
+					MemberDTO memberDTO = modelMapper.map(comment.getMember(), MemberDTO.class);
 					List<Author> likedMembers= comment.getLikedMembers().stream().map(
 							member -> modelMapper.map(member, Author.class)
 							).collect(Collectors.toList());
 					
 					commentDTO.setEpisodeDTO(episodeDTO);
-					commentDTO.setAuthor(author);
+					commentDTO.setMemberDTO(memberDTO);
 					commentDTO.setLikedMembers(likedMembers);
 					return commentDTO;
 				});
@@ -91,9 +91,9 @@ public class CommentServiceImpl implements CommentService{
 		Page<CommentDTO> commentDTOs = comments.map(comment -> {
 			CommentDTO commentDTO = modelMapper.map(comment, CommentDTO.class);
 			
-			Author author = modelMapper.map(comment.getMember(), Author.class);
+			MemberDTO memberDTO = modelMapper.map(comment.getMember(), MemberDTO.class);
 			
-			commentDTO.setAuthor(author);
+			commentDTO.setMemberDTO(memberDTO);
 			return commentDTO;
 		});
 		

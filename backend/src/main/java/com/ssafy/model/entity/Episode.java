@@ -11,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -65,6 +67,12 @@ public class Episode {
 
 	// episode <-> like_episode >> 에피소드 좋아요
 	// 이 에피소드를 좋아하는 멤버들 
-	@OneToMany(mappedBy = "episode")
-	private List<LikeEpisode> MembersLikeEpisode = new ArrayList<>();
+
+	@ManyToMany
+	@JoinTable(
+			name = "like_episode",
+			joinColumns = @JoinColumn(name = "episode_pk"),
+			inverseJoinColumns = @JoinColumn(name = "mem_pk") 
+			)	
+	private List<Member> likedMembers = new ArrayList<>();
 }

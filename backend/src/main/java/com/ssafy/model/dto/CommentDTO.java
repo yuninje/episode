@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.ssafy.model.entity.LikeComment;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +18,6 @@ public class CommentDTO {
 	private String commentContent;
 	private Date commentCreatedAt;
 	private EpisodeDTO episodeDTO;
-	private Author author;
+	private MemberDTO memberDTO;
 	private List<Author> likedMembers = new ArrayList<>();
 }

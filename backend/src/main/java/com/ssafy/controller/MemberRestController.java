@@ -107,6 +107,16 @@ public class MemberRestController {
 		else return handleFail(fail[key - 1], HttpStatus.OK);
 	}
 	
+	@ApiOperation("좋아요 메소드 | ObjectType >> 2 : 소설, 3 : 에피소드, 6 : 댓글 , flag : true >> 좋아요 요청, false >> 좋아요 취소 요청")
+	@GetMapping("/{memPk}/{objectType}/{objectPk}/{flag}") // 임시 URL
+	ResponseEntity<Map<String, Object>> doLike(@PathVariable int memPk, @PathVariable int objectPk,@PathVariable int objectType, @PathVariable boolean flag ){
+		mService.doLike(memPk, objectPk, objectType, flag);			
+		if(flag)
+			return handleSuccess("좋아요 완료");
+		else
+			return handleSuccess("좋아요 취소 완료");
+	}
+	
 	public ResponseEntity<Map<String, Object>> handleSuccess(Object data) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("state", "ok");

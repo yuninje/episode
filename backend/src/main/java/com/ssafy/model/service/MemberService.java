@@ -21,4 +21,6 @@ public interface MemberService {
 	MemberDTO updateMember(int memPk, MemberDTO member);
 	@Transactional
 	void deleteMember(int memPk);
+
+	void doLike(int memPk, int objectPk, int objectType, boolean flag);
 }

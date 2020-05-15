@@ -15,26 +15,26 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Entity
-@Table(name = "like_comment")
-@Getter
-@Setter
-@ToString
-@NoArgsConstructor
-@AllArgsConstructor
-public class LikeComment { // 댓글 좋아요
-	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "like_comment_pk")
-	private Integer likeCommentPk;
-	
-	// like_comment <-> member
-	@ManyToOne
-	@JoinColumn(name = "mem_pk", nullable = false)
-	private Member member;
-	
-	// like_comment <-> comment
-	@ManyToOne
-	@JoinColumn(name = "comment_pk", nullable = false)
-	private Comment comment;
-}
+//@Entity
+//@Table(name = "like_comment")
+//@Getter
+//@Setter
+//@ToString
+//@NoArgsConstructor
+//@AllArgsConstructor
+//public class LikeComment { // 댓글 좋아요
+//	@Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//	@Column(name = "like_comment_pk")
+//	private Integer likeCommentPk;
+//	
+//	// like_comment <-> member
+//	@ManyToOne
+//	@JoinColumn(name = "mem_pk", nullable = false)
+//	private Member member;
+//	
+//	// like_comment <-> comment 
+//	@ManyToOne
+//	@JoinColumn(name = "comment_pk", nullable = false)
+//	private Comment comment;
+//}

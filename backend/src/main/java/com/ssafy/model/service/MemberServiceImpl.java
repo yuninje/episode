@@ -10,13 +10,26 @@ import org.springframework.stereotype.Service;
 import com.ssafy.model.dto.Auth;
 import com.ssafy.model.dto.AuthException;
 import com.ssafy.model.dto.MemberDTO;
+import com.ssafy.model.entity.Comment;
+import com.ssafy.model.entity.Episode;
 import com.ssafy.model.entity.Member;
+import com.ssafy.model.repository.CommentRepository;
+import com.ssafy.model.repository.EpisodeRepository;
 import com.ssafy.model.repository.MemberRepository;
+import com.ssafy.model.repository.NovelRepository;
 
 @Service
 public class MemberServiceImpl implements MemberService{
 	@Autowired
 	MemberRepository mRepo;
+	@Autowired
+	CommentRepository cRepo;
+	@Autowired
+	EpisodeRepository eRepo;
+	@Autowired
+	NovelRepository nRepo;
+	
+	
 	@Autowired
 	ModelMapper modelMapper;
 	
@@ -112,5 +125,60 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public void deleteMember(int memPk) {
 		mRepo.deleteById(memPk);
+	}
+	
+	@Override
+	public void doLike(int memPk, int objectPk, int objectType, boolean flag) {
+
+		Member member = mRepo.findById(memPk).orElseThrow(
+			() -> new IllegalArgumentException("요청하신 member의 "+memPk+"가 없습니다.")
+		);
+		switch(objectType) {
+		case 2: // 소설
+			
+			break;
+		case 3: // 에피소드
+			Episode episode = eRepo.findById(objectPk).orElseThrow(
+					() -> new IllegalArgumentException("요청하신 episode의 "+objectPk+"가 없습니다.")
+				);
+				
+				if(flag) { // 좋아요
+					if(!member.getLikeEpisodes().contains(episode)) {
+						// 이미 있으면 넘어가고 
+						member.getLikeEpisodes().add(episode);
+						episode.getLikedMembers().add(member);
+					}
+				}else { // 좋아요 취소
+					if(member.getLikeEpisodes().contains(episode)) {
+						// 이미 있으면 넘어가고 
+						member.getLikeEpisodes().remove(episode);
+						episode.getLikedMembers().remove(member);
+					}
+				}
+				mRepo.save(member);
+				eRepo.save(episode);
+			break;
+		case 6: // 댓글
+			Comment comment = cRepo.findById(objectPk).orElseThrow(
+				() -> new IllegalArgumentException("요청하신 comment의 "+objectPk+"가 없습니다.")
+			);
+			
+			if(flag) { // 좋아요
+				if(!member.getLikeComments().contains(comment)) {
+					// 이미 있으면 넘어가고 
+					member.getLikeComments().add(comment);
+					comment.getLikedMembers().add(member);
+				}
+			}else { // 좋아요 취소
+				if(member.getLikeComments().contains(comment)) {
+					// 이미 있으면 넘어가고 
+					member.getLikeComments().remove(comment);
+					comment.getLikedMembers().remove(member);
+				}
+			}
+			mRepo.save(member);
+			cRepo.save(comment);
+			break;
+		}
 	}
 }

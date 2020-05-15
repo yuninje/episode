@@ -60,12 +60,12 @@ public class Member {
 	
 	// member <-> like_eipsode >> 에피소드 좋아요
 	// 이 멤버가 좋아하는 에피소드들
-	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
-	private List<LikeEpisode> EpisodesLikedMember = new ArrayList<>();
+	@ManyToMany(mappedBy = "likedMembers", cascade = CascadeType.REMOVE)
+	private List<Episode> likeEpisodes = new ArrayList<>();
 
 	// member <-> like_comment >> 댓글 좋아요
 	// 이 멤버가 좋아하는 댓글들
-	@ManyToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+	@ManyToMany(mappedBy = "likedMembers", cascade = CascadeType.REMOVE)
 	private List<Comment> likeComments = new ArrayList<>();
 	
 	// member <-> novel 
