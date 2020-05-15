@@ -34,7 +34,9 @@ public class NovelServiceImpl implements NovelService{
 	
 	@Override
 	public Page<NovelDTO> getNovels(Pageable pageable) {
-		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("novelUpdatedAt").descending());
+		PageRequest pageRequest 
+			= PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), 
+					pageable.getSort().descending());
 		
 		Page<Novel> results = nRepo.find("", "", pageRequest);
 		Page<NovelDTO> novels = results.map(Novel -> modelMapper.map(Novel, NovelDTO.class));

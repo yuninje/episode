@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,9 @@ public class NovelRestController {
 
 	@ApiOperation("소설 전체 조회")
 	@GetMapping()
-	ResponseEntity<Map<String, Object>> getNovels(@PageableDefault(page=0, size=10) Pageable pageable){
+	ResponseEntity<Map<String, Object>> getNovels(
+			@PageableDefault(page=0, size=10, sort="novelUpdatedAt", 
+			direction=Sort.Direction.DESC) Pageable pageable){
 		return handleSuccess(nService.getNovels(pageable));
 	}
 	

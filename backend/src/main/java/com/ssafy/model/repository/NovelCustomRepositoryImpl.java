@@ -14,6 +14,7 @@ import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.SimpleTemplate;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -42,6 +43,8 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 	@Override
 	public Page<Novel> find(String type, String word, Pageable pageable) {
 		SimpleTemplate<String> simpleTemplate = Expressions.simpleTemplate(String.class, "group_concat({0})", genre.genreName);
+		NumberPath<Long> likes = Expressions.numberPath(Long.class, "likes"); 
+		
 		JPAQuery<Novel> query = 
 			queryFactory.select(
 				Projections.constructor(Novel.class, 
@@ -60,7 +63,7 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 						JPAExpressions.select(likeNovel.likeNovelPk.count())
 							.from(likeNovel)
 							.where(likeNovel.novel.novelPk.eq(novel.novelPk)),
-							"likes"
+							likes
 					)
 				)
 			)
@@ -68,7 +71,10 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 			.join(novel.member, member)
 			.join(novelGenre).on(novelGenre.novel.novelPk.eq(novel.novelPk))
 			.join(genre).on(novelGenre.genre.genrePk.eq(genre.genrePk))
-			.groupBy(novel.novelPk);
+			.groupBy(novel.novelPk)
+			.orderBy(likes.desc());
+		
+		System.out.println(pageable.getSort());
 		switch(type) {
 		case "mem_pk":
 			query.where(novel.member.memPk.eq(Integer.parseInt(word)));

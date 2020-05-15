@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,21 +29,24 @@ public class SearchRestController {
 	@ApiOperation("해당 문자열을 포함하고 있는 제목을 가진 소설들 조회")
 	@GetMapping("/novel-name={novelName}")
 	ResponseEntity<Map<String, Object>> getNovelsByName(@PathVariable String novelName, 
-			@PageableDefault(page=0, size=10) Pageable pageable) {
+			@PageableDefault(page=0, size=10, sort="novelUpdatedAt", 
+			direction=Sort.Direction.DESC) Pageable pageable) {
 		return handleSuccess(nService.getNovelsByName(novelName, pageable));
 	}
 	
 	@ApiOperation("해당 문자열을 포함하고 있는 닉네임 소유의 소설들 조회")
 	@GetMapping("/author={memNick}")
 	ResponseEntity<Map<String, Object>> getNovelsByNick(@PathVariable String memNick, 
-			@PageableDefault(page=0, size=10) Pageable pageable) {
+			@PageableDefault(page=0, size=10, sort="novelUpdatedAt", 
+			direction=Sort.Direction.DESC) Pageable pageable) {
 		return handleSuccess(nService.getNovlesByNick(memNick, pageable));
 	}
 	
 	@ApiOperation("해당 문자열을 포함하고 있는 제목 혹은 닉네임 소유의 소설들 조회")
 	@GetMapping("/autho-or-novel={word}")
 	ResponseEntity<Map<String, Object>> getNovelsByNameOrNick(@PathVariable String word, 
-			@PageableDefault(page=0, size=10) Pageable pageable) {
+			@PageableDefault(page=0, size=10, sort="novelUpdatedAt", 
+			direction=Sort.Direction.DESC) Pageable pageable) {
 		return handleSuccess(nService.getNovelsByNameOrNick(word, pageable));
 	}
 	
