@@ -8,6 +8,6 @@ import org.springframework.data.domain.Pageable;
 import com.ssafy.model.entity.Novel;
 
 public interface NovelCustomRepository {
-	Page<Novel> find(String type, String word, Pageable pageable);
+	Page<Novel> find(String type, String word, Pageable pageable, String sort);
 	Novel findById(int novelPk);
 }

@@ -1,8 +1,11 @@
 package com.ssafy.model.repository;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.SortType;
 import org.hibernate.query.criteria.internal.expression.function.AggregationFunction.COUNT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -41,7 +44,7 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 	}
 	
 	@Override
-	public Page<Novel> find(String type, String word, Pageable pageable) {
+	public Page<Novel> find(String type, String word, Pageable pageable, String sort) {
 		SimpleTemplate<String> simpleTemplate = Expressions.simpleTemplate(String.class, "group_concat({0})", genre.genreName);
 		NumberPath<Long> likes = Expressions.numberPath(Long.class, "likes"); 
 		
@@ -71,10 +74,14 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 			.join(novel.member, member)
 			.join(novelGenre).on(novelGenre.novel.novelPk.eq(novel.novelPk))
 			.join(genre).on(novelGenre.genre.genrePk.eq(genre.genrePk))
-			.groupBy(novel.novelPk)
-			.orderBy(likes.desc());
+			.groupBy(novel.novelPk);
 		
-		System.out.println(pageable.getSort());
+		switch(sort) {
+		case "likes":
+			query.orderBy(likes.desc());
+			break;
+		}
+		
 		switch(type) {
 		case "mem_pk":
 			query.where(novel.member.memPk.eq(Integer.parseInt(word)));

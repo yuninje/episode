@@ -33,12 +33,12 @@ public class NovelServiceImpl implements NovelService{
 	ModelMapper modelMapper;
 	
 	@Override
-	public Page<NovelDTO> getNovels(Pageable pageable) {
+	public Page<NovelDTO> getNovels(Pageable pageable, String sort) {
 		PageRequest pageRequest 
 			= PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), 
-					pageable.getSort().descending());
+					Sort.by("novelUpdatedAt").descending());
 		
-		Page<Novel> results = nRepo.find("", "", pageRequest);
+		Page<Novel> results = nRepo.find("", "", pageRequest, sort);
 		Page<NovelDTO> novels = results.map(Novel -> modelMapper.map(Novel, NovelDTO.class));
 		
 		return novels;
@@ -53,30 +53,32 @@ public class NovelServiceImpl implements NovelService{
 	}
 	
 	@Override
-	public Page<NovelDTO> getNovelsByName(String novelName, Pageable pageable) {
-		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("novelUpdatedAt").descending());
+	public Page<NovelDTO> getNovelsByName(String novelName, Pageable pageable, String sort) {
+		PageRequest pageRequest 
+			= PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), 
+					Sort.by("novelUpdatedAt").descending());
 		
-		Page<Novel> results = nRepo.find("novel_name", novelName, pageRequest);
+		Page<Novel> results = nRepo.find("novel_name", novelName, pageRequest, sort);
 		Page<NovelDTO> novels = results.map(Novel -> modelMapper.map(Novel, NovelDTO.class));
 		
 		return novels;
 	}
 	
 	@Override
-	public Page<NovelDTO> getNovlesByNick(String memNick, Pageable pageable) {
+	public Page<NovelDTO> getNovlesByNick(String memNick, Pageable pageable, String sort) {
 		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("novelUpdatedAt").descending());
 		
-		Page<Novel> results = nRepo.find("author_name", memNick, pageRequest);
+		Page<Novel> results = nRepo.find("author_name", memNick, pageRequest, sort);
 		Page<NovelDTO> novels = results.map(Novel -> modelMapper.map(Novel, NovelDTO.class));
 		
 		return novels;
 	}
 	
 	@Override
-	public Page<NovelDTO> getNovelsByNameOrNick(String word, Pageable pageable) {
+	public Page<NovelDTO> getNovelsByNameOrNick(String word, Pageable pageable, String sort) {
 		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("novelUpdatedAt").descending());
 		
-		Page<Novel> results = nRepo.find("author_or_novel", word, pageRequest);
+		Page<Novel> results = nRepo.find("author_or_novel", word, pageRequest, sort);
 		Page<NovelDTO> novels = results.map(Novel -> modelMapper.map(Novel, NovelDTO.class));
 		
 		return novels;
@@ -156,8 +158,8 @@ public class NovelServiceImpl implements NovelService{
 	}
 
 	@Override
-	public Page<NovelDTO> getNovelByMember(int memPk, Pageable pageable) {
-		Page<Novel> results = nRepo.find("mem_pk", Integer.toString(memPk), pageable);
+	public Page<NovelDTO> getNovelByMember(int memPk, Pageable pageable, String sort) {
+		Page<Novel> results = nRepo.find("mem_pk", Integer.toString(memPk), pageable, sort);
 		Page<NovelDTO> novels = results.map(Novel -> modelMapper.map(Novel, NovelDTO.class));
 		
 		return novels;

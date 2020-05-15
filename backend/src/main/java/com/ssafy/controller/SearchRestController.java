@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.model.service.NovelService;
@@ -29,25 +30,25 @@ public class SearchRestController {
 	@ApiOperation("해당 문자열을 포함하고 있는 제목을 가진 소설들 조회")
 	@GetMapping("/novel-name={novelName}")
 	ResponseEntity<Map<String, Object>> getNovelsByName(@PathVariable String novelName, 
-			@PageableDefault(page=0, size=10, sort="novelUpdatedAt", 
-			direction=Sort.Direction.DESC) Pageable pageable) {
-		return handleSuccess(nService.getNovelsByName(novelName, pageable));
+			@PageableDefault(page=0, size=10) Pageable pageable,
+			@RequestParam(required=false, defaultValue="") String sort) {
+		return handleSuccess(nService.getNovelsByName(novelName, pageable, sort));
 	}
 	
 	@ApiOperation("해당 문자열을 포함하고 있는 닉네임 소유의 소설들 조회")
 	@GetMapping("/author={memNick}")
 	ResponseEntity<Map<String, Object>> getNovelsByNick(@PathVariable String memNick, 
-			@PageableDefault(page=0, size=10, sort="novelUpdatedAt", 
-			direction=Sort.Direction.DESC) Pageable pageable) {
-		return handleSuccess(nService.getNovlesByNick(memNick, pageable));
+			@PageableDefault(page=0, size=10) Pageable pageable,
+			@RequestParam(required=false, defaultValue="") String sort) {
+		return handleSuccess(nService.getNovlesByNick(memNick, pageable, sort));
 	}
 	
 	@ApiOperation("해당 문자열을 포함하고 있는 제목 혹은 닉네임 소유의 소설들 조회")
 	@GetMapping("/autho-or-novel={word}")
 	ResponseEntity<Map<String, Object>> getNovelsByNameOrNick(@PathVariable String word, 
-			@PageableDefault(page=0, size=10, sort="novelUpdatedAt", 
-			direction=Sort.Direction.DESC) Pageable pageable) {
-		return handleSuccess(nService.getNovelsByNameOrNick(word, pageable));
+			@PageableDefault(page=0, size=10) Pageable pageable,
+			@RequestParam(required=false, defaultValue="") String sort) {
+		return handleSuccess(nService.getNovelsByNameOrNick(word, pageable, sort));
 	}
 	
 	public ResponseEntity<Map<String, Object>> handleSuccess(Object data) {
