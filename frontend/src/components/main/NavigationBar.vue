@@ -18,13 +18,17 @@
         <v-spacer></v-spacer>
         <template v-if="true">
             <v-flex>
-            <v-btn color="black" text>소설 전체보기</v-btn>
-            <v-btn color="black" text>에디터</v-btn>
+                <v-btn color="black" text>소설 전체보기</v-btn>
+                <v-btn color="black" text>에디터</v-btn>
             </v-flex>
             <v-spacer></v-spacer>
-            <v-flex>
-            <v-btn color="black" text @click="gotoSignIn()">로그인</v-btn>
-            <v-btn color="black" text @click="gotoSignUp()">회원가입</v-btn>
+            <v-flex v-show="!getIsLogin">
+                <v-btn color="black" text @click="gotoSignIn()">로그인</v-btn>
+                <v-btn color="black" text @click="gotoSignUp()">회원가입</v-btn>
+            </v-flex>
+            <v-flex v-show="getIsLogin">
+                <v-btn color="black" text @click="signout()">로그아웃</v-btn>
+                <v-btn color="black" text @click="gotoSignUp()">마이페이지</v-btn>
             </v-flex>
         </template>
         <template v-else>
@@ -36,6 +40,8 @@
 
 <script>
 import http from '../../http-common';
+import { mapActions, mapMutations, mapGetters } from "vuex";
+
 
 export default {
     name: 'NavigationBar',
@@ -46,6 +52,10 @@ export default {
             errored: false,
             desktopSize: false
         }
+    },
+    computed: {
+        ...mapGetters(["getIsLogin"]),
+        ...mapGetters(["getSession"])
     },
     methods: {
         search() {
@@ -62,6 +72,9 @@ export default {
         },
         gotoEditor() {
             this.$router.push('/editor');
+        },
+        signout() {
+            this.$store.dispatch("signout");
         },
         getDesktopSize() {
             if(window.innerWidth > 600) {
