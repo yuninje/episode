@@ -75,4 +75,9 @@ public class Episode {
 			inverseJoinColumns = @JoinColumn(name = "mem_pk") 
 			)	
 	private List<Member> likedMembers = new ArrayList<>();
+	
+	public void viewUpdate() {
+		this.episodeView += 1;
+		this.novel.setNovelView(this.novel.getNovelView()+1);
+	}
 }

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.model.dto.EpisodeDTO;
 import com.ssafy.model.dto.NovelDTO;
@@ -42,15 +43,17 @@ public class EpisodeServiceImpl implements EpisodeService{
 		return episodeDTOs;
 	}
 
+	@Transactional
 	@Override
 	public EpisodeDTO getEpisode(int episodePk) {
 		Episode episode = eRepo.findById(episodePk).orElse(null);
+		episode.viewUpdate();
+		eRepo.save(episode);
 		
 		EpisodeDTO episodeDTO = modelMapper.map(episode, EpisodeDTO.class);
 		Novel novel = episode.getNovel();
 		NovelDTO novelDTO = modelMapper.map(novel, NovelDTO.class);
 		episodeDTO.setNovelDTO(novelDTO);
-		
 		return episodeDTO;
 	}
 

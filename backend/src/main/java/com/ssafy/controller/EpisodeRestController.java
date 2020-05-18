@@ -36,7 +36,7 @@ public class EpisodeRestController {
 		return handleSuccess(eService.getEpisodes());
 	}
 	
-	@ApiOperation("에피소드 한 개의 정보를 조회")
+	@ApiOperation("에피소드 한 개의 정보를 조회 | 에피소드 조회수 + 1, 소설 통합 조회수 + 1")
 	@GetMapping("/{episodePk}")
 	ResponseEntity<Map<String, Object>> getEpisode(@PathVariable int episodePk) {
 		return handleSuccess(eService.getEpisode(episodePk));

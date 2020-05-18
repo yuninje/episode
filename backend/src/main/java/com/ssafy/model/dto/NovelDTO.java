@@ -3,6 +3,8 @@ package com.ssafy.model.dto;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
+
 import com.ssafy.model.entity.Genre;
 
 import lombok.AllArgsConstructor;
@@ -23,6 +25,7 @@ public class NovelDTO{
 	private boolean novelOpen;
 	private int novelStatus;
 	private boolean novelOnly;
+	private Long novelView = 0L;
 	private Date novelUpdatedAt;
 	private Author member;
 	private List<String> genreList;

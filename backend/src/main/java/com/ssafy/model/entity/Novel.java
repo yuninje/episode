@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import lombok.AllArgsConstructor;
@@ -57,6 +58,9 @@ public class Novel {
 	
 	@Column(name = "novel_only", columnDefinition="TINYINT(1)", nullable = false)
 	private Boolean novelOnly;
+	
+	@Column(name = "novel_view")
+	private Long novelView = 0L;
 	
 	@LastModifiedDate
 	@Column(name = "novel_updated_at", nullable = false)
