@@ -291,7 +291,7 @@ export default {
 
 <style lang="scss" scoped>
 .signup {
-  position: absolute;
+  position: relative;
   width: 75vw;
   margin-left: 10vw;
   margin-right: 15vw;

@@ -1,5 +1,5 @@
 <template>
-    <v-toolbar sticky>
+    <v-toolbar fixed>
         <v-spacer></v-spacer>
         <v-toolbar-title class="toolbar-title" @click="gotoMain()">EPISODE</v-toolbar-title>
         <v-spacer></v-spacer>
@@ -16,11 +16,20 @@
             class="pt-6"    
         ></v-text-field>
         <v-spacer></v-spacer>
-        <v-btn color="black" text>소설 전체보기</v-btn>
-        <v-btn color="black" text>에디터</v-btn>
-        <v-spacer></v-spacer>
-        <v-btn color="black" text @click="gotoSignIn()">로그인</v-btn>
-        <v-btn color="black" text @click="gotoSignUp()">회원가입</v-btn>
+        <template v-if="true">
+            <v-flex>
+            <v-btn color="black" text>소설 전체보기</v-btn>
+            <v-btn color="black" text>에디터</v-btn>
+            </v-flex>
+            <v-spacer></v-spacer>
+            <v-flex>
+            <v-btn color="black" text @click="gotoSignIn()">로그인</v-btn>
+            <v-btn color="black" text @click="gotoSignUp()">회원가입</v-btn>
+            </v-flex>
+        </template>
+        <template v-else>
+            
+        </template>
         <v-spacer></v-spacer>
     </v-toolbar>
 </template>
@@ -34,7 +43,8 @@ export default {
         return {
             searchText:'',
             loading: true,
-            errored: false
+            errored: false,
+            desktopSize: false
         }
     },
     methods: {
@@ -49,6 +59,17 @@ export default {
         },
         gotoSignUp() {
             this.$router.push('/signup');
+        },
+        getDesktopSize() {
+            if(window.innerWidth > 600) {
+                console.log("함수 트루");
+                this.desktopSize = true;
+                return true;
+            } else {
+                console.log("함수 폴스");
+                this.desktopSize = false;
+                return false;
+            }
         }
     }
 }
@@ -59,5 +80,7 @@ export default {
     color: rgb(192,0,0);
     font-size: 1.8rem;
     font-weight: bold;
+    cursor: pointer;
 }
+
 </style>
