@@ -16,8 +16,10 @@ import com.ssafy.model.dto.NovelDTO;
 import com.ssafy.model.entity.Genre;
 import com.ssafy.model.entity.Member;
 import com.ssafy.model.entity.Novel;
+import com.ssafy.model.entity.NovelGenre;
 import com.ssafy.model.entity.Search;
 import com.ssafy.model.repository.GenreRepository;
+import com.ssafy.model.repository.NovelGenreRepository;
 import com.ssafy.model.repository.NovelRepository;
 import com.ssafy.model.repository.SearchRepository;
 
@@ -29,6 +31,8 @@ public class NovelServiceImpl implements NovelService{
 	GenreRepository gRepo;
 	@Autowired
 	SearchRepository sRepo;
+	@Autowired
+	NovelGenreRepository ngRepo;
 	
 	@Autowired
 	ModelMapper modelMapper;
@@ -136,7 +140,21 @@ public class NovelServiceImpl implements NovelService{
 	@Override
 	public void registNovel(NovelDTO novel) {
 		Novel registN = modelMapper.map(novel, Novel.class);
-		nRepo.save(registN);
+		Novel registedN = nRepo.save(registN);
+		
+		List<String> genres = novel.getGenreList();
+		
+		for(String g : genres) {
+			Genre genre = gRepo.findByGenreName(g);
+			
+			if(genre == null) continue;
+			
+			NovelGenre ng = new NovelGenre();
+			ng.setNovel(registedN);
+			ng.setGenre(genre);
+			
+			ngRepo.save(ng);
+		}
 	}
 
 	@Override
