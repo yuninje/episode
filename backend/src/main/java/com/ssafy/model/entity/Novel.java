@@ -3,7 +3,9 @@ package com.ssafy.model.entity;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -86,6 +88,10 @@ public class Novel {
 	@Transient
 	private List<String> genreList;
 	@Transient
+	private String hashTagName;
+	@Transient
+	private List<String> hashTagList;
+	@Transient
 	private Long likes;
 	@Transient
 	private Long recommends;
@@ -110,7 +116,7 @@ public class Novel {
 	
 	public Novel(Integer novelPk, String novelName, String novelIntro, String novelImage, Boolean novelLimit,
 			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, Date novelUpdatedAt, Member member,
-			String genreName, Long likes, Long recommends) {
+			String genreName, String hashTagName, Long likes, Long recommends) {
 		super();
 		this.novelPk = novelPk;
 		this.novelName = novelName;
@@ -122,8 +128,12 @@ public class Novel {
 		this.novelOnly = novelOnly;
 		this.novelUpdatedAt = novelUpdatedAt;
 		this.member = member;
-		this.genreName = genreName;
-		this.genreList = Arrays.asList(genreName.split(","));
+//		this.genreList = Arrays.asList(genreName.split(","));
+		this.genreList = new ArrayList<String>(new HashSet<String>(Arrays.asList(genreName.split(","))));
+		this.hashTagList = hashTagName != null 
+				? new ArrayList<String>(new HashSet<String>(Arrays.asList(hashTagName.split(","))))
+				: new ArrayList<>();
+//		this.hashTagList = new ArrayList<String>(new HashSet<String>(this.hashTagList));
 		this.likes = likes;
 		this.recommends = recommends;
 	}

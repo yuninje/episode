@@ -25,6 +25,7 @@ public class NovelDTO{
 	private Date novelUpdatedAt;
 	private Author member;
 	private List<String> genreList;
+	private List<String> hashTagList;
 	private long likes;
 	private long recommends;
 }

@@ -1,4 +1,4 @@
-package com.ssafy.model.repository;
+package com.ssafy.model.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ssafy.model.dto.HashTagDTO;
 import com.ssafy.model.entity.HashTag;
-import com.ssafy.model.service.HashTagService;
+import com.ssafy.model.repository.HashTagRepository;
 
 public class HashTagServiceImpl implements HashTagService {
 	@Autowired
