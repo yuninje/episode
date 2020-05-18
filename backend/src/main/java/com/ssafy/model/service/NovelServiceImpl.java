@@ -1,5 +1,6 @@
 package com.ssafy.model.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,7 +52,7 @@ public class NovelServiceImpl implements NovelService{
 
 	@Override
 	public NovelDTO getNovel(int novelPk) {
-		Novel novel = nRepo.findById(novelPk);
+		Novel novel = nRepo.findByNovelPk(novelPk);
 		NovelDTO novelDTO = modelMapper.map(novel, NovelDTO.class);
 		
 		return novelDTO;
@@ -159,7 +160,7 @@ public class NovelServiceImpl implements NovelService{
 
 	@Override
 	public NovelDTO updateNovel(int novelPk, NovelDTO novel) {
-		Novel updateN = nRepo.findById(novelPk);
+		Novel updateN = nRepo.findByNovelPk(novelPk);
 		
 		if(updateN == null) return null;
 		
@@ -193,35 +194,35 @@ public class NovelServiceImpl implements NovelService{
 	
 	@Override
 	public void updateGenreOfNovel(int novelPk, List<Integer> genrePks) {
-//		Novel novel = nRepo.findById(novelPk).orElse(null);
-//		List<Genre> oGenres = novel.getGenres(); // 원래 장르들
-//		// 새로운 장로들
-//		List<Genre> uGenres = genrePks.stream().map(genrePk -> {
-//			Genre genre = gRepo.findById(genrePk).orElse(null);
-//			if(oGenres.contains(genre)) {
-//				// 넘어가고
-//			}else {
-//				// 추가
-//				oGenres.add(genre);
-//				genre.getNovels().add(novel);
-//			}
-//			return genre;
-//		}).collect(Collectors.toList());
-//		
-//		List<Genre> removeGenres = new ArrayList<Genre>();
-//		for(Genre genre : oGenres) {
-//			if(uGenres.contains(genre)) {
-//				// 넘어가고 
-//			}else {
-//				// 삭제 
-//				genre.getNovels().remove(novel);
-//				removeGenres.add(genre);
-//			}
-//		}
-//		for(Genre genre : removeGenres) {
-//			oGenres.remove(genre);
-//		}
-//		nRepo.save(novel);
+		Novel novel = nRepo.findById(novelPk).orElse(null);
+		List<Genre> oGenres = novel.getGenres(); // 원래 장르들
+		// 새로운 장로들
+		List<Genre> uGenres = genrePks.stream().map(genrePk -> {
+			Genre genre = gRepo.findById(genrePk).orElse(null);
+			if(oGenres.contains(genre)) {
+				// 넘어가고
+			}else {
+				// 추가
+				oGenres.add(genre);
+				genre.getNovels().add(novel);
+			}
+			return genre;
+		}).collect(Collectors.toList());
+		
+		List<Genre> removeGenres = new ArrayList<Genre>();
+		for(Genre genre : oGenres) {
+			if(uGenres.contains(genre)) {
+				// 넘어가고 
+			}else {
+				// 삭제 
+				genre.getNovels().remove(novel);
+				removeGenres.add(genre);
+			}
+		}
+		for(Genre genre : removeGenres) {
+			oGenres.remove(genre);
+		}
+		nRepo.save(novel);
 	}
 
 	@Override

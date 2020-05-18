@@ -114,7 +114,7 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 	}
 	
 	@Override
-	public Novel findById(int novelPk) {
+	public Novel findByNovelPk(int novelPk) {
 		SimpleTemplate<String> simpleTemplate = Expressions.simpleTemplate(String.class, "group_concat({0})", genre.genreName);
 		JPAQuery<Novel> query = 
 			queryFactory.select(
