@@ -5,7 +5,7 @@
       <v-row>
         <v-col cols="10">
           <v-row>
-            <!-- 느낌별 소설 모음 나중에 이 부분을 컴포넌트로 빼자-->
+            <!-- 느낌별 소설 모음 -->
             <v-col cols="12">
               <MainFeel/>
             </v-col>
@@ -19,12 +19,7 @@
           <v-row>
             <!-- 검색 순위 들어갈 곳 -->
             <v-col cols="12">
-              <div>
-                <span class="sub-title-black">검색 순위</span>
-                <span class="sub-sub-black">(2020.05.12 오후 7시 50분 기준)</span>
-                <br/>
-                <p class="sub-item-black">1. 로맨스 소설</p>
-              </div>
+              <KeywordRanking/>
             </v-col>
             <!-- 광고 캐러셀 -->
             <v-col cols="12">
@@ -42,6 +37,7 @@ import MainCarousel from "@/components/main/MainCarousel"
 import AdCarousel from "@/components/main/AdCarousel"
 import MainTop100 from "@/components/main/MainTop100"
 import MainFeel from "@/components/main/MainFeel"
+import KeywordRanking from "@/components/main/KeywordRanking"
 
 export default {
   name: 'Main',
@@ -49,7 +45,8 @@ export default {
     MainCarousel,
     AdCarousel,
     MainTop100,
-    MainFeel
+    MainFeel,
+    KeywordRanking
   },
   data () {
     return {
