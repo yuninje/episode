@@ -39,7 +39,7 @@ public class NovelRestController {
 	@GetMapping()
 	ResponseEntity<Map<String, Object>> getNovels(
 			@PageableDefault(page=0, size=10) Pageable pageable, 
-			@ApiParam("비어있을 경우 업데이트 순서대로, likes 입력시 선호작 순서대로 정렬")
+			@ApiParam("비어있을 경우 업데이트순으로, likes 입력시 선호작순으로, recommends 입력시 추천순으로 내림차순 정렬")
 			@RequestParam(required=false, defaultValue="") String sort){
 		return handleSuccess(nService.getNovels(pageable, sort));
 	}

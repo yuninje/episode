@@ -18,7 +18,9 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.model.entity.Novel;
+import com.ssafy.model.entity.QEpisode;
 import com.ssafy.model.entity.QGenre;
+import com.ssafy.model.entity.QLikeEpisode;
 import com.ssafy.model.entity.QLikeNovel;
 import com.ssafy.model.entity.QMember;
 import com.ssafy.model.entity.QNovel;
@@ -32,6 +34,8 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 	private QNovelGenre novelGenre = QNovelGenre.novelGenre;
 	private QGenre genre = QGenre.genre;
 	private QLikeNovel likeNovel = QLikeNovel.likeNovel;
+	private QLikeEpisode likeEpisode = QLikeEpisode.likeEpisode;
+	private QEpisode episode = QEpisode.episode;
 	
 	public NovelCustomRepositoryImpl() {
 		super(Novel.class);
@@ -41,6 +45,7 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 	public Page<Novel> find(String type, String word, Pageable pageable, String sort) {
 		SimpleTemplate<String> simpleTemplate = Expressions.simpleTemplate(String.class, "group_concat({0})", genre.genreName);
 		NumberPath<Long> likes = Expressions.numberPath(Long.class, "likes"); 
+		NumberPath<Long> recommends = Expressions.numberPath(Long.class, "recommends");
 		
 		JPAQuery<Novel> query = 
 			queryFactory.select(
@@ -61,6 +66,16 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 							.from(likeNovel)
 							.where(likeNovel.novel.novelPk.eq(novel.novelPk)),
 							likes
+					),
+					ExpressionUtils.as(
+						JPAExpressions.select(likeEpisode.likeEpisodePk.count())
+							.from(likeEpisode)
+							.where(likeEpisode.episode.episodePk.in(
+								JPAExpressions.select(episode.episodePk)
+									.from(episode)
+									.where(episode.novel.novelPk.eq(novel.novelPk))
+								)),
+							recommends
 					)
 				)
 			)
@@ -73,6 +88,9 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 		switch(sort) {
 		case "likes":
 			query.orderBy(likes.desc());
+			break;
+		case "recommends":
+			query.orderBy(recommends.desc());
 			break;
 		}
 		
