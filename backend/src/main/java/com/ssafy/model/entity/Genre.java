@@ -36,8 +36,8 @@ public class Genre {
 	private String genreName;
 	
 
-//	// genre <-> NovelGenre >> 장르에 속한 소설
-//	// 이 장르에 속한 소설
+	// genre <-> NovelGenre >> 장르에 속한 소설
+	// 이 장르에 속한 소설
 //	@OneToMany(mappedBy = "genre") 
 //	private List<NovelGenre> novels = new ArrayList<>();
 

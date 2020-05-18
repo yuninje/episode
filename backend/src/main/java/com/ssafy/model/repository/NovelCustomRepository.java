@@ -9,5 +9,5 @@ import com.ssafy.model.entity.Novel;
 
 public interface NovelCustomRepository {
 	Page<Novel> find(String type, String word, Pageable pageable, String sort);
-	Novel findById(int novelPk);
+	Novel findByNovelPk(int novelPk);
 }
