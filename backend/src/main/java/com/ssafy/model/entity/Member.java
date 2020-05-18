@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,7 +23,6 @@ import lombok.ToString;
 @Entity
 @Table(name = "member")
 @Getter
-@Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
@@ -85,4 +85,31 @@ public class Member {
 		this.memPk = memPk;
 		this.memNick = memNick;
 	}
+
+	@Builder
+	public Member(String memId, String memEmail, String memPw, String memNick, String memPhone,
+			String memBirth, Boolean memGender) {
+		super();
+		this.memId = memId;
+		this.memEmail = memEmail;
+		this.memPw = memPw;
+		this.memNick = memNick;
+		this.memPhone = memPhone;
+		this.memBirth = memBirth;
+		this.memGender = memGender;
+	}
+	
+
+    public Member update(String memEmail, String memPw, String memNick, String memPhone,
+			String memBirth, Boolean memGender){
+		this.memEmail = memEmail;
+		this.memPw = memPw;
+		this.memNick = memNick;
+		this.memPhone = memPhone;
+		this.memBirth = memBirth;
+		this.memGender = memGender;
+        return this;
+    }
+	
+	
 }

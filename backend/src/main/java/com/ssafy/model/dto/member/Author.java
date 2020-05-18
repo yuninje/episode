@@ -1,4 +1,4 @@
-package com.ssafy.model.dto;
+package com.ssafy.model.dto.member;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Auth {	// 로그인 관련 클래스
-	String memId;		// 아이디
-	String memPw;		// 비밀번호
+public class Author {
+	private int memPk;
+	private String memNick;
 }

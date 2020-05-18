@@ -20,6 +20,7 @@ import com.ssafy.model.entity.Novel;
 import com.ssafy.model.entity.NovelGenre;
 import com.ssafy.model.entity.Search;
 import com.ssafy.model.repository.GenreRepository;
+import com.ssafy.model.repository.MemberRepository;
 import com.ssafy.model.repository.NovelGenreRepository;
 import com.ssafy.model.repository.NovelRepository;
 import com.ssafy.model.repository.SearchRepository;
@@ -28,6 +29,8 @@ import com.ssafy.model.repository.SearchRepository;
 public class NovelServiceImpl implements NovelService{
 	@Autowired
 	NovelRepository nRepo;
+	@Autowired
+	MemberRepository mRepo;
 	@Autowired
 	GenreRepository gRepo;
 	@Autowired
@@ -65,15 +68,15 @@ public class NovelServiceImpl implements NovelService{
 					Sort.by("novelUpdatedAt").descending());
 		
 		if(memPk != 0) {
-			Member m = new Member();
-			m.setMemPk(memPk);
+			Member member = mRepo.findById(memPk)
+					.orElseThrow(() -> new IllegalArgumentException("member pk :  " + memPk + "가 존재하지 않습니다."));
 			
 			Date date = new Date();
 			
 			String[] words = novelName.split(" ");
 			for(String word : words) {
 				Search search = new Search();
-				search.setMember(m);
+				search.setMember(member);
 				search.setSearchWord(word);
 				search.setSearchCreatedAt(date);
 				sRepo.save(search);
@@ -91,15 +94,15 @@ public class NovelServiceImpl implements NovelService{
 		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("novelUpdatedAt").descending());
 		
 		if(memPk != 0) {
-			Member m = new Member();
-			m.setMemPk(memPk);
+			Member member = mRepo.findById(memPk)
+					.orElseThrow(() -> new IllegalArgumentException("member pk :  " + memPk + "가 존재하지 않습니다."));
 			
 			Date date = new Date();
 			
 			String[] words = memNick.split(" ");
 			for(String word : words) {
 				Search search = new Search();
-				search.setMember(m);
+				search.setMember(member);
 				search.setSearchWord(word);
 				search.setSearchCreatedAt(date);
 				sRepo.save(search);
@@ -117,15 +120,15 @@ public class NovelServiceImpl implements NovelService{
 		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("novelUpdatedAt").descending());
 		
 		if(memPk != 0) {
-			Member m = new Member();
-			m.setMemPk(memPk);
+			Member member = mRepo.findById(memPk)
+					.orElseThrow(() -> new IllegalArgumentException("member pk :  " + memPk + "가 존재하지 않습니다."));
 			
 			Date date = new Date();
 			
 			String[] words = word.split(" ");
 			for(String word_ : words) {
 				Search search = new Search();
-				search.setMember(m);
+				search.setMember(member);
 				search.setSearchWord(word_);
 				search.setSearchCreatedAt(date);
 				sRepo.save(search);

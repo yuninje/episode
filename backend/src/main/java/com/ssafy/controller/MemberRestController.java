@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,8 +18,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.model.dto.Auth;
 import com.ssafy.model.dto.MemberDTO;
+import com.ssafy.model.dto.member.Auth;
+import com.ssafy.model.dto.member.MemberResponseDto;
+import com.ssafy.model.dto.member.MemberSaveRequestDto;
+import com.ssafy.model.dto.member.MemberUpdateRequestDto;
 import com.ssafy.model.entity.Member;
 import com.ssafy.model.service.MemberService;
 
@@ -35,14 +40,14 @@ public class MemberRestController {
 	
 	@ApiOperation("전체 멤버 조회")
 	@GetMapping()
-	ResponseEntity<Map<String, Object>> getMembers(){
-		return handleSuccess(mService.getMembers());
+	ResponseEntity<Map<String, Object>> getMembers(@PageableDefault(page=0, size=10) Pageable pageable){
+		return handleSuccess(mService.getMembers(pageable));
 	}
 	
 	@ApiOperation("회원가입 | /check/{key}를 통해 중복, 유효성 검사를 마친 후라고 판단하여 무조건 회원가입이 성공했다고 간주")
 	@PostMapping("")
-	ResponseEntity<Map<String, Object>> doRegist(@RequestBody MemberDTO member){
-		mService.regist(member);
+	ResponseEntity<Map<String, Object>> doRegist(@RequestBody MemberSaveRequestDto requestDto){
+		mService.regist(requestDto);
 		
 		return handleSuccess("회원 가입에 성공하였습니다.");
 	}
@@ -55,8 +60,8 @@ public class MemberRestController {
 	
 	@ApiOperation("멤버 한 명의 정보를 수정 | 변경된 멤버 객체 반환")
 	@PutMapping("/{memPk}")
-	ResponseEntity<Map<String, Object>> updateMember(@PathVariable int memPk, @RequestBody MemberDTO member){
-		return handleSuccess(mService.updateMember(memPk, member));
+	ResponseEntity<Map<String, Object>> updateMember(@PathVariable int memPk, @RequestBody MemberUpdateRequestDto requestDto){
+		return handleSuccess(mService.updateMember(memPk, requestDto));
 	}
 	
 	@ApiOperation("멤버 삭제 | 반환되는 data는 비어져있음")
@@ -70,9 +75,7 @@ public class MemberRestController {
 	@ApiOperation("로그인 | 성공 시 해당 멤버 객체 반환(패스워드는 비워져 있음)")
 	@PostMapping("/login")
 	ResponseEntity<Map<String, Object>> doLogin(@RequestBody Auth auth){
-		MemberDTO member = mService.login(auth);
-		member.setMemPw("");
-
+		MemberResponseDto member = mService.login(auth);
 		return handleSuccess(member);
 	}
 	
