@@ -60,6 +60,9 @@ export default {
         gotoSignUp() {
             this.$router.push('/signup');
         },
+        gotoEditor() {
+            this.$router.push('/editor');
+        },
         getDesktopSize() {
             if(window.innerWidth > 600) {
                 console.log("함수 트루");
