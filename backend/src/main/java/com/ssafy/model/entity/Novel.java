@@ -87,6 +87,8 @@ public class Novel {
 	private List<String> genreList;
 	@Transient
 	private Long likes;
+	@Transient
+	private Long recommends;
 	
 	public Novel(Integer novelPk, String novelName, String novelIntro, String novelImage, Boolean novelLimit,
 			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, Date novelUpdatedAt, Member member,
@@ -108,7 +110,7 @@ public class Novel {
 	
 	public Novel(Integer novelPk, String novelName, String novelIntro, String novelImage, Boolean novelLimit,
 			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, Date novelUpdatedAt, Member member,
-			String genreName, Long likes) {
+			String genreName, Long likes, Long recommends) {
 		super();
 		this.novelPk = novelPk;
 		this.novelName = novelName;
@@ -123,5 +125,6 @@ public class Novel {
 		this.genreName = genreName;
 		this.genreList = Arrays.asList(genreName.split(","));
 		this.likes = likes;
+		this.recommends = recommends;
 	}
 }

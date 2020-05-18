@@ -3,10 +3,6 @@ package com.ssafy.model.dto;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
-
-import com.ssafy.model.entity.Genre;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,4 +26,5 @@ public class NovelDTO{
 	private Author member;
 	private List<String> genreList;
 	private long likes;
+	private long recommends;
 }
