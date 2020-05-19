@@ -1,12 +1,15 @@
 package com.ssafy.model.service;
 
+import com.ssafy.model.dto.genre.GenreResponseDto;
+import com.ssafy.model.dto.genre.GenreSaveRequestDto;
+import com.ssafy.model.dto.genre.GenreUpdateRequestDto;
+
 import java.util.List;
 
-import com.ssafy.model.dto.GenreDTO;
-
 public interface GenreService {
-	List<GenreDTO> getGenres();
-	GenreDTO getGenre(int genrePk);
-	void registGenre(GenreDTO genreDTO);
+	List<GenreResponseDto> getGenres();
+	GenreResponseDto getGenre(int genrePk);
+	GenreResponseDto registGenre(GenreSaveRequestDto requestDto);
+	GenreResponseDto updateGenre(int genrePk, GenreUpdateRequestDto requestDto);
 	void deleteGenre(int genrePk);
 }

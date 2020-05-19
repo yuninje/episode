@@ -1,25 +1,26 @@
 package com.ssafy.model.service;
 
-import java.util.List;
-
+import com.ssafy.model.dto.novel.NovelResponseDto;
+import com.ssafy.model.dto.novel.NovelSaveRequestDto;
+import com.ssafy.model.dto.novel.NovelUpdateRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ssafy.model.dto.NovelDTO;
+import java.util.List;
 
 public interface NovelService {
-	Page<NovelDTO> getNovels(Pageable pageable, String sort);
-	NovelDTO getNovel(int novelPk);
+	Page<NovelResponseDto> getNovels(Pageable pageable, String sort);
+	NovelResponseDto getNovel(int novelPk);
 //	List<NovelDTO> getNovelsByName(String novelName);
-	List<NovelDTO> getNovelsByGenre(int genrePk);
-	Page<NovelDTO> getNovelsByName(String novelName, Pageable pageable, String sort, int memPk);
-	Page<NovelDTO> getNovlesByNick(String memNick, Pageable pageable, String sort, int memPk);
-	Page<NovelDTO> getNovelsByNameOrNick(String word, Pageable pageable, String sort, int memPk);
-	void registNovel(NovelDTO novel);
-	NovelDTO updateNovel(int novelPk, NovelDTO novel);
+	List<NovelResponseDto> getNovelsByGenre(int genrePk);
+	Page<NovelResponseDto> getNovelsByName(String novelName, Pageable pageable, String sort, int memPk);
+	Page<NovelResponseDto> getNovlesByNick(String memNick, Pageable pageable, String sort, int memPk);
+	Page<NovelResponseDto> getNovelsByNameOrNick(String word, Pageable pageable, String sort, int memPk);
+	void registNovel(NovelSaveRequestDto requestDto);
+	NovelResponseDto updateNovel(int novelPk, NovelUpdateRequestDto requestDto);
 	@Transactional
 	void deleteNovel(int novelPk);
 	void updateGenreOfNovel(int novelPk, List<Integer> genrePks);
-	Page<NovelDTO> getNovelByMember(int memPk, Pageable pageable, String sort);
+	Page<NovelResponseDto> getNovelByMember(int memPk, Pageable pageable, String sort);
 }

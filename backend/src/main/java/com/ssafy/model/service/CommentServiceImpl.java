@@ -10,10 +10,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.ssafy.model.dto.Author;
 import com.ssafy.model.dto.CommentDTO;
 import com.ssafy.model.dto.EpisodeDTO;
 import com.ssafy.model.dto.MemberDTO;
+import com.ssafy.model.dto.member.Author;
 import com.ssafy.model.entity.Comment;
 import com.ssafy.model.entity.Episode;
 import com.ssafy.model.repository.CommentRepository;

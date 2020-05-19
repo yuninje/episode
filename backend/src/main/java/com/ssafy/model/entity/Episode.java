@@ -1,30 +1,13 @@
 package com.ssafy.model.entity;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "episode")
@@ -47,7 +30,7 @@ public class Episode {
 
 	@CreatedDate
 	@Column(name = "episode_created_at", nullable = false)
-	private Date episodeCreatedAt;
+	private LocalDateTime episodeCreatedAt = LocalDateTime.now();
 	
 	@Column(name = "episode_writer", length = 100, nullable = true)
 	private String episodeWriter;
@@ -57,27 +40,40 @@ public class Episode {
 	private int episodeView;
 
 	// episode <-> novel
-	@ManyToOne(cascade = CascadeType.REMOVE)
+	@ManyToOne
 	@JoinColumn(name = "novel_pk", nullable = false)
 	private Novel novel;
 	
 	// episode <-> comment
 	@OneToMany(mappedBy = "episode", cascade = CascadeType.REMOVE)
-	private List<Comment> comments = new ArrayList<Comment>();
+	private List<Comment> comments = new ArrayList<>();
 
 	// episode <-> like_episode >> 에피소드 좋아요
 	// 이 에피소드를 좋아하는 멤버들 
 
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.REMOVE)
 	@JoinTable(
 			name = "like_episode",
 			joinColumns = @JoinColumn(name = "episode_pk"),
 			inverseJoinColumns = @JoinColumn(name = "mem_pk") 
 			)	
 	private List<Member> likedMembers = new ArrayList<>();
-	
-	public void viewUpdate() {
-		this.episodeView += 1;
-		this.novel.setNovelView(this.novel.getNovelView()+1);
+
+	@Builder
+	public Episode(Novel novel,Integer episodePk, String episodeTitle, String episodeContent, LocalDateTime episodeCreatedAt, String episodeWriter, int episodeView) {
+		this.novel = novel;
+		this.episodePk = episodePk;
+		this.episodeTitle = episodeTitle;
+		this.episodeContent = episodeContent;
+		this.episodeCreatedAt = episodeCreatedAt;
+		this.episodeWriter = episodeWriter;
+		this.episodeView = episodeView;
+	}
+
+	public Episode update(String episodeTitle, String episodeContent, String episodeWriter) {
+		this.episodeTitle = episodeTitle;
+		this.episodeContent = episodeContent;
+		this.episodeWriter = episodeWriter;
+		return this;
 	}
 }

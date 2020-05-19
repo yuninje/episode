@@ -1,71 +1,69 @@
 package com.ssafy.model.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.ssafy.model.dto.EpisodeDTO;
-import com.ssafy.model.dto.NovelDTO;
+import com.ssafy.model.dto.episode.EpisodeResponseDto;
+import com.ssafy.model.dto.episode.EpisodeResponseNoNovelDto;
+import com.ssafy.model.dto.episode.EpisodeSaveRequestDto;
+import com.ssafy.model.dto.episode.EpisodeUpdateRequestDto;
+import com.ssafy.model.dto.novel.NovelResponseDto;
 import com.ssafy.model.entity.Episode;
 import com.ssafy.model.entity.Novel;
 import com.ssafy.model.repository.EpisodeRepository;
+import com.ssafy.model.repository.NovelRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class EpisodeServiceImpl implements EpisodeService{
-	
+
+	@Autowired
+	NovelRepository nRepo;
 	@Autowired
 	EpisodeRepository eRepo;
-	@Autowired
-	ModelMapper modelMapper;
 	
 	@Override
-	public void registEpisode(EpisodeDTO episodeDTO) {
-		Episode episode = modelMapper.map(episodeDTO, Episode.class);
-		eRepo.save(episode);
+	public EpisodeResponseDto registEpisode(EpisodeSaveRequestDto requestDto) {
+		Episode episodeEntity = eRepo.save(requestDto.toEntity(nRepo));
+		EpisodeResponseDto episode = new EpisodeResponseDto(episodeEntity);
+		return episode;
 	}
 
 	@Override
-	public List<EpisodeDTO> getEpisodes() {
-		List<Episode> episodes = eRepo.findAll();
-		List<EpisodeDTO> episodeDTOs =
-				episodes.stream().map(episode -> {
-					EpisodeDTO episodeDTO = modelMapper.map(episode, EpisodeDTO.class);
-					Novel novel = episode.getNovel();
-					NovelDTO novelDTO = modelMapper.map(novel, NovelDTO.class);
-					episodeDTO.setNovelDTO(novelDTO);
-					return episodeDTO;
-				})
-				.collect(Collectors.toList());
-		return episodeDTOs;
+	public Page<EpisodeResponseDto> getEpisodes(Pageable pageable) {
+		Page<Episode> episodeEntityPage = eRepo.findAll(pageable);
+		Page<EpisodeResponseDto> episodes =
+				episodeEntityPage.map(episodeEntity -> new EpisodeResponseDto(episodeEntity));
+		return episodes;
 	}
 
 	@Transactional
 	@Override
-	public EpisodeDTO getEpisode(int episodePk) {
-		Episode episode = eRepo.findById(episodePk).orElse(null);
-		episode.viewUpdate();
-		eRepo.save(episode);
-		
-		EpisodeDTO episodeDTO = modelMapper.map(episode, EpisodeDTO.class);
-		Novel novel = episode.getNovel();
-		NovelDTO novelDTO = modelMapper.map(novel, NovelDTO.class);
-		episodeDTO.setNovelDTO(novelDTO);
-		return episodeDTO;
+	public EpisodeResponseDto getEpisode(int episodePk) {
+		Episode episodeEntity = eRepo.findById(episodePk).orElseThrow(() ->
+				new IllegalArgumentException("episode pk :  " + episodePk + "가 존재하지 않습니다."));
+
+		EpisodeResponseDto episode = new EpisodeResponseDto(episodeEntity);
+		return episode;
 	}
 
 	@Override
-	public void updateEpisode(int episodePk, EpisodeDTO episodeDTO) {
-		eRepo.updateEpisode(
-				episodePk, 
-				episodeDTO.getEpisodeTitle(),
-				episodeDTO.getEpisodeContent(),
-				episodeDTO.getEpisodeWriter(),
-				episodeDTO.getEpisodeView()
-				);
+	public EpisodeResponseDto updateEpisode(int episodePk, EpisodeUpdateRequestDto requestDto) {
+		Episode episodeEntity = eRepo.findById(episodePk).orElseThrow(() ->
+				new IllegalArgumentException("episode pk :  " + episodePk + "가 존재하지 않습니다."));
+
+		episodeEntity.update(
+				requestDto.getEpisodeTitle(),
+				requestDto.getEpisodeContent(),
+				requestDto.getEpisodeWriter()
+		);
+
+		EpisodeResponseDto episode = new EpisodeResponseDto(eRepo.save(episodeEntity));
+		return episode;
 	}
 
 	@Override
@@ -74,12 +72,20 @@ public class EpisodeServiceImpl implements EpisodeService{
 	}
 
 	@Override
-	public List<EpisodeDTO> getEpisodesByNovel(int novelPk) {
-		List<Episode> episodes = eRepo.findByNovelPk(novelPk);
-		List<EpisodeDTO> episodeDTOs =
-				episodes.stream().map(episode -> modelMapper.map(episode, EpisodeDTO.class))
-				.collect(Collectors.toList());
-		return episodeDTOs;
+	public Map getEpisodesByNovel(int novelPk, Pageable pageable) {
+		Map data = new HashMap();
+
+		Novel novelEntity = nRepo.findById(novelPk).orElseThrow(() ->
+				new IllegalArgumentException("novel pk :  " + novelPk + "가 존재하지 않습니다."));
+		NovelResponseDto novel = new NovelResponseDto(novelEntity);
+
+		Page<Episode> episodeEntityPage = eRepo.findByNovel(novelEntity, pageable);
+		Page<EpisodeResponseNoNovelDto> episodes =
+				episodeEntityPage.map(episodeEntity -> new EpisodeResponseNoNovelDto(episodeEntity));
+
+		data.put("novel", novel);
+		data.put("episodes", episodes);
+		return data;
 	}
 	
 }

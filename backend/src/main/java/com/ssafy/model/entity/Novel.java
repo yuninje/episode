@@ -1,32 +1,14 @@
 package com.ssafy.model.entity;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
+import lombok.*;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
 @Entity
 @Table(name = "novel")
@@ -64,33 +46,46 @@ public class Novel {
 	
 	@Column(name = "novel_view")
 	private Long novelView = 0L;
-	
+
+	@Column(name = "novel_likes")
+	private Long likes = 0L;
+
+	@Column(name = "novel_recommends")
+	private Long recommends = 0L;
+
 	@LastModifiedDate
 	@Column(name = "novel_updated_at", nullable = false)
-	private Date novelUpdatedAt;
-	
+	private LocalDateTime novelUpdatedAt = LocalDateTime.now();
+
+
 	// novel <-> member >> N : 1 관계  
 	@ManyToOne
 	@JoinColumn(name = "mem_pk", nullable = false)
 	private Member member;
 
 	// novel <-> episode >> 1: N 관계
-	@OneToMany(mappedBy = "novel")
+	@OneToMany(mappedBy = "novel", cascade = CascadeType.REMOVE)
 	private List<Episode> episodes = new ArrayList<Episode>();
 	
 	// novel <-> genre >> N : M 관계
 	@ManyToMany(mappedBy = "novels", cascade = CascadeType.REMOVE)
 	private List<Genre> genres = new ArrayList<>();
-	
+
 	// novel <-> hashtag >> N : M 관계
 	@ManyToMany(mappedBy = "novels", cascade = CascadeType.REMOVE)
 	private List<HashTag> hashTags = new ArrayList<>();
-	
-	// novel <-> like_novel >> 소설 즐겨찾기 ( = 소설 좋아요 )
-	// 이 소설을 좋아하는 멤버들 
-	@OneToMany(mappedBy = "novel")
-	private List<LikeNovel> membersLikeNovel = new ArrayList<>();
-	
+
+	// 이 소설을 좋아하는 사람들 | novel : member = N : M
+	@ManyToMany(cascade = CascadeType.REMOVE)
+	@JoinTable(
+			name = "like_novel",
+			joinColumns = @JoinColumn(name = "novel_pk"),
+			inverseJoinColumns = @JoinColumn(name = "mem_pk")
+	)
+	private List<Member> likedMembers = new ArrayList<>();
+
+
+
 	@Transient
 	private String genreName;
 	@Transient
@@ -99,15 +94,10 @@ public class Novel {
 	private String hashTagName;
 	@Transient
 	private List<String> hashTagList;
-	@Transient
-	private Long likes;
-	@Transient
-	private Long recommends;
-	
+
 	public Novel(Integer novelPk, String novelName, String novelIntro, String novelImage, Boolean novelLimit,
-			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, Date novelUpdatedAt, Member member,
+			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, LocalDateTime novelUpdatedAt, Member member,
 			String genreName, String hashTagName, Long likes, Long recommends) {
-		super();
 		this.novelPk = novelPk;
 		this.novelName = novelName;
 		this.novelIntro = novelIntro;
@@ -129,10 +119,8 @@ public class Novel {
 	}
 
 	public Novel(Integer novelPk, String novelName, String novelIntro, String novelImage, Boolean novelLimit,
-			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, Date novelUpdatedAt,
-			Member member, List<Genre> genres, String hashTagName, Long likes,
-			Long recommends) {
-		super();
+			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, LocalDateTime novelUpdatedAt,
+			Member member, List<Genre> genres, String hashTagName, Long likes, Long recommends) {
 		this.novelPk = novelPk;
 		this.novelName = novelName;
 		this.novelIntro = novelIntro;
@@ -152,6 +140,27 @@ public class Novel {
 		this.likes = likes;
 		this.recommends = recommends;
 	}
-	
-	
+
+	@Builder
+	public Novel(Member member, String novelName, String novelIntro, String novelImage, Boolean novelLimit, Boolean novelOpen, Integer novelStatus, Boolean novelOnly) {
+		this.member = member;
+		this.novelName = novelName;
+		this.novelIntro = novelIntro;
+		this.novelImage = novelImage;
+		this.novelLimit = novelLimit;
+		this.novelOpen = novelOpen;
+		this.novelStatus = novelStatus;
+		this.novelOnly = novelOnly;
+	}
+
+	public Novel update(String novelName, String novelIntro, String novelImage, Boolean novelLimit, Boolean novelOpen, Integer novelStatus, Boolean novelOnly){
+		this.novelName = novelName;
+		this.novelIntro = novelIntro;
+		this.novelImage = novelImage;
+		this.novelLimit = novelLimit;
+		this.novelOpen = novelOpen;
+		this.novelStatus = novelStatus;
+		this.novelOnly = novelOnly;
+		return this;
+	}
 }

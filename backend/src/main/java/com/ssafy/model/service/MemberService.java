@@ -1,24 +1,25 @@
 package com.ssafy.model.service;
 
-import java.util.List;
-
+import com.ssafy.model.dto.member.Auth;
+import com.ssafy.model.dto.member.MemberResponseDto;
+import com.ssafy.model.dto.member.MemberSaveRequestDto;
+import com.ssafy.model.dto.member.MemberUpdateRequestDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ssafy.model.dto.Auth;
-import com.ssafy.model.dto.MemberDTO;
-import com.ssafy.model.entity.Member;
-
 public interface MemberService {
-	MemberDTO login(Auth auth);
-	void regist(MemberDTO member);
-	List<MemberDTO> getMembers();
-	MemberDTO getMember(int memPk);
+	MemberResponseDto login(Auth auth);
+	void regist(MemberSaveRequestDto requestDto);
+	Page<MemberResponseDto> getMembers(Pageable pageable);
+	MemberResponseDto getMember(int memPk);
 	boolean checkId(String memId);
 	boolean checkNick(String memNick);
 	boolean checkPw(String memPw);
 	boolean checkEmail(String memEmail);
 	boolean checkPhone(String memPhone);
-	MemberDTO updateMember(int memPk, MemberDTO member);
+	MemberResponseDto updateMember(int memPk, MemberUpdateRequestDto requestDto);
+	
 	@Transactional
 	void deleteMember(int memPk);
 

@@ -1,23 +1,10 @@
 package com.ssafy.model.entity;
 
+import lombok.*;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Table(name = "genre")
@@ -41,21 +28,21 @@ public class Genre {
 //	@OneToMany(mappedBy = "genre") 
 //	private List<NovelGenre> novels = new ArrayList<>();
 
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.REMOVE)
 	@JoinTable(
 			name = "novel_genre",
 			joinColumns = @JoinColumn(name = "genre_pk"),
 			inverseJoinColumns = @JoinColumn(name = "novel_pk") 
 			)	
-	private List<Novel> novels = new ArrayList<Novel>();
-	
-//	public void addGenreOfNovel(Novel novel) {
-//		novels.add(novel);
-//		novel.getGenres().add(this);
-//	}
-//	
-//	public void removeGenreOfNovel(Novel novel) {
-//		novels.remove(novel);
-//		novel.getGenres().remove(this);
-//	}
+	private List<Novel> novels = new ArrayList<>();
+
+	@Builder
+	public Genre(String genreName) {
+		this.genreName = genreName;
+	}
+
+	public Genre update(String genreName){
+		this.genreName = genreName;
+		return this;
+	}
 }

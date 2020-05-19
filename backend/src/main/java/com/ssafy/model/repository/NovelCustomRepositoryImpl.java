@@ -1,37 +1,21 @@
 package com.ssafy.model.repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.hibernate.criterion.Distinct;
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberPath;
+import com.querydsl.core.types.dsl.SimpleTemplate;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.ssafy.model.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
-import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.ListPath;
-import com.querydsl.core.types.dsl.NumberPath;
-import com.querydsl.core.types.dsl.SimplePath;
-import com.querydsl.core.types.dsl.SimpleTemplate;
-import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.ssafy.model.entity.Genre;
-import com.ssafy.model.entity.Novel;
-import com.ssafy.model.entity.QEpisode;
-import com.ssafy.model.entity.QGenre;
-import com.ssafy.model.entity.QHashTag;
-import com.ssafy.model.entity.QLikeEpisode;
-import com.ssafy.model.entity.QLikeNovel;
-import com.ssafy.model.entity.QMember;
-import com.ssafy.model.entity.QNovel;
-import com.ssafy.model.entity.QNovelGenre;
-import com.ssafy.model.entity.QNovelHashTag;
+import java.util.List;
 
 public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport implements NovelCustomRepository {
 	@Autowired
