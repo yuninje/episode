@@ -7,18 +7,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import lombok.AllArgsConstructor;
@@ -77,7 +78,11 @@ public class Novel {
 	@OneToMany(mappedBy = "novel")
 	private List<Episode> episodes = new ArrayList<Episode>();
 	
-
+	// novel <-> genre >> N : M 관계
+	@ManyToMany(mappedBy = "novels", cascade = CascadeType.REMOVE)
+	private List<Genre> genres = new ArrayList<>();
+	
+	
 	// novel <-> like_novel >> 소설 즐겨찾기 ( = 소설 좋아요 )
 	// 이 소설을 좋아하는 멤버들 
 	@OneToMany(mappedBy = "novel")
