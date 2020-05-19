@@ -1,25 +1,17 @@
 package com.ssafy.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.ssafy.model.dto.genre.GenreSaveRequestDto;
+import com.ssafy.model.dto.genre.GenreUpdateRequestDto;
+import com.ssafy.model.service.GenreService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.ssafy.model.dto.GenreDTO;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import com.ssafy.model.service.GenreService;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import java.util.HashMap;
+import java.util.Map;
 
 @Api(tags = { "4. Genre" })
 @RestController
@@ -42,8 +34,8 @@ public class GenreRestController {
 	
 	@ApiOperation("장르 등록")
 	@PostMapping()
-	ResponseEntity<Map<String, Object>> registGenre(@RequestBody GenreDTO genreDTO) {
-		gService.registGenre(genreDTO);
+	ResponseEntity<Map<String, Object>> registGenre(@RequestBody GenreSaveRequestDto requestDto) {
+		gService.registGenre(requestDto);
 		return handleSuccess("장르 생성 완료");
 	}
 
@@ -51,6 +43,13 @@ public class GenreRestController {
 	@DeleteMapping("/{genrePk}")
 	ResponseEntity<Map<String, Object>> registGenre(@PathVariable int genrePk) {
 		gService.deleteGenre(genrePk);
+		return handleSuccess("장르 삭제 완료");
+	}
+
+	@ApiOperation("장르 수정")
+	@PutMapping("/{genrePk}")
+	ResponseEntity<Map<String, Object>> updateGenre(@PathVariable int genrePk, @RequestBody GenreUpdateRequestDto requestDto) {
+		gService.updateGenre(genrePk, requestDto);
 		return handleSuccess("장르 삭제 완료");
 	}
 	

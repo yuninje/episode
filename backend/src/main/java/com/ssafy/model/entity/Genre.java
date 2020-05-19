@@ -35,14 +35,14 @@ public class Genre {
 			inverseJoinColumns = @JoinColumn(name = "novel_pk") 
 			)	
 	private List<Novel> novels = new ArrayList<>();
-	
-//	public void addGenreOfNovel(Novel novel) {
-//		novels.add(novel);
-//		novel.getGenres().add(this);
-//	}
-//	
-//	public void removeGenreOfNovel(Novel novel) {
-//		novels.remove(novel);
-//		novel.getGenres().remove(this);
-//	}
+
+	@Builder
+	public Genre(String genreName) {
+		this.genreName = genreName;
+	}
+
+	public Genre update(String genreName){
+		this.genreName = genreName;
+		return this;
+	}
 }
