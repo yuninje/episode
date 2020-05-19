@@ -82,6 +82,9 @@ public class Novel {
 	@ManyToMany(mappedBy = "novels", cascade = CascadeType.REMOVE)
 	private List<Genre> genres = new ArrayList<>();
 	
+	// novel <-> hashtag >> N : M 관계
+	@ManyToMany(mappedBy = "novels", cascade = CascadeType.REMOVE)
+	private List<HashTag> hashTags = new ArrayList<>();
 	
 	// novel <-> like_novel >> 소설 즐겨찾기 ( = 소설 좋아요 )
 	// 이 소설을 좋아하는 멤버들 
@@ -100,24 +103,6 @@ public class Novel {
 	private Long likes;
 	@Transient
 	private Long recommends;
-	
-	public Novel(Integer novelPk, String novelName, String novelIntro, String novelImage, Boolean novelLimit,
-			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, Date novelUpdatedAt, Member member,
-			String genreName) {
-		super();
-		this.novelPk = novelPk;
-		this.novelName = novelName;
-		this.novelIntro = novelIntro;
-		this.novelImage = novelImage;
-		this.novelLimit = novelLimit;
-		this.novelOpen = novelOpen;
-		this.novelStatus = novelStatus;
-		this.novelOnly = novelOnly;
-		this.novelUpdatedAt = novelUpdatedAt;
-		this.member = member;
-		this.genreName = genreName;
-		this.genreList = Arrays.asList(genreName.split(","));
-	}
 	
 	public Novel(Integer novelPk, String novelName, String novelIntro, String novelImage, Boolean novelLimit,
 			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, Date novelUpdatedAt, Member member,
@@ -142,4 +127,31 @@ public class Novel {
 		this.likes = likes;
 		this.recommends = recommends;
 	}
+
+	public Novel(Integer novelPk, String novelName, String novelIntro, String novelImage, Boolean novelLimit,
+			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, Date novelUpdatedAt,
+			Member member, List<Genre> genres, String hashTagName, Long likes,
+			Long recommends) {
+		super();
+		this.novelPk = novelPk;
+		this.novelName = novelName;
+		this.novelIntro = novelIntro;
+		this.novelImage = novelImage;
+		this.novelLimit = novelLimit;
+		this.novelOpen = novelOpen;
+		this.novelStatus = novelStatus;
+		this.novelOnly = novelOnly;
+		this.novelUpdatedAt = novelUpdatedAt;
+		this.member = member;
+		System.out.println(genres);
+//		this.genres = genres;
+		this.hashTagName = hashTagName;
+		this.hashTagList = hashTagName != null 
+				? new ArrayList<String>(new HashSet<String>(Arrays.asList(hashTagName.split(","))))
+				: new ArrayList<>();
+		this.likes = likes;
+		this.recommends = recommends;
+	}
+	
+	
 }

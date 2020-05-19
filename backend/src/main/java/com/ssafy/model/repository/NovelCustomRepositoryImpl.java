@@ -1,6 +1,8 @@
 package com.ssafy.model.repository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.hibernate.criterion.Distinct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +14,14 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.ListPath;
 import com.querydsl.core.types.dsl.NumberPath;
+import com.querydsl.core.types.dsl.SimplePath;
 import com.querydsl.core.types.dsl.SimpleTemplate;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.ssafy.model.entity.Genre;
 import com.ssafy.model.entity.Novel;
 import com.ssafy.model.entity.QEpisode;
 import com.ssafy.model.entity.QGenre;
@@ -65,6 +70,7 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 					novel.novelOnly.as("novelOnly"),
 					novel.novelUpdatedAt.as("novelUpdatedAt"),
 					novel.member.as("member"), 
+//					novel.genres.as("genres"),
 					genreName.as("genreName"),
 					hashTagName.as("hashTagName"),
 					ExpressionUtils.as(
@@ -89,8 +95,8 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 			.join(novel.member, member)
 			.join(novelGenre).on(novelGenre.novel.novelPk.eq(novel.novelPk))
 			.join(genre).on(novelGenre.genre.genrePk.eq(genre.genrePk))
-			.leftJoin(hashTag).on(novel.novelPk.in(
-					JPAExpressions.select(novel.novelPk)
+			.leftJoin(hashTag).on(hashTag.hashTagPk.in(
+					JPAExpressions.select(novelHashTag.hashtag.hashTagPk)
 					.from(novelHashTag)
 					.where(novel.novelPk.eq(novelHashTag.novel.novelPk))
 					))
@@ -129,7 +135,9 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 	public Novel findByNovelPk(int novelPk) {
 		SimpleTemplate<String> genreName = Expressions.simpleTemplate(String.class, "group_concat({0})", genre.genreName);
 		SimpleTemplate<String> hashTagName = Expressions.simpleTemplate(String.class, "group_concat({0})", hashTag.hashTagName);
-
+		NumberPath<Long> likes = Expressions.numberPath(Long.class, "likes"); 
+		NumberPath<Long> recommends = Expressions.numberPath(Long.class, "recommends");
+		
 		JPAQuery<Novel> query = 
 			queryFactory.select(
 				Projections.constructor(Novel.class, 
@@ -149,7 +157,17 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 						JPAExpressions.select(likeNovel.likeNovelPk.count())
 							.from(likeNovel)
 							.where(likeNovel.novel.novelPk.eq(novel.novelPk)),
-							"likes"
+							likes
+					),
+					ExpressionUtils.as(
+						JPAExpressions.select(likeEpisode.likeEpisodePk.count())
+							.from(likeEpisode)
+							.where(likeEpisode.episode.episodePk.in(
+								JPAExpressions.select(episode.episodePk)
+									.from(episode)
+									.where(episode.novel.novelPk.eq(novel.novelPk))
+								)),
+							recommends
 					)
 				)
 			)
@@ -158,8 +176,8 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 			.join(novel.member, member)
 			.join(novelGenre).on(novelGenre.novel.novelPk.eq(novel.novelPk))
 			.join(genre).on(novelGenre.genre.genrePk.eq(genre.genrePk))
-			.leftJoin(hashTag).on(novel.novelPk.in(
-					JPAExpressions.select(novel.novelPk)
+			.leftJoin(hashTag).on(hashTag.hashTagPk.in(
+					JPAExpressions.select(novelHashTag.hashtag.hashTagPk)
 					.from(novelHashTag)
 					.where(novel.novelPk.eq(novelHashTag.novel.novelPk))
 					))

@@ -15,12 +15,16 @@ import org.springframework.stereotype.Service;
 
 import com.ssafy.model.dto.NovelDTO;
 import com.ssafy.model.entity.Genre;
+import com.ssafy.model.entity.HashTag;
 import com.ssafy.model.entity.Member;
 import com.ssafy.model.entity.Novel;
 import com.ssafy.model.entity.NovelGenre;
+import com.ssafy.model.entity.NovelHashTag;
 import com.ssafy.model.entity.Search;
 import com.ssafy.model.repository.GenreRepository;
+import com.ssafy.model.repository.HashTagRepository;
 import com.ssafy.model.repository.NovelGenreRepository;
+import com.ssafy.model.repository.NovelHashTagRepository;
 import com.ssafy.model.repository.NovelRepository;
 import com.ssafy.model.repository.SearchRepository;
 
@@ -34,6 +38,10 @@ public class NovelServiceImpl implements NovelService{
 	SearchRepository sRepo;
 	@Autowired
 	NovelGenreRepository ngRepo;
+	@Autowired
+	HashTagRepository hRepo;
+	@Autowired
+	NovelHashTagRepository nhRepo;
 	
 	@Autowired
 	ModelMapper modelMapper;
@@ -156,6 +164,23 @@ public class NovelServiceImpl implements NovelService{
 			
 			ngRepo.save(ng);
 		}
+		
+		List<String> hashTags = novel.getHashTagList();
+		for(String h : hashTags) {
+			HashTag hashTag = hRepo.findByHashTagName(h);
+			
+			if(hashTag == null) {
+				HashTag addHashTag = new HashTag();
+				addHashTag.setHashTagName(h);
+				hashTag = hRepo.save(addHashTag);
+			}
+			
+			NovelHashTag nh = new NovelHashTag();
+			nh.setNovel(registedN);
+			nh.setHashtag(hashTag);
+			
+			nhRepo.save(nh);
+		}
 	}
 
 	@Override
@@ -172,6 +197,8 @@ public class NovelServiceImpl implements NovelService{
 		updateN.setNovelStatus(novel.getNovelStatus());
 		updateN.setNovelOnly(novel.isNovelOnly());
 		updateN.setNovelUpdatedAt(new Date());
+		
+		
 		
 		return modelMapper.map(nRepo.save(updateN), NovelDTO.class);
 	}

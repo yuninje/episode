@@ -1,10 +1,16 @@
 package com.ssafy.model.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -28,4 +34,12 @@ public class HashTag {
 	
 	@Column(name = "hashtag_name", length = 30, nullable = false)
 	private String hashTagName;
+	
+	@ManyToMany
+	@JoinTable(
+			name = "novel_hashtag",
+			joinColumns = @JoinColumn(name = "hashtag_pk"),
+			inverseJoinColumns = @JoinColumn(name = "novel_pk") 
+			)	
+	private List<Novel> novels = new ArrayList<Novel>();
 }
