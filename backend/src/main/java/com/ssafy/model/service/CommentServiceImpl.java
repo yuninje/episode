@@ -28,22 +28,22 @@ public class CommentServiceImpl implements CommentService{
 	EpisodeRepository eRepo;
 	@Autowired
 	ModelMapper modelMapper;
-	
+
 	@Override
 	public Page<CommentResponseDto> getComments(Pageable pageable) {
 		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
-		
+
 		Page<Comment> comments = cRepo.findAll(pageRequest);
-		Page<CommentDTO> commentDTOs = 
+		Page<CommentDTO> commentDTOs =
 				comments.map(comment -> {
 					CommentDTO commentDTO = modelMapper.map(comment, CommentDTO.class);
-					
+
 					EpisodeDTO episodeDTO = modelMapper.map(comment.getEpisode(), EpisodeDTO.class);
 					MemberDTO memberDTO = modelMapper.map(comment.getMember(), MemberDTO.class);
 					List<Author> likedMembers= comment.getLikedMembers().stream().map(
 							member -> modelMapper.map(member, Author.class)
 							).collect(Collectors.toList());
-					
+
 					commentDTO.setEpisodeDTO(episodeDTO);
 					commentDTO.setMemberDTO(memberDTO);
 					commentDTO.setLikedMembers(likedMembers);
@@ -51,15 +51,15 @@ public class CommentServiceImpl implements CommentService{
 				});
 		return commentDTOs;
 	}
-	
+
 	@Override
 	public CommentResponseDto getComment(int commentPk) {
 		Comment comment = cRepo.findById(commentPk).orElse(null);
-		
+
 		CommentDTO commentDTO = modelMapper.map(comment, CommentDTO.class);
 		EpisodeDTO episodeDTO = modelMapper.map(comment.getEpisode(), EpisodeDTO.class);
 		commentDTO.setEpisodeDTO(episodeDTO);
-		
+
 		return commentDTO;
 	}
 
@@ -71,13 +71,13 @@ public class CommentServiceImpl implements CommentService{
 
 	@Override
 	public void deleteComment(int commentPk) {
-		cRepo.deleteById(commentPk);		
+		cRepo.deleteById(commentPk);
 	}
 
 	@Override
 	public CommentResponseDto updateComment(int commentPk, CommentDTO commentDTO) {
 		Comment comment = cRepo.findById(commentPk).orElse(null);
-		
+
 		comment.setCommentContent(commentDTO.getCommentContent());
 		cRepo.save(comment);
 	}
