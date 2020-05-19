@@ -22,7 +22,6 @@ public class MemberResponseDto {
 	private Boolean memGender;
 	
 	public MemberResponseDto(Member member) {
-		super();
 		this.memPk = member.getMemPk();
 		this.memId = member.getMemId();
 		this.memEmail = member.getMemEmail();
@@ -35,7 +34,6 @@ public class MemberResponseDto {
     @Builder
 	public MemberResponseDto(Integer memPk, String memId, String memEmail, String memNick, String memPhone,
 			String memBirth, Boolean memGender) {
-		super();
 		this.memPk = memPk;
 		this.memId = memId;
 		this.memEmail = memEmail;

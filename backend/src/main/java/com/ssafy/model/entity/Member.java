@@ -1,24 +1,10 @@
 package com.ssafy.model.entity;
 
+import lombok.*;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Table(name = "member")
@@ -55,8 +41,13 @@ public class Member {
 
 	// member <-> like_novel >> 소설 즐겨찾기 ( = 소설 좋아요 )
 	// 이 멤버가 좋아하는 소설들
-	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
-	private List<LikeNovel> NovelsLikedMember = new ArrayList<>();
+//	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+//	private List<LikeNovel> NovelsLikedMember = new ArrayList<>();
+
+	// member <-> like_comment >> 댓글 좋아요
+	// 이 멤버가 좋아하는 댓글들
+	@ManyToMany(mappedBy = "likedMembers", cascade = CascadeType.REMOVE)
+	private List<Novel> likeNovels = new ArrayList<>();
 	
 	// member <-> like_eipsode >> 에피소드 좋아요
 	// 이 멤버가 좋아하는 에피소드들
@@ -89,7 +80,6 @@ public class Member {
 	@Builder
 	public Member(String memId, String memEmail, String memPw, String memNick, String memPhone,
 			String memBirth, Boolean memGender) {
-		super();
 		this.memId = memId;
 		this.memEmail = memEmail;
 		this.memPw = memPw;

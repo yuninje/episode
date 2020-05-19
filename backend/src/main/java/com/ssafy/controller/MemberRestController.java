@@ -1,34 +1,22 @@
 package com.ssafy.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.ssafy.model.dto.member.Auth;
+import com.ssafy.model.dto.member.MemberResponseDto;
+import com.ssafy.model.dto.member.MemberSaveRequestDto;
+import com.ssafy.model.dto.member.MemberUpdateRequestDto;
+import com.ssafy.model.service.MemberService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.ssafy.model.dto.MemberDTO;
-import com.ssafy.model.dto.member.Auth;
-import com.ssafy.model.dto.member.MemberResponseDto;
-import com.ssafy.model.dto.member.MemberSaveRequestDto;
-import com.ssafy.model.dto.member.MemberUpdateRequestDto;
-import com.ssafy.model.entity.Member;
-import com.ssafy.model.service.MemberService;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import java.util.HashMap;
+import java.util.Map;
 
 @Api(tags = { "1. Member" })
 @RestController
@@ -115,7 +103,7 @@ public class MemberRestController {
 	ResponseEntity<Map<String, Object>> doLike(
 			@ApiParam("요청한 회원의 PK") @PathVariable int memPk, 
 			@ApiParam("요청한 대상의 PK") @PathVariable int objectPk,
-			@ApiParam("요청한 대상의 타입 | 2 : 소설, 3 : 에피소드, 6 : 댓글") @PathVariable int objectType, 
+			@ApiParam("요청한 대상의 타입 | 1 : 소설, 2 : 에피소드, 3 : 댓글") @PathVariable int objectType,
 			@ApiParam("좋아요 / 좋아요 취소 요청 | true : 좋아요, false : 좋아요 취소") @PathVariable boolean flag ){
 		mService.doLike(memPk, objectPk, objectType, flag);			
 		if(flag)

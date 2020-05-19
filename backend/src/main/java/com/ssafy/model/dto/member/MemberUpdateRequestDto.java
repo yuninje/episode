@@ -18,7 +18,6 @@ public class MemberUpdateRequestDto {
 //	@Builder
 //	public MemberUpdateRequestDto(String memId, String memEmail, String memPw, String memNick, String memPhone,
 //			String memBirth, boolean memGender) {
-//		super();
 //		this.memId = memId;
 //		this.memEmail = memEmail;
 //		this.memPw = memPw;

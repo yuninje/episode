@@ -1,32 +1,21 @@
 package com.ssafy.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.ssafy.model.dto.NovelDTO;
+import com.ssafy.model.dto.novel.NovelSaveRequestDto;
+import com.ssafy.model.dto.novel.NovelUpdateRequestDto;
 import com.ssafy.model.service.NovelService;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Api(tags = { "2. Novel" })
 @RestController
@@ -58,15 +47,15 @@ public class NovelRestController {
 
 	@ApiOperation("소설 등록")
 	@PostMapping()
-	ResponseEntity<Map<String, Object>> registNovel(@RequestBody NovelDTO novel) {
-		nService.registNovel(novel);
+	ResponseEntity<Map<String, Object>> registNovel(@RequestBody NovelSaveRequestDto requestDto) {
+		nService.registNovel(requestDto);
 		return handleSuccess("소설 생성 완료");
 	}
 	
 	@ApiOperation("소설 한 개의 정보를 수정 | 변경된 소설 객체 반환")
 	@PutMapping("/{novelPk}")
-	ResponseEntity<Map<String, Object>> updateNovel(@PathVariable int novelPk, @RequestBody NovelDTO novel) {
-		return handleSuccess(nService.updateNovel(novelPk, novel));
+	ResponseEntity<Map<String, Object>> updateNovel(@PathVariable int novelPk, @RequestBody NovelUpdateRequestDto requestDto) {
+		return handleSuccess(nService.updateNovel(novelPk, requestDto));
 	}
 	
 	@ApiOperation("소설 삭제 | 반환되는 data는 비어져있음")

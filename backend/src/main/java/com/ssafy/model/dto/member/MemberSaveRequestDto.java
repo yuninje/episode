@@ -22,7 +22,6 @@ public class MemberSaveRequestDto {
 	@Builder
 	public MemberSaveRequestDto(String memId, String memEmail, String memPw, String memNick, String memPhone,
 			String memBirth, boolean memGender) {
-		super();
 		this.memId = memId;
 		this.memEmail = memEmail;
 		this.memPw = memPw;
@@ -43,6 +42,4 @@ public class MemberSaveRequestDto {
 				.memGender(memGender)
 				.build();
 	}
-	
-	
 }
