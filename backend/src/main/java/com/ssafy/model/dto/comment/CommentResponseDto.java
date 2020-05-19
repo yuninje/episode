@@ -10,11 +10,13 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 public class CommentResponseDto {
+    private int commentPk;
     private String commentContent;
     private MemberResponseDto member;
     private EpisodeResponseNoNovelDto episode; // 소설 안붙어있는거
 
     public CommentResponseDto(Comment comment) {
+        this.commentPk = comment.getCommentPk();
         this.commentContent = comment.getCommentContent();
         this.member = new MemberResponseDto(comment.getMember());
         this.episode = new EpisodeResponseNoNovelDto(comment.getEpisode());

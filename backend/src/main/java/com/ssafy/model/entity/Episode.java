@@ -45,7 +45,7 @@ public class Episode {
 	private Novel novel;
 	
 	// episode <-> comment
-	@OneToMany(mappedBy = "episode")
+	@OneToMany(mappedBy = "episode", cascade = CascadeType.REMOVE)
 	private List<Comment> comments = new ArrayList<>();
 
 	// episode <-> like_episode >> 에피소드 좋아요

@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Entity
 @Table(name = "member")
 @Getter
@@ -60,16 +61,16 @@ public class Member {
 	private List<Comment> likeComments = new ArrayList<>();
 	
 	// member <-> novel 
-	@OneToMany(mappedBy = "member")
-	private List<Novel> novels = new ArrayList<Novel>();
+	@OneToMany(mappedBy = "member",cascade = CascadeType.REMOVE)
+	private List<Novel> novels = new ArrayList<>();
 
 	// member <-> comment 
-	@OneToMany(mappedBy = "member")
-	private List<Comment> comments = new ArrayList<Comment>();
+	@OneToMany(mappedBy = "member",cascade = CascadeType.REMOVE)
+	private List<Comment> comments = new ArrayList<>();
 	
 	// member <-> search
-	@OneToMany(mappedBy = "member")
-	private List<Search> searchs = new ArrayList<Search>();
+	@OneToMany(mappedBy = "member",cascade = CascadeType.REMOVE)
+	private List<Search> searchs = new ArrayList<>();
 
 	public Member(Integer memPk, String memNick) {
 		super();
@@ -100,6 +101,33 @@ public class Member {
 		this.memGender = memGender;
         return this;
     }
-	
-	
+
+
+
+	public void likeNovel(Novel novel){
+		likeNovels.add(novel);
+		novel.getLikedMembers().add(this);
+	}
+	public void unLikeNovel(Novel novel){
+		likeNovels.remove(novel);
+		novel.getLikedMembers().remove(this);
+	}
+
+	public void likeEpisode(Episode episode){
+		likeEpisodes.add(episode);
+		episode.getLikedMembers().remove(this);
+	}
+	public void unLikeEpisode(Episode episode){
+		likeEpisodes.remove(episode);
+		episode.getLikedMembers().remove(this);
+	}
+
+	public void likeComment(Comment comment){
+		likeComments.add(comment);
+		comment.getLikedMembers().add(this);
+	}
+	public void unLikeComment(Comment comment){
+		likeComments.remove(comment);
+		comment.getLikedMembers().remove(this);
+	}
 }

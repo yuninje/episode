@@ -6,7 +6,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -56,7 +55,7 @@ public class Novel {
 	private Member member;
 
 	// novel <-> episode >> 1: N 관계
-	@OneToMany(mappedBy = "novel")
+	@OneToMany(mappedBy = "novel", cascade = CascadeType.REMOVE)
 	private List<Episode> episodes = new ArrayList<Episode>();
 	
 	// novel <-> genre >> N : M 관계
@@ -71,12 +70,8 @@ public class Novel {
 			inverseJoinColumns = @JoinColumn(name = "mem_pk")
 	)
 	private List<Member> likedMembers = new ArrayList<>();
-	
-	// novel <-> like_novel >> 소설 즐겨찾기 ( = 소설 좋아요 )
-	// 이 소설을 좋아하는 멤버들 
-//	@OneToMany(mappedBy = "novel")
-//	private List<LikeNovel> membersLikeNovel = new ArrayList<>();
-	
+
+
 	@Transient
 	private String genreName;
 	@Transient
@@ -85,42 +80,6 @@ public class Novel {
 	private Long likes = 0L;
 	@Transient
 	private Long recommends = 0L;
-
-	public Novel(Integer novelPk, String novelName, String novelIntro, String novelImage, Boolean novelLimit,
-			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, LocalDateTime novelUpdatedAt, Member member,
-			String genreName) {
-		this.novelPk = novelPk;
-		this.novelName = novelName;
-		this.novelIntro = novelIntro;
-		this.novelImage = novelImage;
-		this.novelLimit = novelLimit;
-		this.novelOpen = novelOpen;
-		this.novelStatus = novelStatus;
-		this.novelOnly = novelOnly;
-		this.novelUpdatedAt = novelUpdatedAt;
-		this.member = member;
-		this.genreName = genreName;
-		this.genreList = Arrays.asList(genreName.split(","));
-	}
-	
-	public Novel(Integer novelPk, String novelName, String novelIntro, String novelImage, Boolean novelLimit,
-			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, LocalDateTime novelUpdatedAt, Member member,
-			String genreName, Long likes, Long recommends) {
-		this.novelPk = novelPk;
-		this.novelName = novelName;
-		this.novelIntro = novelIntro;
-		this.novelImage = novelImage;
-		this.novelLimit = novelLimit;
-		this.novelOpen = novelOpen;
-		this.novelStatus = novelStatus;
-		this.novelOnly = novelOnly;
-		this.novelUpdatedAt = novelUpdatedAt;
-		this.member = member;
-		this.genreName = genreName;
-		this.genreList = Arrays.asList(genreName.split(","));
-		this.likes = likes;
-		this.recommends = recommends;
-	}
 
 	@Builder
 	public Novel(Member member, String novelName, String novelIntro, String novelImage, Boolean novelLimit, Boolean novelOpen, Integer novelStatus, Boolean novelOnly) {
@@ -143,5 +102,15 @@ public class Novel {
 		this.novelStatus = novelStatus;
 		this.novelOnly = novelOnly;
 		return this;
+	}
+
+	public void belongGenre(Genre genre){
+		genres.add(genre);
+		genre.getNovels().add(this);
+	}
+
+	public void notBelongGenre(Genre genre){
+		genres.remove(genre);
+		genre.getNovels().remove(this);
 	}
 }

@@ -6,6 +6,7 @@ import com.ssafy.model.dto.episode.EpisodeSaveRequestDto;
 import com.ssafy.model.dto.episode.EpisodeUpdateRequestDto;
 import com.ssafy.model.dto.novel.NovelResponseDto;
 import com.ssafy.model.entity.Episode;
+import com.ssafy.model.entity.Member;
 import com.ssafy.model.entity.Novel;
 import com.ssafy.model.repository.EpisodeRepository;
 import com.ssafy.model.repository.NovelRepository;
@@ -68,6 +69,12 @@ public class EpisodeServiceImpl implements EpisodeService{
 
 	@Override
 	public void deleteEpisode(int episodePk) {
+		Episode episodeEntity = eRepo.findById(episodePk).orElseThrow(()->
+				new IllegalArgumentException("comment " + episodePk + "가 존재하지 않습니다."));
+		for(Member memberEntity : episodeEntity.getLikedMembers()){
+			memberEntity.unLikeEpisode(episodeEntity);
+		}
+		eRepo.save(episodeEntity);
 		eRepo.deleteById(episodePk);
 	}
 

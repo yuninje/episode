@@ -20,10 +20,10 @@ public class SearchServiceImpl implements SearchService {
 
 	public List<SearchDTO> getRealTimeSearch() {
 		List<Search> results = sRepo.getRealTimeSearch();
-		List<SearchDTO> searchs = 
+		List<SearchDTO> searchs =
 				results.stream().map(Search -> modelMapper.map(Search, SearchDTO.class))
 				.collect(Collectors.toList());
-		
+
 		return searchs;
 	}
 }

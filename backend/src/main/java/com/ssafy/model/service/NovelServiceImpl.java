@@ -46,7 +46,7 @@ public class NovelServiceImpl implements NovelService {
                 = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
                 Sort.by("novelUpdatedAt").descending());
 
-        Page<Novel> novelEntityPage =nRepo.findAll(pageable);
+        Page<Novel> novelEntityPage = nRepo.findAll(pageable);
         Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
 
         return novels;
@@ -170,6 +170,12 @@ public class NovelServiceImpl implements NovelService {
 
     @Override
     public void deleteNovel(int novelPk) {
+        Novel novelEntity = nRepo.findById(novelPk).orElseThrow(() ->
+                new IllegalArgumentException("comment " + novelPk + "가 존재하지 않습니다."));
+        for (Member memberEntity : novelEntity.getLikedMembers()) {
+            memberEntity.unLikeNovel(novelEntity);
+        }
+        nRepo.save(novelEntity);
         nRepo.deleteById(novelPk);
     }
 
@@ -188,34 +194,33 @@ public class NovelServiceImpl implements NovelService {
 
     @Override
     public void updateGenreOfNovel(int novelPk, List<Integer> genrePks) {
-        Novel novel = nRepo.findById(novelPk).orElse(null);
+        Novel novel = nRepo.findById(novelPk).orElseThrow(() ->
+                        new IllegalArgumentException("novel pk :  " + novelPk + "가 존재하지 않습니다."));
         List<Genre> oGenres = novel.getGenres(); // 원래 장르들
         // 새로운 장로들
-        List<Genre> uGenres = genrePks.stream().map(genrePk -> {
-            Genre genre = gRepo.findById(genrePk).orElse(null);
-            if (oGenres.contains(genre)) {
-                // 넘어가고
-            } else {
-                // 추가
-                oGenres.add(genre);
-                genre.getNovels().add(novel);
-            }
-            return genre;
-        }).collect(Collectors.toList());
+        List<Genre> uGenres = genrePks.stream().map(genrePk ->
+                gRepo.findById(genrePk).orElseThrow(() ->
+                        new IllegalArgumentException("genre pk :  " + genrePk + "가 존재하지 않습니다."))).collect(Collectors.toList());
 
-        List<Genre> removeGenres = new ArrayList<Genre>();
-        for (Genre genre : oGenres) {
-            if (uGenres.contains(genre)) {
-                // 넘어가고
-            } else {
-                // 삭제
-                genre.getNovels().remove(novel);
-                removeGenres.add(genre);
+        // uGenres 중에서 oGenre에 없는것을 추가
+        for(Genre genreEntity : uGenres){
+            if(!oGenres.contains(genreEntity)){
+                novel.belongGenre(genreEntity);
             }
         }
-        for (Genre genre : removeGenres) {
-            oGenres.remove(genre);
+
+        List<Genre> removeGenres = new ArrayList<>();
+        // oGenres 중에서 uGenre에 없는것을 삭제
+        for(Genre genreEntity : oGenres){
+            if(! uGenres.contains(genreEntity)){
+                removeGenres.add(genreEntity);
+            }
         }
+
+        for(Genre genre : removeGenres){
+            novel.notBelongGenre(genre);
+        }
+
         nRepo.save(novel);
     }
 
