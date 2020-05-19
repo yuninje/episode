@@ -6,7 +6,7 @@ import com.ssafy.model.dto.member.MemberResponseDto;
 import com.ssafy.model.entity.Novel;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +25,7 @@ public class NovelResponseDto {
     private int novelStatus;
     private boolean novelOnly;
     private Long novelView = 0L;
-    private LocalDate novelUpdatedAt;
+    private LocalDateTime novelUpdatedAt;
     private MemberResponseDto member;
     private List<GenreResponseDto> genres = new ArrayList<>();
     private long likes;
@@ -50,7 +50,7 @@ public class NovelResponseDto {
     }
 
     @Builder
-    public NovelResponseDto(int novelPk, String novelName, String novelIntro, String novelImage, boolean novelLimit, boolean novelOpen, int novelStatus, boolean novelOnly, Long novelView, LocalDate novelUpdatedAt, MemberResponseDto member, List<GenreResponseDto> genres, long likes, long recommends) {
+    public NovelResponseDto(int novelPk, String novelName, String novelIntro, String novelImage, boolean novelLimit, boolean novelOpen, int novelStatus, boolean novelOnly, Long novelView, LocalDateTime novelUpdatedAt, MemberResponseDto member, List<GenreResponseDto> genres, long likes, long recommends) {
         this.novelPk = novelPk;
         this.novelName = novelName;
         this.novelIntro = novelIntro;

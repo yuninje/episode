@@ -1,16 +1,20 @@
 package com.ssafy.model.service;
 
-import java.util.List;
+import com.ssafy.model.dto.episode.EpisodeResponseDto;
+import com.ssafy.model.dto.episode.EpisodeSaveRequestDto;
+import com.ssafy.model.dto.episode.EpisodeUpdateRequestDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import com.ssafy.model.dto.EpisodeDTO;
+import java.util.Map;
 
 public interface EpisodeService {
 	// 기본적인 CRUD
-	void registEpisode(EpisodeDTO episodeDTO);
-	List<EpisodeDTO> getEpisodes();
-	EpisodeDTO getEpisode(int episodePk);
-	void updateEpisode(int episodePk, EpisodeDTO episodeDTO);
+	EpisodeResponseDto registEpisode(EpisodeSaveRequestDto requestDto);
+	Page<EpisodeResponseDto> getEpisodes(Pageable pageable);
+	EpisodeResponseDto getEpisode(int episodePk);
+	EpisodeResponseDto updateEpisode(int episodePk, EpisodeUpdateRequestDto requestDto);
 	void deleteEpisode(int episodePk);
-	
-	List<EpisodeDTO> getEpisodesByNovel(int novelPk);
+
+	Map getEpisodesByNovel(int novelPk, Pageable pageable);
 }

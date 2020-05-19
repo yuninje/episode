@@ -1,25 +1,10 @@
 package com.ssafy.model.entity;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "search")
@@ -39,9 +24,9 @@ public class Search {
 
 	@CreatedDate
 	@Column(name = "search_created_at", nullable = false)
-	private Date searchCreatedAt;
+	private LocalDate searchCreatedAt;
 
-	// search <-> member >> N : 1 관계
+	// search <-> member >> N : 1 관계 
 	@ManyToOne
 	@JoinColumn(name = "mem_pk", nullable = false)
 	private Member member;

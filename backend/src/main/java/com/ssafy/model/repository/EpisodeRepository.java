@@ -1,7 +1,9 @@
 package com.ssafy.model.repository;
 
-import java.util.List;
-
+import com.ssafy.model.entity.Episode;
+import com.ssafy.model.entity.Novel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -9,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ssafy.model.entity.Episode;
+import java.util.List;
 
 @Repository
 public interface EpisodeRepository extends JpaRepository<Episode, Integer> {
@@ -46,9 +48,12 @@ public interface EpisodeRepository extends JpaRepository<Episode, Integer> {
 					+ "WHERE EPISODE_PK = :pk",
 			nativeQuery = true)
 	void updateEpisode(
-			@Param("pk") int episodePk, 
+			@Param("pk") int episodePk,
 			@Param("title") String title,
 			@Param("content") String content,
 			@Param("writer") String writer,
 			@Param("view") int view);
+
+
+	Page<Episode> findByNovel(Novel novel, Pageable pageable);
 }

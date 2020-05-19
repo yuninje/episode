@@ -4,7 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,7 +48,7 @@ public class Novel {
 	
 	@LastModifiedDate
 	@Column(name = "novel_updated_at", nullable = false)
-	private LocalDate novelUpdatedAt = LocalDate.now();
+	private LocalDateTime novelUpdatedAt = LocalDateTime.now();
 	
 	// novel <-> member >> N : 1 관계  
 	@ManyToOne
@@ -56,7 +56,7 @@ public class Novel {
 	private Member member;
 
 	// novel <-> episode >> 1: N 관계
-	@OneToMany(mappedBy = "novel")
+	@OneToMany(mappedBy = "novel", cascade = CascadeType.REMOVE)
 	private List<Episode> episodes = new ArrayList<Episode>();
 	
 	// novel <-> genre >> N : M 관계
@@ -64,7 +64,7 @@ public class Novel {
 	private List<Genre> genres = new ArrayList<>();
 
 	// 이 소설을 좋아하는 사람들 | novel : member = N : M
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.REMOVE)
 	@JoinTable(
 			name = "like_novel",
 			joinColumns = @JoinColumn(name = "novel_pk"),
@@ -87,7 +87,7 @@ public class Novel {
 	private Long recommends = 0L;
 
 	public Novel(Integer novelPk, String novelName, String novelIntro, String novelImage, Boolean novelLimit,
-			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, LocalDate novelUpdatedAt, Member member,
+			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, LocalDateTime novelUpdatedAt, Member member,
 			String genreName) {
 		this.novelPk = novelPk;
 		this.novelName = novelName;
@@ -104,7 +104,7 @@ public class Novel {
 	}
 	
 	public Novel(Integer novelPk, String novelName, String novelIntro, String novelImage, Boolean novelLimit,
-			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, LocalDate novelUpdatedAt, Member member,
+			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, LocalDateTime novelUpdatedAt, Member member,
 			String genreName, Long likes, Long recommends) {
 		this.novelPk = novelPk;
 		this.novelName = novelName;

@@ -1,29 +1,12 @@
 package com.ssafy.model.entity;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "comment")
@@ -43,8 +26,8 @@ public class Comment {
 
 	@CreatedDate
 	@Column(name = "comment_created_at", nullable = false)
-	private Date commentCreatedAt;
-	
+	private LocalDate commentCreatedAt;
+
 	// comment <-> member >> N : 1 관계
 	@ManyToOne
 	@JoinColumn(name = "mem_pk", nullable = false)
@@ -60,8 +43,8 @@ public class Comment {
 	// 이 댓글을 좋아하는 멤버들 
 //	@OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
 //	private List<LikeComment> MembersLikeComment = new ArrayList<>();
-	
-	@ManyToMany
+
+	@ManyToMany(cascade = CascadeType.REMOVE)
 	@JoinTable(
 			name = "like_comment",
 			joinColumns = @JoinColumn(name = "comment_pk"),

@@ -16,8 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,14 +68,13 @@ public class NovelServiceImpl implements NovelService {
             Member member = mRepo.findById(memPk)
                     .orElseThrow(() -> new IllegalArgumentException("member pk :  " + memPk + "가 존재하지 않습니다."));
 
-            Date date = new Date();
 
             String[] words = novelName.split(" ");
             for (String word : words) {
                 Search search = new Search();
                 search.setMember(member);
                 search.setSearchWord(word);
-                search.setSearchCreatedAt(date);
+                search.setSearchCreatedAt(LocalDate.now());
                 sRepo.save(search);
             }
         }
@@ -94,14 +93,13 @@ public class NovelServiceImpl implements NovelService {
             Member member = mRepo.findById(memPk)
                     .orElseThrow(() -> new IllegalArgumentException("member pk :  " + memPk + "가 존재하지 않습니다."));
 
-            Date date = new Date();
 
             String[] words = memNick.split(" ");
             for (String word : words) {
                 Search search = new Search();
                 search.setMember(member);
                 search.setSearchWord(word);
-                search.setSearchCreatedAt(date);
+                search.setSearchCreatedAt(LocalDate.now());
                 sRepo.save(search);
             }
         }
@@ -120,14 +118,13 @@ public class NovelServiceImpl implements NovelService {
             Member member = mRepo.findById(memPk)
                     .orElseThrow(() -> new IllegalArgumentException("member pk :  " + memPk + "가 존재하지 않습니다."));
 
-            Date date = new Date();
 
             String[] words = word.split(" ");
             for (String word_ : words) {
                 Search search = new Search();
                 search.setMember(member);
                 search.setSearchWord(word_);
-                search.setSearchCreatedAt(date);
+                search.setSearchCreatedAt(LocalDate.now());
                 sRepo.save(search);
             }
         }
