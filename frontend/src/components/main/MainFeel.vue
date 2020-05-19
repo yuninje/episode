@@ -6,7 +6,7 @@
         <v-row>
           <!-- 모바일은 괜찮은데, 태블릿 전용으로도 비율 줘야할듯 -->
           <v-col 
-            cols="12"
+            cols="6"
             sm="4"
             md="2"
             v-for="(item, i) in items"
@@ -25,9 +25,6 @@
 </template>
 
 <script>
-import http from "../../http-common"
-
-
 export default {
   data() {
     return {
