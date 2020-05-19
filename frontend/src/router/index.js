@@ -8,6 +8,7 @@ import Signin from '../components/member/PageSignIn'
 import Editor from '../components/editor/PageEditor'
 import TestEditor1 from '../components/editor/TestEditor1'
 import TestTest from '../components/editor/TestTest'
+import Feel from '../components/feel/PageFeel'  //  여긴 나중에 바뀔 예정
 
 Vue.use(VueRouter)
 
@@ -44,7 +45,11 @@ const routes = [
     name: 'TestTest',
     component: TestTest
   },
-
+  {
+    path: '/feel',
+    name: 'Feel',
+    component: Feel
+  }
 ]
 
 function rejectAuthUser (to, from, next) {

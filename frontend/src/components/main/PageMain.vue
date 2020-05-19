@@ -3,12 +3,12 @@
     <MainCarousel/>
     <v-container>
       <v-row>
+        <!-- 느낌별 소설 모음 -->
+        <v-col cols="12">
+          <MainFeel/>
+        </v-col>
         <v-col cols="10">
           <v-row>
-            <!-- 느낌별 소설 모음 -->
-            <v-col cols="12">
-              <MainFeel/>
-            </v-col>
             <!-- Top 100 -->
             <v-col cols="12">
               <MainTop100/>
