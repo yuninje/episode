@@ -7,7 +7,10 @@ import com.ssafy.model.entity.Genre;
 import com.ssafy.model.entity.Member;
 import com.ssafy.model.entity.Novel;
 import com.ssafy.model.entity.Search;
-import com.ssafy.model.repository.*;
+import com.ssafy.model.repository.GenreRepository;
+import com.ssafy.model.repository.MemberRepository;
+import com.ssafy.model.repository.NovelRepository;
+import com.ssafy.model.repository.SearchRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,8 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,8 +34,8 @@ public class NovelServiceImpl implements NovelService {
     GenreRepository gRepo;
     @Autowired
     SearchRepository sRepo;
-    @Autowired
-    NovelGenreRepository ngRepo;
+//    @Autowired
+//    NovelGenreRepository ngRepo;
 
     @Autowired
     ModelMapper modelMapper;
@@ -69,20 +72,23 @@ public class NovelServiceImpl implements NovelService {
                     .orElseThrow(() -> new IllegalArgumentException("member pk :  " + memPk + "가 존재하지 않습니다."));
 
 
+            Date date = new Date();
+
             String[] words = novelName.split(" ");
             for (String word : words) {
                 Search search = new Search();
                 search.setMember(member);
                 search.setSearchWord(word);
-                search.setSearchCreatedAt(LocalDate.now());
+                search.setSearchCreatedAt(date);
                 sRepo.save(search);
             }
         }
 
-        Page<Novel> novelEntityPage = nRepo.find("novel_name", novelName, pageRequest, sort);
-        Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
-
-        return novels;
+//        Page<Novel> novelEntityPage = nRepo.find("novel_name", novelName, pageRequest, sort);
+//        Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
+//
+//        return novels;
+        return null;
     }
 
     @Override
@@ -94,20 +100,22 @@ public class NovelServiceImpl implements NovelService {
                     .orElseThrow(() -> new IllegalArgumentException("member pk :  " + memPk + "가 존재하지 않습니다."));
 
 
+            Date date = new Date();
             String[] words = memNick.split(" ");
             for (String word : words) {
                 Search search = new Search();
                 search.setMember(member);
                 search.setSearchWord(word);
-                search.setSearchCreatedAt(LocalDate.now());
+                search.setSearchCreatedAt(date);
                 sRepo.save(search);
             }
         }
 
-        Page<Novel> novelEntityPage = nRepo.find("author_name", memNick, pageRequest, sort);
-        Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
-
-        return novels;
+//        Page<Novel> novelEntityPage = nRepo.find("author_name", memNick, pageRequest, sort);
+//        Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
+//
+//        return novels;
+        return null;
     }
 
     @Override
@@ -119,20 +127,22 @@ public class NovelServiceImpl implements NovelService {
                     .orElseThrow(() -> new IllegalArgumentException("member pk :  " + memPk + "가 존재하지 않습니다."));
 
 
+            Date date = new Date();
             String[] words = word.split(" ");
             for (String word_ : words) {
                 Search search = new Search();
                 search.setMember(member);
                 search.setSearchWord(word_);
-                search.setSearchCreatedAt(LocalDate.now());
+                search.setSearchCreatedAt(date);
                 sRepo.save(search);
             }
         }
 
-        Page<Novel> novelEntityPage = nRepo.find("author_or_novel", word, pageRequest, sort);
-        Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
-
-        return novels;
+//        Page<Novel> novelEntityPage = nRepo.find("author_or_novel", word, pageRequest, sort);
+//        Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
+//
+//        return novels;
+        return null;
     }
 
     @Override
@@ -211,10 +221,11 @@ public class NovelServiceImpl implements NovelService {
 
     @Override
     public Page<NovelResponseDto> getNovelByMember(int memPk, Pageable pageable, String sort) {
-        Page<Novel> novelEntityPage = nRepo.find("mem_pk", Integer.toString(memPk), pageable, sort);
-        Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
-
-        return novels;
+//        Page<Novel> novelEntityPage = nRepo.find("mem_pk", Integer.toString(memPk), pageable, sort);
+//        Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
+//
+//        return novels;
+        return null;
     }
 
 }

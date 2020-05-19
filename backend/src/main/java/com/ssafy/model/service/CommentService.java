@@ -1,15 +1,16 @@
 package com.ssafy.model.service;
 
+import com.ssafy.model.dto.comment.CommentResponseDto;
+import com.ssafy.model.dto.comment.CommentSaveRequestDto;
+import com.ssafy.model.dto.comment.CommentUpdateRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.ssafy.model.dto.CommentDTO;
-
 public interface CommentService {
-	Page<CommentDTO> getComments(Pageable pageable);
-	CommentDTO getComment(int commentPk);
-	void registComment(CommentDTO commentDTO);
+	Page<CommentResponseDto> getComments(Pageable pageable);
+	CommentResponseDto getComment(int commentPk);
+	CommentResponseDto registComment(CommentSaveRequestDto requestDto);
 	void deleteComment(int commentPk);
-	void updateComment(int commentPk, CommentDTO commentDTO);
-	Page<CommentDTO> getCommentByEpisode(int episodePk, Pageable pageable);
+	CommentResponseDto updateComment(int commentPk, CommentUpdateRequestDto requestDto);
+	Page<CommentResponseDto> getCommentByEpisode(int episodePk, Pageable pageable);
 }

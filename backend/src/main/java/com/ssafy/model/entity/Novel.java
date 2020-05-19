@@ -56,15 +56,15 @@ public class Novel {
 	private Member member;
 
 	// novel <-> episode >> 1: N 관계
-	@OneToMany(mappedBy = "novel", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "novel")
 	private List<Episode> episodes = new ArrayList<Episode>();
 	
 	// novel <-> genre >> N : M 관계
-	@ManyToMany(mappedBy = "novels", cascade = CascadeType.REMOVE)
+	@ManyToMany(mappedBy = "novels")
 	private List<Genre> genres = new ArrayList<>();
 
 	// 이 소설을 좋아하는 사람들 | novel : member = N : M
-	@ManyToMany(cascade = CascadeType.REMOVE)
+	@ManyToMany
 	@JoinTable(
 			name = "like_novel",
 			joinColumns = @JoinColumn(name = "novel_pk"),

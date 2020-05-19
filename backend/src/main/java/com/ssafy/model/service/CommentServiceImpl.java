@@ -3,6 +3,7 @@ package com.ssafy.model.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.ssafy.model.dto.comment.CommentResponseDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,7 +30,7 @@ public class CommentServiceImpl implements CommentService{
 	ModelMapper modelMapper;
 	
 	@Override
-	public Page<CommentDTO> getComments(Pageable pageable) {
+	public Page<CommentResponseDto> getComments(Pageable pageable) {
 		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
 		
 		Page<Comment> comments = cRepo.findAll(pageRequest);
@@ -52,7 +53,7 @@ public class CommentServiceImpl implements CommentService{
 	}
 	
 	@Override
-	public CommentDTO getComment(int commentPk) {
+	public CommentResponseDto getComment(int commentPk) {
 		Comment comment = cRepo.findById(commentPk).orElse(null);
 		
 		CommentDTO commentDTO = modelMapper.map(comment, CommentDTO.class);
@@ -63,7 +64,7 @@ public class CommentServiceImpl implements CommentService{
 	}
 
 	@Override
-	public void registComment(CommentDTO commentDTO) {
+	public CommentResponseDto registComment(CommentDTO commentDTO) {
 		Comment comment = modelMapper.map(commentDTO, Comment.class);
 		cRepo.save(comment);
 	}
@@ -74,7 +75,7 @@ public class CommentServiceImpl implements CommentService{
 	}
 
 	@Override
-	public void updateComment(int commentPk, CommentDTO commentDTO) {
+	public CommentResponseDto updateComment(int commentPk, CommentDTO commentDTO) {
 		Comment comment = cRepo.findById(commentPk).orElse(null);
 		
 		comment.setCommentContent(commentDTO.getCommentContent());
@@ -82,7 +83,7 @@ public class CommentServiceImpl implements CommentService{
 	}
 
 	@Override
-	public Page<CommentDTO> getCommentByEpisode(int episodePk, Pageable pageable) {
+	public Page<CommentResponseDto> getCommentByEpisode(int episodePk, Pageable pageable) {
 		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
 		Episode episode = new Episode();
 		episode.setEpisodePk(episodePk);

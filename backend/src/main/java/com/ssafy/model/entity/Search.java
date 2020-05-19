@@ -4,7 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Table(name = "search")
@@ -24,9 +24,9 @@ public class Search {
 
 	@CreatedDate
 	@Column(name = "search_created_at", nullable = false)
-	private LocalDate searchCreatedAt;
+	private Date searchCreatedAt;
 
-	// search <-> member >> N : 1 관계 
+	// search <-> member >> N : 1 관계
 	@ManyToOne
 	@JoinColumn(name = "mem_pk", nullable = false)
 	private Member member;

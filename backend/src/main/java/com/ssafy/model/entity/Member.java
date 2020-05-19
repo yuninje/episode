@@ -46,29 +46,29 @@ public class Member {
 
 	// member <-> like_comment >> 댓글 좋아요
 	// 이 멤버가 좋아하는 댓글들
-	@ManyToMany(mappedBy = "likedMembers", cascade = CascadeType.REMOVE)
+	@ManyToMany(mappedBy = "likedMembers")
 	private List<Novel> likeNovels = new ArrayList<>();
 	
 	// member <-> like_eipsode >> 에피소드 좋아요
 	// 이 멤버가 좋아하는 에피소드들
-	@ManyToMany(mappedBy = "likedMembers", cascade = CascadeType.REMOVE)
+	@ManyToMany(mappedBy = "likedMembers")
 	private List<Episode> likeEpisodes = new ArrayList<>();
 
 	// member <-> like_comment >> 댓글 좋아요
 	// 이 멤버가 좋아하는 댓글들
-	@ManyToMany(mappedBy = "likedMembers", cascade = CascadeType.REMOVE)
+	@ManyToMany(mappedBy = "likedMembers")
 	private List<Comment> likeComments = new ArrayList<>();
 	
 	// member <-> novel 
-	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "member")
 	private List<Novel> novels = new ArrayList<Novel>();
 
 	// member <-> comment 
-	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "member")
 	private List<Comment> comments = new ArrayList<Comment>();
 	
 	// member <-> search
-	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "member")
 	private List<Search> searchs = new ArrayList<Search>();
 
 	public Member(Integer memPk, String memNick) {

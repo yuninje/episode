@@ -3,6 +3,8 @@ package com.ssafy.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ssafy.model.dto.comment.CommentSaveRequestDto;
+import com.ssafy.model.dto.comment.CommentUpdateRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -47,9 +49,8 @@ public class CommentRestController {
 	
 	@ApiOperation("댓글 생성")
 	@PostMapping()
-	ResponseEntity<Map<String, Object>> registComment(@RequestBody CommentDTO commentDTO){
-		cService.registComment(commentDTO);
-		return handleSuccess("댓글 생성 완료");
+	ResponseEntity<Map<String, Object>> registComment(@RequestBody CommentSaveRequestDto requestDto){
+		return handleSuccess(cService.registComment(requestDto));
 	}
 	
 	@ApiOperation("댓글 삭제")
@@ -61,9 +62,8 @@ public class CommentRestController {
 	
 	@ApiOperation("댓글 수정")
 	@PutMapping("/{commentPk}")
-	ResponseEntity<Map<String, Object>> updateComment(@PathVariable int commentPk, @RequestBody CommentDTO commentDTO){
-		cService.updateComment(commentPk, commentDTO);
-		return handleSuccess("댓글 수정 완료");
+	ResponseEntity<Map<String, Object>> updateComment(@PathVariable int commentPk, @RequestBody CommentUpdateRequestDto requestDto){
+		return handleSuccess(cService.updateComment(commentPk, requestDto));
 	}
 
 	@ApiOperation("에피소드에 대한 댓글 조회")
