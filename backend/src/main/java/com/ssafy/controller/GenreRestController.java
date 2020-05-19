@@ -35,8 +35,8 @@ public class GenreRestController {
 	@ApiOperation("장르 등록")
 	@PostMapping()
 	ResponseEntity<Map<String, Object>> registGenre(@RequestBody GenreSaveRequestDto requestDto) {
-		gService.registGenre(requestDto);
-		return handleSuccess("장르 생성 완료");
+
+		return handleSuccess(gService.registGenre(requestDto));
 	}
 
 	@ApiOperation("장르 삭제")
@@ -49,8 +49,8 @@ public class GenreRestController {
 	@ApiOperation("장르 수정")
 	@PutMapping("/{genrePk}")
 	ResponseEntity<Map<String, Object>> updateGenre(@PathVariable int genrePk, @RequestBody GenreUpdateRequestDto requestDto) {
-		gService.updateGenre(genrePk, requestDto);
-		return handleSuccess("장르 삭제 완료");
+
+		return handleSuccess(gService.updateGenre(genrePk, requestDto));
 	}
 	
 

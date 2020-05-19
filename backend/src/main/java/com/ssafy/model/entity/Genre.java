@@ -22,13 +22,7 @@ public class Genre {
 	@Column(name = "genre_name", length = 30, nullable = false)
 	private String genreName;
 	
-
-	// genre <-> NovelGenre >> 장르에 속한 소설
-	// 이 장르에 속한 소설
-//	@OneToMany(mappedBy = "genre") 
-//	private List<NovelGenre> novels = new ArrayList<>();
-
-	@ManyToMany(cascade = CascadeType.REMOVE)
+	@ManyToMany
 	@JoinTable(
 			name = "novel_genre",
 			joinColumns = @JoinColumn(name = "genre_pk"),

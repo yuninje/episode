@@ -40,8 +40,10 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void regist(MemberSaveRequestDto requestDto) {
-        mRepo.save(requestDto.toEntity());
+    public MemberResponseDto regist(MemberSaveRequestDto requestDto) {
+        Member memberEntity = mRepo.save(requestDto.toEntity());
+        MemberResponseDto member = new MemberResponseDto(memberEntity);
+        return member;
     }
 
     @Override

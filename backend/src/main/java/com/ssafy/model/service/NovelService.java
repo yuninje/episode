@@ -17,10 +17,10 @@ public interface NovelService {
 	Page<NovelResponseDto> getNovelsByName(String novelName, Pageable pageable, String sort, int memPk);
 	Page<NovelResponseDto> getNovlesByNick(String memNick, Pageable pageable, String sort, int memPk);
 	Page<NovelResponseDto> getNovelsByNameOrNick(String word, Pageable pageable, String sort, int memPk);
-	void registNovel(NovelSaveRequestDto requestDto);
+	NovelResponseDto registNovel(NovelSaveRequestDto requestDto);
 	NovelResponseDto updateNovel(int novelPk, NovelUpdateRequestDto requestDto);
 	@Transactional
 	void deleteNovel(int novelPk);
-	void updateGenreOfNovel(int novelPk, List<Integer> genrePks);
+	NovelResponseDto updateGenreOfNovel(int novelPk, List<Integer> genrePks);
 	Page<NovelResponseDto> getNovelByMember(int memPk, Pageable pageable, String sort);
 }

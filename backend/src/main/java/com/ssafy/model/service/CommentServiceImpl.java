@@ -1,8 +1,14 @@
 package com.ssafy.model.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import com.ssafy.model.dto.comment.CommentResponseDto;
+import com.ssafy.model.dto.comment.CommentSaveRequestDto;
+import com.ssafy.model.dto.comment.CommentUpdateRequestDto;
+import com.ssafy.model.entity.Comment;
+import com.ssafy.model.entity.Episode;
+import com.ssafy.model.entity.Member;
+import com.ssafy.model.repository.CommentRepository;
+import com.ssafy.model.repository.EpisodeRepository;
+import com.ssafy.model.repository.MemberRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,94 +16,74 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.ssafy.model.dto.CommentDTO;
-import com.ssafy.model.dto.EpisodeDTO;
-import com.ssafy.model.dto.MemberDTO;
-import com.ssafy.model.dto.member.Author;
-import com.ssafy.model.entity.Comment;
-import com.ssafy.model.entity.Episode;
-import com.ssafy.model.repository.CommentRepository;
-import com.ssafy.model.repository.EpisodeRepository;
-
 @Service
 public class CommentServiceImpl implements CommentService{
 	@Autowired
-	CommentRepository cRepo;
+	MemberRepository mRepo;
 	@Autowired
 	EpisodeRepository eRepo;
 	@Autowired
+	CommentRepository cRepo;
+	@Autowired
 	ModelMapper modelMapper;
-	
+
 	@Override
-	public Page<CommentDTO> getComments(Pageable pageable) {
-		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
-		
-		Page<Comment> comments = cRepo.findAll(pageRequest);
-		Page<CommentDTO> commentDTOs = 
-				comments.map(comment -> {
-					CommentDTO commentDTO = modelMapper.map(comment, CommentDTO.class);
-					
-					EpisodeDTO episodeDTO = modelMapper.map(comment.getEpisode(), EpisodeDTO.class);
-					MemberDTO memberDTO = modelMapper.map(comment.getMember(), MemberDTO.class);
-					List<Author> likedMembers= comment.getLikedMembers().stream().map(
-							member -> modelMapper.map(member, Author.class)
-							).collect(Collectors.toList());
-					
-					commentDTO.setEpisodeDTO(episodeDTO);
-					commentDTO.setMemberDTO(memberDTO);
-					commentDTO.setLikedMembers(likedMembers);
-					return commentDTO;
-				});
-		return commentDTOs;
-	}
-	
-	@Override
-	public CommentDTO getComment(int commentPk) {
-		Comment comment = cRepo.findById(commentPk).orElse(null);
-		
-		CommentDTO commentDTO = modelMapper.map(comment, CommentDTO.class);
-		EpisodeDTO episodeDTO = modelMapper.map(comment.getEpisode(), EpisodeDTO.class);
-		commentDTO.setEpisodeDTO(episodeDTO);
-		
-		return commentDTO;
+	public Page<CommentResponseDto> getComments(Pageable pageable) {
+		Page<Comment> commentEntityPage = cRepo.findAll(pageable);
+		Page<CommentResponseDto> comments = commentEntityPage.map(commentEntity -> new CommentResponseDto(commentEntity));
+
+		return comments;
 	}
 
 	@Override
-	public void registComment(CommentDTO commentDTO) {
-		Comment comment = modelMapper.map(commentDTO, Comment.class);
-		cRepo.save(comment);
+	public CommentResponseDto getComment(int commentPk) {
+		Comment commentEntity = cRepo.findById(commentPk).orElseThrow(()->
+				new IllegalArgumentException("comment " + commentPk + "가 존재하지 않습니다."));
+
+		CommentResponseDto comment = new CommentResponseDto(commentEntity);
+		return comment;
+	}
+
+	@Override
+	public CommentResponseDto registComment(CommentSaveRequestDto requestDto) {
+		Comment commentEntity = requestDto.toEntity(mRepo, eRepo);
+		commentEntity = cRepo.save(commentEntity);
+
+		CommentResponseDto comment = new CommentResponseDto(commentEntity);
+		return comment;
 	}
 
 	@Override
 	public void deleteComment(int commentPk) {
-		cRepo.deleteById(commentPk);		
+		Comment commentEntity = cRepo.findById(commentPk).orElseThrow(()->
+				new IllegalArgumentException("comment " + commentPk + "가 존재하지 않습니다."));
+		for(Member memberEntity : commentEntity.getLikedMembers()){
+			memberEntity.unLikeComment(commentEntity);
+		}
+		cRepo.save(commentEntity);
+		cRepo.deleteById(commentPk);
 	}
 
 	@Override
-	public void updateComment(int commentPk, CommentDTO commentDTO) {
-		Comment comment = cRepo.findById(commentPk).orElse(null);
-		
-		comment.setCommentContent(commentDTO.getCommentContent());
-		cRepo.save(comment);
+	public CommentResponseDto updateComment(int commentPk, CommentUpdateRequestDto requestDto) {
+		Comment commentEntity = cRepo.findById(commentPk).orElseThrow(()->
+				new IllegalArgumentException("comment " + commentPk + "가 존재하지 않습니다."));
+		commentEntity.update(requestDto.getCommentContent());
+
+		CommentResponseDto comment = new CommentResponseDto(cRepo.save(commentEntity));
+		return comment;
 	}
 
 	@Override
-	public Page<CommentDTO> getCommentByEpisode(int episodePk, Pageable pageable) {
+	public Page<CommentResponseDto> getCommentByEpisode(int episodePk, Pageable pageable) {
 		PageRequest pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
-		Episode episode = new Episode();
-		episode.setEpisodePk(episodePk);
-		
-		Page<Comment> comments = cRepo.findByEpisode(episode, pageRequest);
-		Page<CommentDTO> commentDTOs = comments.map(comment -> {
-			CommentDTO commentDTO = modelMapper.map(comment, CommentDTO.class);
-			
-			MemberDTO memberDTO = modelMapper.map(comment.getMember(), MemberDTO.class);
-			
-			commentDTO.setMemberDTO(memberDTO);
-			return commentDTO;
-		});
-		
-		return commentDTOs;
+		Episode episodeEntity = eRepo.findById(episodePk).orElseThrow(()->
+				new IllegalArgumentException("episode " + episodePk + "가 존재하지 않습니다."));
+
+		Page<Comment> commentEntityPage = cRepo.findByEpisode(episodeEntity, pageRequest);
+		Page<CommentResponseDto> comments = commentEntityPage.map(commentEntity -> new CommentResponseDto(commentEntity));
+
+		return comments;
 	}
 		
 	

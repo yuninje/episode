@@ -7,7 +7,10 @@ import com.ssafy.model.entity.Genre;
 import com.ssafy.model.entity.Member;
 import com.ssafy.model.entity.Novel;
 import com.ssafy.model.entity.Search;
-import com.ssafy.model.repository.*;
+import com.ssafy.model.repository.GenreRepository;
+import com.ssafy.model.repository.MemberRepository;
+import com.ssafy.model.repository.NovelRepository;
+import com.ssafy.model.repository.SearchRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,9 +33,9 @@ public class NovelServiceImpl implements NovelService {
     @Autowired
 	GenreRepository gRepo;
     @Autowired
-	SearchRepository sRepo;
-    @Autowired
-	NovelGenreRepository ngRepo;
+    SearchRepository sRepo;
+//    @Autowired
+//    NovelGenreRepository ngRepo;
 
     @Autowired
 	ModelMapper modelMapper;
@@ -43,7 +46,7 @@ public class NovelServiceImpl implements NovelService {
                 = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
                 Sort.by("novelUpdatedAt").descending());
 
-        Page<Novel> novelEntityPage =nRepo.findAll(pageable);
+        Page<Novel> novelEntityPage = nRepo.findAll(pageable);
         Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
 
         return novels;
@@ -79,10 +82,11 @@ public class NovelServiceImpl implements NovelService {
             }
         }
 
-        Page<Novel> novelEntityPage = nRepo.find("novel_name", novelName, pageRequest, sort);
-        Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
-
-        return novels;
+//        Page<Novel> novelEntityPage = nRepo.find("novel_name", novelName, pageRequest, sort);
+//        Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
+//
+//        return novels;
+        return null;
     }
 
     @Override
@@ -104,10 +108,11 @@ public class NovelServiceImpl implements NovelService {
             }
         }
 
-        Page<Novel> novelEntityPage = nRepo.find("author_name", memNick, pageRequest, sort);
-        Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
-
-        return novels;
+//        Page<Novel> novelEntityPage = nRepo.find("author_name", memNick, pageRequest, sort);
+//        Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
+//
+//        return novels;
+        return null;
     }
 
     @Override
@@ -130,17 +135,19 @@ public class NovelServiceImpl implements NovelService {
             }
         }
 
-        Page<Novel> novelEntityPage = nRepo.find("author_or_novel", word, pageRequest, sort);
-        Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
-
-        return novels;
+//        Page<Novel> novelEntityPage = nRepo.find("author_or_novel", word, pageRequest, sort);
+//        Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
+//
+//        return novels;
+        return null;
     }
 
     @Override
-    public void registNovel(NovelSaveRequestDto requestDto) {
+    public NovelResponseDto registNovel(NovelSaveRequestDto requestDto) {
 
-    	nRepo.save(requestDto.toEntity(mRepo));
-
+    	Novel novelEntity = nRepo.save(requestDto.toEntity(mRepo));
+        NovelResponseDto novel = new NovelResponseDto(novelEntity);
+        return novel;
 //		Novel registN = modelMapper.map(novel, Novel.class);
 //		Novel registedN = nRepo.save(registN);
 //
@@ -196,6 +203,12 @@ public class NovelServiceImpl implements NovelService {
 
     @Override
     public void deleteNovel(int novelPk) {
+        Novel novelEntity = nRepo.findById(novelPk).orElseThrow(() ->
+                new IllegalArgumentException("comment " + novelPk + "가 존재하지 않습니다."));
+        for (Member memberEntity : novelEntity.getLikedMembers()) {
+            memberEntity.unLikeNovel(novelEntity);
+        }
+        nRepo.save(novelEntity);
         nRepo.deleteById(novelPk);
     }
 
@@ -213,44 +226,45 @@ public class NovelServiceImpl implements NovelService {
     }
 
     @Override
-    public void updateGenreOfNovel(int novelPk, List<Integer> genrePks) {
-        Novel novel = nRepo.findById(novelPk).orElse(null);
-        List<Genre> oGenres = novel.getGenres(); // 원래 장르들
+    public NovelResponseDto updateGenreOfNovel(int novelPk, List<Integer> genrePks) {
+        Novel novelEntity = nRepo.findById(novelPk).orElseThrow(() ->
+                        new IllegalArgumentException("novel pk :  " + novelPk + "가 존재하지 않습니다."));
+        List<Genre> oGenres = novelEntity.getGenres(); // 원래 장르들
         // 새로운 장로들
-        List<Genre> uGenres = genrePks.stream().map(genrePk -> {
-            Genre genre = gRepo.findById(genrePk).orElse(null);
-            if (oGenres.contains(genre)) {
-                // 넘어가고
-            } else {
-                // 추가
-                oGenres.add(genre);
-                genre.getNovels().add(novel);
-            }
-            return genre;
-        }).collect(Collectors.toList());
+        List<Genre> uGenres = genrePks.stream().map(genrePk ->
+                gRepo.findById(genrePk).orElseThrow(() ->
+                        new IllegalArgumentException("genre pk :  " + genrePk + "가 존재하지 않습니다."))).collect(Collectors.toList());
 
-        List<Genre> removeGenres = new ArrayList<Genre>();
-        for (Genre genre : oGenres) {
-            if (uGenres.contains(genre)) {
-                // 넘어가고
-            } else {
-                // 삭제
-                genre.getNovels().remove(novel);
-                removeGenres.add(genre);
+        // uGenres 중에서 oGenre에 없는것을 추가
+        for(Genre genreEntity : uGenres){
+            if(!oGenres.contains(genreEntity)){
+                novelEntity.belongGenre(genreEntity);
             }
         }
-        for (Genre genre : removeGenres) {
-            oGenres.remove(genre);
+
+        List<Genre> removeGenres = new ArrayList<>();
+        // oGenres 중에서 uGenre에 없는것을 삭제
+        for(Genre genreEntity : oGenres){
+            if(! uGenres.contains(genreEntity)){
+                removeGenres.add(genreEntity);
+            }
         }
-        nRepo.save(novel);
+
+        for(Genre genre : removeGenres){
+            novelEntity.notBelongGenre(genre);
+        }
+
+        NovelResponseDto novel = new NovelResponseDto(nRepo.save(novelEntity));
+        return novel;
     }
 
     @Override
     public Page<NovelResponseDto> getNovelByMember(int memPk, Pageable pageable, String sort) {
-        Page<Novel> novelEntityPage = nRepo.find("mem_pk", Integer.toString(memPk), pageable, sort);
-        Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
-
-        return novels;
+//        Page<Novel> novelEntityPage = nRepo.find("mem_pk", Integer.toString(memPk), pageable, sort);
+//        Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
+//
+//        return novels;
+        return null;
     }
 
 }

@@ -68,7 +68,7 @@ public class Novel {
 	private List<Episode> episodes = new ArrayList<Episode>();
 	
 	// novel <-> genre >> N : M 관계
-	@ManyToMany(mappedBy = "novels", cascade = CascadeType.REMOVE)
+	@ManyToMany(mappedBy = "novels")
 	private List<Genre> genres = new ArrayList<>();
 
 	// novel <-> hashtag >> N : M 관계
@@ -76,15 +76,13 @@ public class Novel {
 	private List<HashTag> hashTags = new ArrayList<>();
 
 	// 이 소설을 좋아하는 사람들 | novel : member = N : M
-	@ManyToMany(cascade = CascadeType.REMOVE)
+	@ManyToMany
 	@JoinTable(
 			name = "like_novel",
 			joinColumns = @JoinColumn(name = "novel_pk"),
 			inverseJoinColumns = @JoinColumn(name = "mem_pk")
 	)
 	private List<Member> likedMembers = new ArrayList<>();
-
-
 
 	@Transient
 	private String genreName;
@@ -162,5 +160,15 @@ public class Novel {
 		this.novelStatus = novelStatus;
 		this.novelOnly = novelOnly;
 		return this;
+	}
+
+	public void belongGenre(Genre genre){
+		genres.add(genre);
+		genre.getNovels().add(this);
+	}
+
+	public void notBelongGenre(Genre genre){
+		genres.remove(genre);
+		genre.getNovels().remove(this);
 	}
 }

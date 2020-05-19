@@ -1,28 +1,19 @@
 package com.ssafy.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.ssafy.model.dto.comment.CommentSaveRequestDto;
+import com.ssafy.model.dto.comment.CommentUpdateRequestDto;
+import com.ssafy.model.service.CommentService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.ssafy.model.dto.CommentDTO;
-import com.ssafy.model.service.CommentService;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import java.util.HashMap;
+import java.util.Map;
 
 @Api(tags = { "6. Comment" })
 @RestController
@@ -47,9 +38,8 @@ public class CommentRestController {
 	
 	@ApiOperation("댓글 생성")
 	@PostMapping()
-	ResponseEntity<Map<String, Object>> registComment(@RequestBody CommentDTO commentDTO){
-		cService.registComment(commentDTO);
-		return handleSuccess("댓글 생성 완료");
+	ResponseEntity<Map<String, Object>> registComment(@RequestBody CommentSaveRequestDto requestDto){
+		return handleSuccess(cService.registComment(requestDto));
 	}
 	
 	@ApiOperation("댓글 삭제")
@@ -61,9 +51,8 @@ public class CommentRestController {
 	
 	@ApiOperation("댓글 수정")
 	@PutMapping("/{commentPk}")
-	ResponseEntity<Map<String, Object>> updateComment(@PathVariable int commentPk, @RequestBody CommentDTO commentDTO){
-		cService.updateComment(commentPk, commentDTO);
-		return handleSuccess("댓글 수정 완료");
+	ResponseEntity<Map<String, Object>> updateComment(@PathVariable int commentPk, @RequestBody CommentUpdateRequestDto requestDto){
+		return handleSuccess(cService.updateComment(commentPk, requestDto));
 	}
 
 	@ApiOperation("에피소드에 대한 댓글 조회")

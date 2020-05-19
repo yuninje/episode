@@ -26,7 +26,7 @@ public class Search {
 	@Column(name = "search_created_at", nullable = false)
 	private Date searchCreatedAt;
 
-	// search <-> member >> N : 1 관계 
+	// search <-> member >> N : 1 관계
 	@ManyToOne
 	@JoinColumn(name = "mem_pk", nullable = false)
 	private Member member;

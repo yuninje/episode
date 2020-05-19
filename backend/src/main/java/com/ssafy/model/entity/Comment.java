@@ -44,7 +44,7 @@ public class Comment {
 //	@OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
 //	private List<LikeComment> MembersLikeComment = new ArrayList<>();
 
-	@ManyToMany(cascade = CascadeType.REMOVE)
+	@ManyToMany
 	@JoinTable(
 			name = "like_comment",
 			joinColumns = @JoinColumn(name = "comment_pk"),
@@ -52,5 +52,17 @@ public class Comment {
 			)	
 	private List<Member> likedMembers = new ArrayList<Member>();
 
+	@Builder
+	public Comment(Integer commentPk, String commentContent, LocalDate commentCreatedAt, Member member, Episode episode) {
+		this.commentPk = commentPk;
+		this.commentContent = commentContent;
+		this.commentCreatedAt = commentCreatedAt;
+		this.member = member;
+		this.episode = episode;
+	}
 
+	public Comment update(String commentContent){
+		this.commentContent = commentContent;
+		return this;
+	}
 }

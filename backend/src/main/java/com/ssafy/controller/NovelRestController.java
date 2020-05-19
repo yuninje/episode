@@ -48,8 +48,7 @@ public class NovelRestController {
 	@ApiOperation("소설 등록")
 	@PostMapping()
 	ResponseEntity<Map<String, Object>> registNovel(@RequestBody NovelSaveRequestDto requestDto) {
-		nService.registNovel(requestDto);
-		return handleSuccess("소설 생성 완료");
+		return handleSuccess(nService.registNovel(requestDto));
 	}
 	
 	@ApiOperation("소설 한 개의 정보를 수정 | 변경된 소설 객체 반환")
@@ -58,18 +57,17 @@ public class NovelRestController {
 		return handleSuccess(nService.updateNovel(novelPk, requestDto));
 	}
 	
-	@ApiOperation("소설 삭제 | 반환되는 data는 비어져있음")
+	@ApiOperation("소설 삭제 | 성공하면 String 문자열 반환")
 	@DeleteMapping("/{novelPk}")
 	ResponseEntity<Map<String, Object>> deleteNovel(@PathVariable int novelPk) {
 		nService.deleteNovel(novelPk);
-		return handleSuccess("");
+		return handleSuccess("소설 삭제 성공");
 	}	
 
 	@ApiOperation("소설의 장르 업데이트 | 체크된 모든 장르의 PK 값을 배열이나 리스트로 보내면 됨")
 	@PutMapping("/genre/{novelPk}") // url 바꿔야함
 	ResponseEntity<Map<String, Object>> updateGenreOfNovel(@PathVariable int novelPk, @RequestBody List<Integer> genrePks) {
-		nService.updateGenreOfNovel(novelPk, genrePks);
-		return handleSuccess("소설의 장르 업데이트 성공");
+		return handleSuccess(nService.updateGenreOfNovel(novelPk, genrePks));
 	}
 	
 	@ApiOperation("해당 멤버의 소설 조회")

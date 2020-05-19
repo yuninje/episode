@@ -49,9 +49,8 @@ public class Episode {
 	private List<Comment> comments = new ArrayList<>();
 
 	// episode <-> like_episode >> 에피소드 좋아요
-	// 이 에피소드를 좋아하는 멤버들 
-
-	@ManyToMany(cascade = CascadeType.REMOVE)
+	// 이 에피소드를 좋아하는 멤버들
+	@ManyToMany
 	@JoinTable(
 			name = "like_episode",
 			joinColumns = @JoinColumn(name = "episode_pk"),

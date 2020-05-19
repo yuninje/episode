@@ -35,9 +35,9 @@ public class MemberRestController {
 	@ApiOperation("회원가입 | /check/{key}를 통해 중복, 유효성 검사를 마친 후라고 판단하여 무조건 회원가입이 성공했다고 간주")
 	@PostMapping("")
 	ResponseEntity<Map<String, Object>> doRegist(@RequestBody MemberSaveRequestDto requestDto){
-		mService.regist(requestDto);
+
 		
-		return handleSuccess("회원 가입에 성공하였습니다.");
+		return handleSuccess(mService.regist(requestDto));
 	}
 	
 	@ApiOperation("멤버 한 명의 정보를 조회")
@@ -57,7 +57,7 @@ public class MemberRestController {
 	ResponseEntity<Map<String, Object>> deleteMember(@PathVariable int memPk){
 		mService.deleteMember(memPk);
 		
-		return handleSuccess("");
+		return handleSuccess("멤버 삭제 성공");
 	}
 
 	@ApiOperation("로그인 | 성공 시 해당 멤버 객체 반환(패스워드는 비워져 있음)")

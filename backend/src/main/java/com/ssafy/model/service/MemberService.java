@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface MemberService {
 	MemberResponseDto login(Auth auth);
-	void regist(MemberSaveRequestDto requestDto);
+	MemberResponseDto regist(MemberSaveRequestDto requestDto);
 	Page<MemberResponseDto> getMembers(Pageable pageable);
 	MemberResponseDto getMember(int memPk);
 	boolean checkId(String memId);
