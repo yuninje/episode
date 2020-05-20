@@ -12,11 +12,8 @@ import java.util.List;
 public interface NovelService {
 	Page<NovelResponseDto> getNovels(Pageable pageable, String sort);
 	NovelResponseDto getNovel(int novelPk);
-//	List<NovelDTO> getNovelsByName(String novelName);
 	List<NovelResponseDto> getNovelsByGenre(int genrePk);
-	Page<NovelResponseDto> getNovelsByName(String novelName, Pageable pageable, String sort, int memPk);
-	Page<NovelResponseDto> getNovlesByNick(String memNick, Pageable pageable, String sort, int memPk);
-	Page<NovelResponseDto> getNovelsByNameOrNick(String word, Pageable pageable, String sort, int memPk);
+	Page<NovelResponseDto> getNovelsBySearchWord(String type, String word, Pageable pageable, String sort, int memPk, int genrePk);
 	void registNovel(NovelSaveRequestDto requestDto);
 	NovelResponseDto updateNovel(int novelPk, NovelUpdateRequestDto requestDto);
 	@Transactional

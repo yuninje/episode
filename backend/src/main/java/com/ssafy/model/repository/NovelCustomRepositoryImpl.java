@@ -1,11 +1,7 @@
 package com.ssafy.model.repository;
 
-import com.querydsl.core.types.ExpressionUtils;
-import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberPath;
-import com.querydsl.core.types.dsl.SimpleTemplate;
-import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.model.entity.*;
@@ -21,92 +17,63 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 	@Autowired
 	private JPAQueryFactory queryFactory;
 	private QNovel novel = QNovel.novel;
-	private QMember member = QMember.member;
-	private QNovelGenre novelGenre = QNovelGenre.novelGenre;
-	private QGenre genre = QGenre.genre;
-	private QLikeNovel likeNovel = QLikeNovel.likeNovel;
-	private QLikeEpisode likeEpisode = QLikeEpisode.likeEpisode;
-	private QEpisode episode = QEpisode.episode;
-	private QHashTag hashTag = QHashTag.hashTag;
-	private QNovelHashTag novelHashTag = QNovelHashTag.novelHashTag;
 	
 	public NovelCustomRepositoryImpl() {
 		super(Novel.class);
 	}
 	
 	@Override
-	public Page<Novel> find(String type, String word, Pageable pageable, String sort) {
-		SimpleTemplate<String> genreName = Expressions.simpleTemplate(String.class, "group_concat({0})", genre.genreName);
-		SimpleTemplate<String> hashTagName = Expressions.simpleTemplate(String.class, "group_concat({0})", hashTag.hashTagName);
-		NumberPath<Long> likes = Expressions.numberPath(Long.class, "likes"); 
-		NumberPath<Long> recommends = Expressions.numberPath(Long.class, "recommends");
-		
+	public Page<Novel> findBySearchWord(String type, String word, Pageable pageable) {
 		JPAQuery<Novel> query = 
-			queryFactory.select(
-				Projections.constructor(Novel.class, 
-					novel.novelPk.as("novelPk"),
-					novel.novelName.as("novelName"),
-					novel.novelIntro.as("novelIntro"),
-					novel.novelImage.as("novelImage"),
-					novel.novelLimit.as("novelLimit"),
-					novel.novelOpen.as("novelOpen"),
-					novel.novelStatus.as("novelStatus"),
-					novel.novelOnly.as("novelOnly"),
-					novel.novelUpdatedAt.as("novelUpdatedAt"),
-					novel.member.as("member"), 
-//					novel.genres.as("genres"),
-					genreName.as("genreName"),
-					hashTagName.as("hashTagName"),
-					ExpressionUtils.as(
-						JPAExpressions.select(likeNovel.likeNovelPk.count())
-							.from(likeNovel)
-							.where(likeNovel.novel.novelPk.eq(novel.novelPk)),
-							likes
-					),
-					ExpressionUtils.as(
-						JPAExpressions.select(likeEpisode.likeEpisodePk.count())
-							.from(likeEpisode)
-							.where(likeEpisode.episode.episodePk.in(
-								JPAExpressions.select(episode.episodePk)
-									.from(episode)
-									.where(episode.novel.novelPk.eq(novel.novelPk))
-								)),
-							recommends
-					)
-				)
-			)
-			.from(novel)
-			.join(novel.member, member)
-			.join(novelGenre).on(novelGenre.novel.novelPk.eq(novel.novelPk))
-			.join(genre).on(novelGenre.genre.genrePk.eq(genre.genrePk))
-			.leftJoin(hashTag).on(hashTag.hashTagPk.in(
-					JPAExpressions.select(novelHashTag.hashtag.hashTagPk)
-					.from(novelHashTag)
-					.where(novel.novelPk.eq(novelHashTag.novel.novelPk))
-					))
-			.groupBy(novel.novelPk);
+			queryFactory.select(novel)
+			.from(novel);
 		
-		switch(sort) {
-		case "likes":
-			query.orderBy(likes.desc());
+		switch(type) {
+		case "all":
+			query.where(authorNameLike(word)
+					.or(novelNameLike(word))
+					.or(hashTagLike(word)));
 			break;
-		case "recommends":
-			query.orderBy(recommends.desc());
+		case "author_name":
+			query.where(authorNameLike(word));
+			break;
+		case "novel_name":
+			query.where(novelNameLike(word));
+			break;
+		case "hashtag":
+			query.where(hashTagLike(word));
 			break;
 		}
 		
+		List<Novel> novels = getQuerydsl().applyPagination(pageable, query).fetch();
+		
+		return new PageImpl<>(novels, pageable, query.fetchCount());
+	}
+
+	@Override
+	public Page<Novel> findBySearchWordAndGenre(String type, String word, Pageable pageable, int genrePk) {
+		JPAQuery<Novel> query = 
+			queryFactory.select(novel)
+			.from(novel);
+			
 		switch(type) {
-		case "mem_pk":
-			query.where(novel.member.memPk.eq(Integer.parseInt(word)));
+		case "all":
+			query.where((authorNameLike(word)
+					.or(novelNameLike(word))
+					.or(hashTagLike(word)))
+					.and(novel.genres.any().genrePk.eq(genrePk)));
 			break;
-		case "author_or_novel":
-			query.where(novel.member.memNick.containsIgnoreCase(word)
-					.or(novel.novelName.containsIgnoreCase(word)));
 		case "author_name":
-			query.where(novel.member.memNick.containsIgnoreCase(word));
+			query.where(authorNameLike(word)
+					.and(novel.genres.any().genrePk.eq(genrePk)));
 			break;
 		case "novel_name":
-			query.where(novel.novelName.containsIgnoreCase(word));
+			query.where(novelNameLike(word)
+					.and(novel.genres.any().genrePk.eq(genrePk)));
+			break;
+		case "hashtag":
+			query.where(hashTagLike(word)
+					.and(novel.genres.any().genrePk.eq(genrePk)));
 			break;
 		}
 		
@@ -115,58 +82,36 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 		return new PageImpl<>(novels, pageable, query.fetchCount());
 	}
 	
-	@Override
-	public Novel findByNovelPk(int novelPk) {
-		SimpleTemplate<String> genreName = Expressions.simpleTemplate(String.class, "group_concat({0})", genre.genreName);
-		SimpleTemplate<String> hashTagName = Expressions.simpleTemplate(String.class, "group_concat({0})", hashTag.hashTagName);
-		NumberPath<Long> likes = Expressions.numberPath(Long.class, "likes"); 
-		NumberPath<Long> recommends = Expressions.numberPath(Long.class, "recommends");
+	private BooleanBuilder authorNameLike(String word) {
+		String[] wordArr = word.split(" ");
+		BooleanBuilder builder = new BooleanBuilder();
 		
-		JPAQuery<Novel> query = 
-			queryFactory.select(
-				Projections.constructor(Novel.class, 
-					novel.novelPk.as("novelPk"),
-					novel.novelName.as("novelName"),
-					novel.novelIntro.as("novelIntro"),
-					novel.novelImage.as("novelImage"),
-					novel.novelLimit.as("novelLimit"),
-					novel.novelOpen.as("novelOpen"),
-					novel.novelStatus.as("novelStatus"),
-					novel.novelOnly.as("novelOnly"),
-					novel.novelUpdatedAt.as("novelUpdatedAt"),
-					novel.member.as("member"), 
-					genreName.as("genreName"),
-					hashTagName.as("hashTagName"),
-					ExpressionUtils.as(
-						JPAExpressions.select(likeNovel.likeNovelPk.count())
-							.from(likeNovel)
-							.where(likeNovel.novel.novelPk.eq(novel.novelPk)),
-							likes
-					),
-					ExpressionUtils.as(
-						JPAExpressions.select(likeEpisode.likeEpisodePk.count())
-							.from(likeEpisode)
-							.where(likeEpisode.episode.episodePk.in(
-								JPAExpressions.select(episode.episodePk)
-									.from(episode)
-									.where(episode.novel.novelPk.eq(novel.novelPk))
-								)),
-							recommends
-					)
-				)
-			)
-			.from(novel)
-			.where(novel.novelPk.eq(novelPk))
-			.join(novel.member, member)
-			.join(novelGenre).on(novelGenre.novel.novelPk.eq(novel.novelPk))
-			.join(genre).on(novelGenre.genre.genrePk.eq(genre.genrePk))
-			.leftJoin(hashTag).on(hashTag.hashTagPk.in(
-					JPAExpressions.select(novelHashTag.hashtag.hashTagPk)
-					.from(novelHashTag)
-					.where(novel.novelPk.eq(novelHashTag.novel.novelPk))
-					))
-			.groupBy(novel.novelPk);
+		for(int i=0; i<wordArr.length; i++) {
+			builder.or(novel.member.memNick.containsIgnoreCase(wordArr[i]));
+		}
 		
-		return query.fetchOne();
+		return builder;
+	}
+	
+	private BooleanBuilder novelNameLike(String word) {
+		String[] wordArr = word.split(" ");
+		BooleanBuilder builder = new BooleanBuilder();
+		
+		for(int i=0; i<wordArr.length; i++) {
+			builder.or(novel.novelName.containsIgnoreCase(wordArr[i]));
+		}
+		
+		return builder;
+	}
+	
+	private BooleanBuilder hashTagLike(String word) {
+		String[] wordArr = word.split(" ");
+		BooleanBuilder builder = new BooleanBuilder();
+		
+		for(int i=0; i<wordArr.length; i++) {
+			builder.or(novel.hashTags.any().hashTagName.containsIgnoreCase(wordArr[i]));
+		}
+		
+		return builder;
 	}
 }

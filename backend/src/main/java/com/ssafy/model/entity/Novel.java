@@ -83,64 +83,7 @@ public class Novel {
 			inverseJoinColumns = @JoinColumn(name = "mem_pk")
 	)
 	private List<Member> likedMembers = new ArrayList<>();
-
-
-
-	@Transient
-	private String genreName;
-	@Transient
-	private List<String> genreList;
-	@Transient
-	private String hashTagName;
-	@Transient
-	private List<String> hashTagList;
-
-	public Novel(Integer novelPk, String novelName, String novelIntro, String novelImage, Boolean novelLimit,
-			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, LocalDateTime novelUpdatedAt, Member member,
-			String genreName, String hashTagName, Long novelLikes, Long novelRecommends) {
-		this.novelPk = novelPk;
-		this.novelName = novelName;
-		this.novelIntro = novelIntro;
-		this.novelImage = novelImage;
-		this.novelLimit = novelLimit;
-		this.novelOpen = novelOpen;
-		this.novelStatus = novelStatus;
-		this.novelOnly = novelOnly;
-		this.novelUpdatedAt = novelUpdatedAt;
-		this.member = member;
-//		this.genreList = Arrays.asList(genreName.split(","));
-		this.genreList = new ArrayList<String>(new HashSet<String>(Arrays.asList(genreName.split(","))));
-		this.hashTagList = hashTagName != null 
-				? new ArrayList<String>(new HashSet<String>(Arrays.asList(hashTagName.split(","))))
-				: new ArrayList<>();
-//		this.hashTagList = new ArrayList<String>(new HashSet<String>(this.hashTagList));
-		this.novelLikes = novelLikes;
-		this.novelRecommends = novelRecommends;
-	}
-
-	public Novel(Integer novelPk, String novelName, String novelIntro, String novelImage, Boolean novelLimit,
-			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, LocalDateTime novelUpdatedAt,
-			Member member, List<Genre> genres, String hashTagName, Long novelLikes, Long novelRecommends) {
-		this.novelPk = novelPk;
-		this.novelName = novelName;
-		this.novelIntro = novelIntro;
-		this.novelImage = novelImage;
-		this.novelLimit = novelLimit;
-		this.novelOpen = novelOpen;
-		this.novelStatus = novelStatus;
-		this.novelOnly = novelOnly;
-		this.novelUpdatedAt = novelUpdatedAt;
-		this.member = member;
-		System.out.println(genres);
-//		this.genres = genres;
-		this.hashTagName = hashTagName;
-		this.hashTagList = hashTagName != null 
-				? new ArrayList<String>(new HashSet<String>(Arrays.asList(hashTagName.split(","))))
-				: new ArrayList<>();
-		this.novelLikes = novelLikes;
-		this.novelRecommends = novelRecommends;
-	}
-
+	
 	@Builder
 	public Novel(Member member, String novelName, String novelIntro, String novelImage, Boolean novelLimit, Boolean novelOpen, Integer novelStatus, Boolean novelOnly) {
 		this.member = member;
