@@ -4,6 +4,7 @@ import com.ssafy.model.dto.novel.NovelResponseDto;
 import com.ssafy.model.dto.novel.NovelSaveRequestDto;
 import com.ssafy.model.dto.novel.NovelUpdateRequestDto;
 import com.ssafy.model.entity.Genre;
+import com.ssafy.model.entity.HashTag;
 import com.ssafy.model.entity.Member;
 import com.ssafy.model.entity.Novel;
 import com.ssafy.model.entity.Search;
@@ -33,17 +34,34 @@ public class NovelServiceImpl implements NovelService {
 	SearchRepository sRepo;
     @Autowired
 	NovelGenreRepository ngRepo;
+    @Autowired
+    HashTagRepository hRepo;
 
     @Autowired
 	ModelMapper modelMapper;
 
     @Override
     public Page<NovelResponseDto> getNovels(Pageable pageable, String sort) {
+    	if(sort != null) {
+    		switch(sort) {
+    		case "likes":
+    			sort = "novelLikes";
+    			break;
+    		case "recommends":
+    			sort = "novelRecommends";
+    			break;
+    		case "view":
+    			sort = "novelView";
+    			break;
+    		}
+    	}
+    	
         PageRequest pageRequest
                 = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-                Sort.by("novelUpdatedAt").descending());
+                	sort == null ? Sort.by("novelUpdatedAt").descending() :
+                		Sort.by(sort, "novelUpdatedAt").descending());
 
-        Page<Novel> novelEntityPage =nRepo.findAll(pageable);
+        Page<Novel> novelEntityPage = nRepo.findAll(pageRequest);
         Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
 
         return novels;
@@ -54,6 +72,7 @@ public class NovelServiceImpl implements NovelService {
         Novel novelEntity = nRepo.findById(novelPk).orElseThrow(() ->
                 new IllegalArgumentException("novel pk :  " + novelPk + "가 존재하지 않습니다."));
 
+        System.out.println(novelEntity.getGenres());
         NovelResponseDto novel = new NovelResponseDto(novelEntity);
         return novel;
     }
@@ -118,7 +137,6 @@ public class NovelServiceImpl implements NovelService {
             Member member = mRepo.findById(memPk)
                     .orElseThrow(() -> new IllegalArgumentException("member pk :  " + memPk + "가 존재하지 않습니다."));
 
-
             Date date = new Date();
             String[] words = word.split(" ");
             for (String word_ : words) {
@@ -138,8 +156,31 @@ public class NovelServiceImpl implements NovelService {
 
     @Override
     public void registNovel(NovelSaveRequestDto requestDto) {
-
-    	nRepo.save(requestDto.toEntity(mRepo));
+    	Novel novel = requestDto.toEntity(mRepo);
+    	List<Integer> genreList = requestDto.getGenres();
+    	
+    	for(int genrePk : genreList) {
+    		Genre genre = gRepo.findById(genrePk).orElse(null);
+    		genre.getNovels().add(novel);
+    		novel.getGenres().add(genre);
+    	}
+    	
+    	List<String> hashTagList = requestDto.getHashTags();
+    	
+    	for(String hashTagName : hashTagList) {
+    		HashTag hashTag = hRepo.findByHashTagName(hashTagName);
+    		
+    		if(hashTag == null) {
+    			HashTag addHashTag = new HashTag();
+				addHashTag.setHashTagName(hashTagName);
+				hashTag = hRepo.save(addHashTag);
+    		}
+    		
+    		hashTag.getNovels().add(novel);
+    		novel.getHashTags().add(hashTag);
+    	}
+    	
+    	nRepo.save(novel);
 
 //		Novel registN = modelMapper.map(novel, Novel.class);
 //		Novel registedN = nRepo.save(registN);
@@ -247,7 +288,29 @@ public class NovelServiceImpl implements NovelService {
 
     @Override
     public Page<NovelResponseDto> getNovelByMember(int memPk, Pageable pageable, String sort) {
-        Page<Novel> novelEntityPage = nRepo.find("mem_pk", Integer.toString(memPk), pageable, sort);
+    	if(sort != null) {
+    		switch(sort) {
+    		case "likes":
+    			sort = "novelLikes";
+    			break;
+    		case "recommends":
+    			sort = "novelRecommends";
+    			break;
+    		case "view":
+    			sort = "novelView";
+    			break;
+    		}
+    	}
+    	
+        PageRequest pageRequest
+                = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                	sort == null ? Sort.by("novelUpdatedAt").descending() :
+                		Sort.by(sort, "novelUpdatedAt").descending());
+        
+        Member member = mRepo.findById(memPk).orElseThrow(() ->
+        	new IllegalArgumentException("mem pk :  " + memPk + "가 존재하지 않습니다."));
+        
+        Page<Novel> novelEntityPage = nRepo.findByMember(member, pageable);
         Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
 
         return novels;

@@ -1,5 +1,7 @@
 package com.ssafy.model.dto.novel;
 
+import java.util.List;
+
 import com.ssafy.model.entity.Novel;
 import com.ssafy.model.repository.MemberRepository;
 import lombok.*;
@@ -17,6 +19,8 @@ public class NovelSaveRequestDto{
     private boolean novelOpen;
     private int novelStatus;
     private boolean novelOnly;
+    private List<Integer> genres;
+    private List<String> hashTags;
 
     @Builder
     public NovelSaveRequestDto(

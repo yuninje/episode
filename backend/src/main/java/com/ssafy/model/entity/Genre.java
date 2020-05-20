@@ -28,7 +28,7 @@ public class Genre {
 //	@OneToMany(mappedBy = "genre") 
 //	private List<NovelGenre> novels = new ArrayList<>();
 
-	@ManyToMany(cascade = CascadeType.REMOVE)
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(
 			name = "novel_genre",
 			joinColumns = @JoinColumn(name = "genre_pk"),

@@ -17,5 +17,5 @@ import com.ssafy.model.entity.Novel;
 @Repository
 public interface NovelRepository extends JpaRepository<Novel, Integer>, NovelCustomRepository {
 	List<Novel> findByNovelNameContaining(String novel_name); 
-	List<Novel> findByMember(Member member);
+	Page<Novel> findByMember(Member member, Pageable pageable);
 }

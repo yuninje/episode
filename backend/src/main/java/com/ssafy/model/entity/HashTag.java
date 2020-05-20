@@ -3,6 +3,7 @@ package com.ssafy.model.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,7 +36,7 @@ public class HashTag {
 	@Column(name = "hashtag_name", length = 30, nullable = false)
 	private String hashTagName;
 	
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(
 			name = "novel_hashtag",
 			joinColumns = @JoinColumn(name = "hashtag_pk"),

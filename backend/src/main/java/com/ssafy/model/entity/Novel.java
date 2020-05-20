@@ -48,10 +48,10 @@ public class Novel {
 	private Long novelView = 0L;
 
 	@Column(name = "novel_likes")
-	private Long likes = 0L;
+	private Long novelLikes = 0L;
 
 	@Column(name = "novel_recommends")
-	private Long recommends = 0L;
+	private Long novelRecommends = 0L;
 
 	@LastModifiedDate
 	@Column(name = "novel_updated_at", nullable = false)
@@ -68,11 +68,11 @@ public class Novel {
 	private List<Episode> episodes = new ArrayList<Episode>();
 	
 	// novel <-> genre >> N : M 관계
-	@ManyToMany(mappedBy = "novels", cascade = CascadeType.REMOVE)
+	@ManyToMany(mappedBy = "novels", cascade = CascadeType.ALL)
 	private List<Genre> genres = new ArrayList<>();
 
 	// novel <-> hashtag >> N : M 관계
-	@ManyToMany(mappedBy = "novels", cascade = CascadeType.REMOVE)
+	@ManyToMany(mappedBy = "novels", cascade = CascadeType.ALL)
 	private List<HashTag> hashTags = new ArrayList<>();
 
 	// 이 소설을 좋아하는 사람들 | novel : member = N : M
@@ -97,7 +97,7 @@ public class Novel {
 
 	public Novel(Integer novelPk, String novelName, String novelIntro, String novelImage, Boolean novelLimit,
 			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, LocalDateTime novelUpdatedAt, Member member,
-			String genreName, String hashTagName, Long likes, Long recommends) {
+			String genreName, String hashTagName, Long novelLikes, Long novelRecommends) {
 		this.novelPk = novelPk;
 		this.novelName = novelName;
 		this.novelIntro = novelIntro;
@@ -114,13 +114,13 @@ public class Novel {
 				? new ArrayList<String>(new HashSet<String>(Arrays.asList(hashTagName.split(","))))
 				: new ArrayList<>();
 //		this.hashTagList = new ArrayList<String>(new HashSet<String>(this.hashTagList));
-		this.likes = likes;
-		this.recommends = recommends;
+		this.novelLikes = novelLikes;
+		this.novelRecommends = novelRecommends;
 	}
 
 	public Novel(Integer novelPk, String novelName, String novelIntro, String novelImage, Boolean novelLimit,
 			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, LocalDateTime novelUpdatedAt,
-			Member member, List<Genre> genres, String hashTagName, Long likes, Long recommends) {
+			Member member, List<Genre> genres, String hashTagName, Long novelLikes, Long novelRecommends) {
 		this.novelPk = novelPk;
 		this.novelName = novelName;
 		this.novelIntro = novelIntro;
@@ -137,8 +137,8 @@ public class Novel {
 		this.hashTagList = hashTagName != null 
 				? new ArrayList<String>(new HashSet<String>(Arrays.asList(hashTagName.split(","))))
 				: new ArrayList<>();
-		this.likes = likes;
-		this.recommends = recommends;
+		this.novelLikes = novelLikes;
+		this.novelRecommends = novelRecommends;
 	}
 
 	@Builder
