@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,6 @@ import java.util.List;
 @Table(name = "comment")
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Comment {
@@ -64,5 +64,12 @@ public class Comment {
 	public Comment update(String commentContent){
 		this.commentContent = commentContent;
 		return this;
+	}
+
+	// 좋아요 취소
+	@Transactional
+	public void unLiked(Member member){
+		likedMembers.remove(member);
+		member.getLikeNovels().remove(this);
 	}
 }

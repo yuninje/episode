@@ -21,6 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -113,26 +114,25 @@ public class MemberServiceTest {
 
     @Test
     public void 회원가입_성공() {
-        memberRepository.deleteAll();
         MemberSaveRequestDto requestDto = MemberSaveRequestDto.builder()
-                .memId(STR)
-                .memPw(STR)
-                .memNick(STR)
-                .memEmail(STR)
-                .memBirth(STR)
-                .memPhone(STR)
+                .memId(UPDATE_STR)
+                .memPw(UPDATE_STR)
+                .memNick(UPDATE_STR)
+                .memEmail(UPDATE_STR)
+                .memBirth(UPDATE_STR)
+                .memPhone(UPDATE_STR)
                 .memGender(true)
                 .build();
 
         MemberResponseDto responseDto = memberService.regist(requestDto);
         Member member = memberFindById(responseDto.getMemPk());
 
-        assertThat(member.getMemId()).isEqualTo(STR);
-        assertThat(member.getMemBirth()).isEqualTo(STR);
-        assertThat(member.getMemEmail()).isEqualTo(STR);
+        assertThat(member.getMemId()).isEqualTo(UPDATE_STR);
+        assertThat(member.getMemBirth()).isEqualTo(UPDATE_STR);
+        assertThat(member.getMemEmail()).isEqualTo(UPDATE_STR);
         assertThat(member.getMemGender()).isEqualTo(true);
-        assertThat(member.getMemNick()).isEqualTo(STR);
-        assertThat(member.getMemPhone()).isEqualTo(STR);
+        assertThat(member.getMemNick()).isEqualTo(UPDATE_STR);
+        assertThat(member.getMemPhone()).isEqualTo(UPDATE_STR);
     }
     @Test
     public void 회원가입_실패_아이디_중복() {
@@ -222,8 +222,8 @@ public class MemberServiceTest {
         Page<MemberResponseDto> responseDtoPage =
                 memberService.getMembers(PageRequest.of(PAGE,PAGE_SIZE));
 
-        assertThat(responseDtoPage.getTotalPages()).isLessThanOrEqualTo(5);
-        assertThat(responseDtoPage.getTotalPages()).isGreaterThanOrEqualTo(1);
+        assertThat(responseDtoPage.getContent().size()).isLessThanOrEqualTo(5);
+        assertThat(responseDtoPage.getContent().size()).isGreaterThanOrEqualTo(1);
     }
 
     @Test
@@ -259,8 +259,18 @@ public class MemberServiceTest {
         assertThat(member.getMemPhone()).isEqualTo(UPDATE_STR);
     }
 
+    @Transactional
     @Test
     public void 회원_삭제() {
+        Member member = memberFindById(memPk);
+
+        // 삭제되어야 하는 데이터들
+        List<Novel> novels = member.getNovels();
+        List<Comment> comments = member.getComments();
+        List<Novel> likeNovels = member.getLikeNovels();
+        List<Episode> likeEpsodes = member.getLikeEpisodes();
+        List<Comment> likeComments = member.getLikeComments();
+
         memberService.deleteMember(memPk);
         try {
             memberRepository.findById(memPk).orElseThrow(() -> new MemberException(MemberException.NOT_EXIST));
@@ -269,6 +279,69 @@ public class MemberServiceTest {
             catchFlag = true;
         }
         assertThat(catchFlag).isEqualTo(true);
+
+
+        // 회원의 소설들 삭제 확인
+        for(Novel novel : novels){
+            catchFlag = false;
+            try{
+                novelFindById(novel.getNovelPk());
+            }catch (NovelException e){
+                assertThat(e.getMessage()).isEqualTo(NovelException.NOT_EXIST);
+                catchFlag = true;
+            }
+            assertThat(catchFlag).isEqualTo(true);
+        }
+
+        // 회원이 작성한 댓글들 삭제 확인
+        for(Comment comment : comments){
+            catchFlag = false;
+            try{
+                commentFindById(comment.getCommentPk());
+            }catch (CommentException e){
+                assertThat(e.getMessage()).isEqualTo(CommentException.NOT_EXIST);
+                catchFlag = true;
+            }
+            assertThat(catchFlag).isEqualTo(true);
+        }
+
+        // 회원의 소설 좋아요들 삭제 확인
+        for(Novel novel : likeNovels){
+            catchFlag = false;
+            try{
+                novelFindById(novel.getNovelPk());
+            }catch (NovelException e){
+                assertThat(e.getMessage()).isEqualTo(NovelException.NOT_EXIST);
+                catchFlag = true;
+            }
+            assertThat(catchFlag).isEqualTo(true);
+        }
+
+
+        // 회원의 에피소드 좋아요들 삭제 확인
+        for(Episode episode : likeEpsodes){
+            catchFlag = false;
+            try{
+                episodeFindById(episode.getEpisodePk());
+            }catch (EpisodeException e){
+                assertThat(e.getMessage()).isEqualTo(EpisodeException.NOT_EXIST);
+                catchFlag = true;
+            }
+            assertThat(catchFlag).isEqualTo(true);
+        }
+
+        // 회원의 댓글 좋아요들 삭제 확인
+        for(Comment comment : likeComments){
+            catchFlag = false;
+            try{
+                commentFindById(comment.getCommentPk());
+            }catch (CommentException e){
+                assertThat(e.getMessage()).isEqualTo(CommentException.NOT_EXIST);
+                catchFlag = true;
+            }
+            assertThat(catchFlag).isEqualTo(true);
+        }
+
     }
     @Transactional
     @Test
@@ -290,6 +363,7 @@ public class MemberServiceTest {
         assertThat(member.getLikeNovels()).contains(novel);
         assertThat(novel.getLikedMembers()).contains(member);
     }
+
     @Transactional
     @Test
     public void 좋아요_에피소드() {

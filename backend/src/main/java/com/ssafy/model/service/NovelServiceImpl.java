@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -198,14 +199,21 @@ public class NovelServiceImpl implements NovelService {
         return novel;
     }
 
+    @Transactional
     @Override
     public void deleteNovel(int novelPk) {
-        Novel novelEntity = nRepo.findById(novelPk)
+        Novel novel = nRepo.findById(novelPk)
                 .orElseThrow(() -> new NovelException(NovelException.NOT_EXIST));
-        for (Member memberEntity : novelEntity.getLikedMembers()) {
-            memberEntity.unLikeNovel(novelEntity);
+
+        // like_novels 테이블의 해당 소설의 좋아요 삭제
+        for (Member member : novel.getLikedMembers()) {
+            member.unLikeNovel(novel);
         }
-        nRepo.save(novelEntity);
+        // novel_genre 테이블의 해당 소설의 장르 삭제
+        for (Genre genre : novel.getGenres()){
+            genre.removeGenreAtNovel(novel);
+        }
+        nRepo.save(novel);
         nRepo.deleteById(novelPk);
     }
 

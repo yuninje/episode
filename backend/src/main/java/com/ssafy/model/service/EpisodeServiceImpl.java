@@ -25,16 +25,21 @@ public class EpisodeServiceImpl implements EpisodeService {
     @Autowired
     EpisodeRepository eRepo;
 
+    @Transactional
     @Override
     public EpisodeResponseDto registEpisode(EpisodeSaveRequestDto requestDto) {
         Novel novel = nRepo.findById(requestDto.getNovelPk())
                 .orElseThrow(() -> new NovelException(NovelException.NOT_EXIST));
-        Episode episodeEntity = requestDto.toEntity(novel);
-        episodeEntity.getNovel().updateUpdatedAt(); // novel updatedAt 갱신
-        episodeEntity = eRepo.save(episodeEntity);
 
-        EpisodeResponseDto episode = new EpisodeResponseDto(episodeEntity);
-        return episode;
+        Episode episode = requestDto.toEntity(novel);
+        episode.getNovel().updateUpdatedAt(); // novel updatedAt 갱신
+        novel.updateUpdatedAt();
+
+        episode = eRepo.save(episode);
+        nRepo.save(novel);
+
+        EpisodeResponseDto responseDto = new EpisodeResponseDto(episode);
+        return responseDto;
     }
 
     @Override
@@ -70,13 +75,17 @@ public class EpisodeServiceImpl implements EpisodeService {
         return episode;
     }
 
+    @Transactional
     @Override
     public void deleteEpisode(int episodePk) {
         Episode episodeEntity = eRepo.findById(episodePk).orElseThrow(() ->
                 new EpisodeException(EpisodeException.NOT_EXIST));
+
+        // 좋아요 데이터 삭제
         for (Member memberEntity : episodeEntity.getLikedMembers()) {
             memberEntity.unLikeEpisode(episodeEntity);
         }
+
         eRepo.save(episodeEntity);
         eRepo.deleteById(episodePk);
     }
@@ -97,5 +106,4 @@ public class EpisodeServiceImpl implements EpisodeService {
         data.put("episodes", episodes);
         return data;
     }
-
 }

@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class MemberServiceImpl implements MemberService {
     @Autowired
@@ -28,7 +30,6 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberResponseDto login(Auth auth) {
-        System.out.println(auth);
         Member member = mRepo.findByMemId(auth.getMemId())
                 .orElseThrow(() -> new AuthException(AuthException.ID_ERROR));
         if (!member.getMemPw().equals(auth.getMemPw())) {
@@ -116,11 +117,28 @@ public class MemberServiceImpl implements MemberService {
         return new MemberResponseDto(member);
     }
 
+    @Transactional
     @Override
     public void deleteMember(int memPk) {
+        Member member = mRepo.findById(memPk)
+                .orElseThrow(() -> new MemberException(MemberException.NOT_EXIST));
+
+        // 좋아요 데이터 삭제
+        for(Novel novel : member.getLikeNovels()){
+            novel.unLiked(member);
+        }
+        for(Episode episode : member.getLikeEpisodes()){
+            episode.unLiked(member);
+        }
+        for(Comment comment : member.getLikeComments()){
+            comment.unLiked(member);
+        }
+
+        mRepo.save(member);
         mRepo.deleteById(memPk);
     }
 
+    @Transactional
     @Override
     public void doLike(int memPk, int objectPk, int objectType, boolean flag) {
 
@@ -128,25 +146,23 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new MemberException(MemberException.NOT_EXIST));
         switch (objectType) {
             case 1: // 소설
-                Novel novelEntity = nRepo.findById(objectPk)
+                Novel novel = nRepo.findById(objectPk)
                         .orElseThrow(() -> new NovelException(NovelException.NOT_EXIST));
 
 
                 if (flag) { // 좋아요
-                    if (!member.getLikeNovels().contains(novelEntity)) {
+                    if (!member.getLikeNovels().contains(novel)) {
                         // 이미 있으면 넘어가고
-                        member.getLikeNovels().add(novelEntity);
-                        novelEntity.getLikedMembers().add(member);
+                        member.likeNovel(novel);
                     }
                 } else { // 좋아요 취소
-                    if (member.getLikeNovels().contains(novelEntity)) {
+                    if (member.getLikeNovels().contains(novel)) {
                         // 이미 있으면 넘어가고
-                        member.getLikeNovels().remove(novelEntity);
-                        novelEntity.getLikedMembers().remove(member);
+                        member.unLikeNovel(novel);
                     }
                 }
                 mRepo.save(member);
-                nRepo.save(novelEntity);
+                nRepo.save(novel);
                 break;
             case 2: // 에피소드
                 Episode episode = eRepo.findById(objectPk)
@@ -155,14 +171,12 @@ public class MemberServiceImpl implements MemberService {
                 if (flag) { // 좋아요
                     if (!member.getLikeEpisodes().contains(episode)) {
                         // 이미 있으면 넘어가고
-                        member.getLikeEpisodes().add(episode);
-                        episode.getLikedMembers().add(member);
+                        member.likeEpisode(episode);
                     }
                 } else { // 좋아요 취소
                     if (member.getLikeEpisodes().contains(episode)) {
                         // 이미 있으면 넘어가고
-                        member.getLikeEpisodes().remove(episode);
-                        episode.getLikedMembers().remove(member);
+                        member.unLikeEpisode(episode);
                     }
                 }
                 mRepo.save(member);
@@ -175,14 +189,12 @@ public class MemberServiceImpl implements MemberService {
                 if (flag) { // 좋아요
                     if (!member.getLikeComments().contains(comment)) {
                         // 이미 있으면 넘어가고
-                        member.getLikeComments().add(comment);
-                        comment.getLikedMembers().add(member);
+                        member.likeComment(comment);
                     }
                 } else { // 좋아요 취소
                     if (member.getLikeComments().contains(comment)) {
                         // 이미 있으면 넘어가고
-                        member.getLikeComments().remove(comment);
-                        comment.getLikedMembers().remove(member);
+                        member.unLikeComment(comment);
                     }
                 }
                 mRepo.save(member);

@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +15,6 @@ import java.util.List;
 @Table(name = "novel")
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Novel {
@@ -129,8 +129,7 @@ public class Novel {
 		this.novelOnly = novelOnly;
 		this.novelUpdatedAt = novelUpdatedAt;
 		this.member = member;
-		System.out.println(genres);
-//		this.genres = genres;
+		this.genres = genres;
 		this.hashTagName = hashTagName;
 		this.hashTagList = hashTagName != null 
 				? new ArrayList<String>(new HashSet<String>(Arrays.asList(hashTagName.split(","))))
@@ -162,12 +161,20 @@ public class Novel {
 		return this;
 	}
 
+	// 좋아요 취소
+	@Transactional
+	public void unLiked(Member member){
+		likedMembers.remove(member);
+		member.getLikeNovels().remove(this);
+	}
 	// 장르 취소
+	@Transactional
 	public void belongGenre(Genre genre){
 		genres.add(genre);
 		genre.getNovels().add(this);
 	}
 	// 장르 추가
+	@Transactional
 	public void notBelongGenre(Genre genre){
 		genres.remove(genre);
 		genre.getNovels().remove(this);

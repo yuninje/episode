@@ -5,6 +5,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,6 @@ import java.util.List;
 @Table(name = "episode")
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Episode {
@@ -74,5 +74,13 @@ public class Episode {
 		this.episodeContent = episodeContent;
 		this.episodeWriter = episodeWriter;
 		return this;
+	}
+
+
+	// 좋아요 취소
+	@Transactional
+	public void unLiked(Member member){
+		likedMembers.remove(member);
+		member.getLikeNovels().remove(this);
 	}
 }

@@ -3,6 +3,7 @@ package com.ssafy.model.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,6 @@ import java.util.List;
 @Entity
 @Table(name = "member")
 @Getter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Member {
@@ -104,28 +104,34 @@ public class Member {
 
 
 
+	@Transactional
 	public void likeNovel(Novel novel){
 		likeNovels.add(novel);
 		novel.getLikedMembers().add(this);
 	}
+	@Transactional
 	public void unLikeNovel(Novel novel){
 		likeNovels.remove(novel);
 		novel.getLikedMembers().remove(this);
 	}
 
+	@Transactional
 	public void likeEpisode(Episode episode){
 		likeEpisodes.add(episode);
-		episode.getLikedMembers().remove(this);
+		episode.getLikedMembers().add(this);
 	}
+	@Transactional
 	public void unLikeEpisode(Episode episode){
 		likeEpisodes.remove(episode);
 		episode.getLikedMembers().remove(this);
 	}
 
+	@Transactional
 	public void likeComment(Comment comment){
 		likeComments.add(comment);
 		comment.getLikedMembers().add(this);
 	}
+	@Transactional
 	public void unLikeComment(Comment comment){
 		likeComments.remove(comment);
 		comment.getLikedMembers().remove(this);

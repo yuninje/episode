@@ -3,6 +3,7 @@ package com.ssafy.model.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +11,6 @@ import java.util.List;
 @Table(name = "genre")
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Genre {
@@ -38,5 +38,11 @@ public class Genre {
 	public Genre update(String genreName){
 		this.genreName = genreName;
 		return this;
+	}
+
+	@Transactional
+	public void removeGenreAtNovel(Novel novel){
+		novels.remove(novel);
+		novel.getGenres().remove(this);
 	}
 }

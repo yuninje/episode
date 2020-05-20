@@ -4,12 +4,15 @@ import com.ssafy.model.dto.genre.GenreResponseDto;
 import com.ssafy.model.dto.genre.GenreSaveRequestDto;
 import com.ssafy.model.dto.genre.GenreUpdateRequestDto;
 import com.ssafy.model.entity.Genre;
+import com.ssafy.model.entity.GenreException;
+import com.ssafy.model.entity.Novel;
 import com.ssafy.model.repository.GenreRepository;
 import com.ssafy.model.repository.NovelRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,15 +52,25 @@ public class GenreServiceImpl implements GenreService{
 
 	@Override
 	public GenreResponseDto updateGenre(int genrePk, GenreUpdateRequestDto requestDto) {
-		Genre genreEntity = gRepo.findById(genrePk).orElseThrow(()->
+		Genre genre = gRepo.findById(genrePk).orElseThrow(()->
 				new IllegalArgumentException("genre pk :  " + genrePk + "가 존재하지 않습니다."));
 
-		GenreResponseDto genre = new GenreResponseDto(genreEntity);
-		return genre;
+		genre.update(requestDto.getGenreName());
+		genre = gRepo.save(genre);
+
+		GenreResponseDto genreResponseDto = new GenreResponseDto(genre);
+		return genreResponseDto;
 	}
 
+	@Transactional
 	@Override
 	public void deleteGenre(int genrePk) {
+		Genre genre = gRepo.findById(genrePk)
+				.orElseThrow(() -> new GenreException(GenreException.NOT_EXIST));
+		for(Novel novel : genre.getNovels()){
+			novel.notBelongGenre(genre);
+		}
+		gRepo.save(genre);
 		gRepo.deleteById(genrePk);
 	}
 }

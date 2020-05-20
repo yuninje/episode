@@ -88,8 +88,10 @@ public class NovelServiceTest {
     public void 소설_페이지_가져오기(){
         Page<NovelResponseDto> responseDtoPage = novelService.getNovels(page, STR);
 
-        assertThat(responseDtoPage.getTotalPages()).isLessThanOrEqualTo(5);
-        assertThat(responseDtoPage.getTotalPages()).isGreaterThanOrEqualTo(1);
+        List<NovelResponseDto> responseDtoList = responseDtoPage.getContent();
+
+        assertThat(responseDtoList.size()).isLessThanOrEqualTo(5);
+        assertThat(responseDtoList.size()).isGreaterThanOrEqualTo(1);
     }
 
     @Transactional
@@ -111,19 +113,19 @@ public class NovelServiceTest {
 
     @Transactional
     @Test
-    public void 소설_이름으로_가져오기(){
+    public void 소설_페이지_이름으로_가져오기(){
 
     }
 
     @Transactional
     @Test
-    public void 소설_닉네임으로_가져오기(){
+    public void 소설_페이지_닉네임으로_가져오기(){
 
     }
 
     @Transactional
     @Test
-    public void 소설_이름_또는_닉네임으로_가져오기(){
+    public void 소설_페이지_이름또는닉네임으로_가져오기(){
 
     }
 
@@ -132,9 +134,9 @@ public class NovelServiceTest {
     public void 소설_추가(){
         NovelSaveRequestDto requestDto = NovelSaveRequestDto.builder()
                 .memberPk(memPk)
-                .novelName(STR)
-                .novelIntro(STR)
-                .novelImage(STR)
+                .novelName(UPDATE_STR)
+                .novelIntro(UPDATE_STR)
+                .novelImage(UPDATE_STR)
                 .novelLimit(true)
                 .novelOnly(true)
                 .novelOpen(true)
@@ -143,10 +145,9 @@ public class NovelServiceTest {
         NovelResponseDto responseDto = novelService.registNovel(requestDto);
         Novel novel = novelFindById(responseDto.getNovelPk());
 
-        assertThat(responseDto.getNovelPk()).isEqualTo(novel.getNovelPk());
-        assertThat(responseDto.getNovelName()).isEqualTo(novel.getNovelName());
-        assertThat(responseDto.getNovelIntro()).isEqualTo(novel.getNovelIntro());
-        assertThat(responseDto.getNovelImage()).isEqualTo(novel.getNovelImage());
+        assertThat(responseDto.getNovelName()).isEqualTo(novel.getNovelName()).isEqualTo(UPDATE_STR);
+        assertThat(responseDto.getNovelIntro()).isEqualTo(novel.getNovelIntro()).isEqualTo(UPDATE_STR);
+        assertThat(responseDto.getNovelImage()).isEqualTo(novel.getNovelImage()).isEqualTo(UPDATE_STR);
         assertThat(responseDto.getLikes()).isEqualTo(novel.getLikes());
         assertThat(responseDto.getNovelStatus()).isEqualTo(novel.getNovelStatus());
         assertThat(responseDto.getNovelUpdatedAt()).isEqualTo(novel.getNovelUpdatedAt());
@@ -184,6 +185,12 @@ public class NovelServiceTest {
     @Transactional
     @Test
     public void 소설_삭제_성공(){
+        Novel novel = novelFindById(novelPk);
+        List<Genre> genres = novel.getGenres();
+        List<Episode> episodes = novel.getEpisodes();
+        List<Member> likedMembers = novel.getLikedMembers();
+        // 해시태그 추가해야함
+
         novelService.deleteNovel(novelPk);
         try {
             novelFindById(novelPk);
@@ -192,6 +199,43 @@ public class NovelServiceTest {
             catchFlag = true;
         }
         assertThat(catchFlag).isEqualTo(true);
+
+
+        // 소설의 에피소드들 삭제
+        for(Episode episode : episodes){
+            catchFlag = false;
+            try{
+                episodeFindById(episode.getEpisodePk());
+            }catch (EpisodeException e){
+                assertThat(e.getMessage()).isEqualTo(EpisodeException.NOT_EXIST);
+                catchFlag = true;
+            }
+            assertThat(catchFlag).isEqualTo(true);
+        }
+
+        // 소설의 장르 데이터 삭제
+        for(Genre genre : genres){
+            catchFlag = false;
+            try{
+                genreFindById(genre.getGenrePk());
+            }catch (GenreException e){
+                assertThat(e.getMessage()).isEqualTo(GenreException.NOT_EXIST);
+                catchFlag = true;
+            }
+            assertThat(catchFlag).isEqualTo(true);
+        }
+
+        // 소설의 좋아요 데이터 삭제
+        for(Member member : likedMembers){
+            catchFlag = false;
+            try{
+                memberFindById(member.getMemPk());
+            }catch (MemberException e){
+                assertThat(e.getMessage()).isEqualTo(MemberException.NOT_EXIST);
+                catchFlag = true;
+            }
+            assertThat(catchFlag).isEqualTo(true);
+        }
     }
 
     @Transactional
@@ -208,7 +252,7 @@ public class NovelServiceTest {
 
     @Transactional
     @Test
-    public void 소설_장르로_가져오기_아직_안함(){
+    public void 소설_페이지_장르로_가져오기_아직안함(){
         assertThat(true).isEqualTo(false);
     }
     @Transactional
@@ -223,7 +267,7 @@ public class NovelServiceTest {
 
     @Transactional
     @Test
-    public void 회원의_소설_페이지_가져오기_아직안함(){
+    public void 소설_페이지_회원으로_가져오기_아직안함(){
         assertThat(true).isEqualTo(false);
     }
 
@@ -313,5 +357,9 @@ public class NovelServiceTest {
     Comment commentFindById(int commentPk){
         return commentRepository.findById(commentPk).orElseThrow(
                 () -> new CommentException(CommentException.NOT_EXIST));
+    }
+    Genre genreFindById(int genrePk){
+        return genreRepository.findById(genrePk).orElseThrow(
+                () -> new GenreException(GenreException.NOT_EXIST));
     }
 }
