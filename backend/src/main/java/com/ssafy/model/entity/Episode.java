@@ -77,10 +77,27 @@ public class Episode {
 	}
 
 
+
+	// 좋아요
+	@Transactional
+	public void likedMember(Member member){
+		likedMembers.add(member);
+//		member.getLikeNovels().remove(this);
+	}
 	// 좋아요 취소
 	@Transactional
-	public void unLiked(Member member){
+	public void unLikedMember(Member member){
 		likedMembers.remove(member);
-		member.getLikeNovels().remove(this);
+//		member.getLikeNovels().remove(this);
+	}
+
+
+	public void beforeDelete(){
+		//댓글
+		comments.forEach(comment -> comment.beforeDelete());
+
+		//좋아요
+		likedMembers.forEach(member -> member.unLikeEpisode(this));
+		likedMembers = new ArrayList<>();
 	}
 }

@@ -5,7 +5,11 @@ import com.ssafy.model.dto.episode.EpisodeResponseNoNovelDto;
 import com.ssafy.model.dto.episode.EpisodeSaveRequestDto;
 import com.ssafy.model.dto.episode.EpisodeUpdateRequestDto;
 import com.ssafy.model.dto.novel.NovelResponseDto;
-import com.ssafy.model.entity.*;
+import com.ssafy.model.entity.Episode;
+import com.ssafy.model.entity.EpisodeException;
+import com.ssafy.model.entity.Novel;
+import com.ssafy.model.entity.NovelException;
+import com.ssafy.model.repository.CommentRepository;
 import com.ssafy.model.repository.EpisodeRepository;
 import com.ssafy.model.repository.NovelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -24,6 +29,8 @@ public class EpisodeServiceImpl implements EpisodeService {
     NovelRepository nRepo;
     @Autowired
     EpisodeRepository eRepo;
+    @Autowired
+    CommentRepository cRepo;
 
     @Transactional
     @Override
@@ -53,11 +60,15 @@ public class EpisodeServiceImpl implements EpisodeService {
     @Transactional
     @Override
     public EpisodeResponseDto getEpisode(int episodePk) {    // 조회수 + 1
-        Episode episodeEntity = eRepo.findById(episodePk).orElseThrow(() ->
+        Episode episode = eRepo.findById(episodePk).orElseThrow(() ->
                 new EpisodeException(EpisodeException.NOT_EXIST));
 
-        EpisodeResponseDto episode = new EpisodeResponseDto(episodeEntity);
-        return episode;
+        Novel novel = episode.getNovel();
+        novel.updateView();
+        nRepo.save(novel);
+
+        EpisodeResponseDto responseDto = new EpisodeResponseDto(episode);
+        return responseDto;
     }
 
     @Override
@@ -78,16 +89,9 @@ public class EpisodeServiceImpl implements EpisodeService {
     @Transactional
     @Override
     public void deleteEpisode(int episodePk) {
-        Episode episodeEntity = eRepo.findById(episodePk).orElseThrow(() ->
+        Episode episode = eRepo.findById(episodePk).orElseThrow(() ->
                 new EpisodeException(EpisodeException.NOT_EXIST));
-
-        // 좋아요 데이터 삭제
-        for (Member memberEntity : episodeEntity.getLikedMembers()) {
-            memberEntity.unLikeEpisode(episodeEntity);
-        }
-
-        eRepo.save(episodeEntity);
-        eRepo.deleteById(episodePk);
+        deleteEpisode(episode);
     }
 
     @Override
@@ -105,5 +109,17 @@ public class EpisodeServiceImpl implements EpisodeService {
         data.put("novel", novel);
         data.put("episodes", episodes);
         return data;
+    }
+
+    @Transactional
+    public void deleteEpisode(Episode episode){
+        episode.beforeDelete();
+        eRepo.save(episode);
+        eRepo.delete(episode);
+    }
+
+    public void deleteAllEpisode(){
+        List<Episode> episodeList = eRepo.findAll();
+        episodeList.stream().forEach(episode -> deleteEpisode(episode));
     }
 }

@@ -9,6 +9,7 @@ import com.ssafy.model.dto.member.MemberResponseDto;
 import com.ssafy.model.dto.novel.NovelResponseDto;
 import com.ssafy.model.entity.*;
 import com.ssafy.model.repository.*;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,13 +18,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Transactional
 @RunWith(SpringRunner.class) // JUnit에 내장된 Runner 대신 이 클래스를 실행한다.
 @SpringBootTest( properties = {"spring.config.location=classpath:application-test.properties"} )
 public class GenreServiceTest {
@@ -54,7 +56,7 @@ public class GenreServiceTest {
     private int commentPk;
     private int genrePk;
 
-    private final int GENRE_COUNT = 5;
+    private final int COUNT = 10;
     private final int PAGE = 0;
     private final int PAGE_SIZE = 5;
     private final Pageable page = PageRequest.of(PAGE, PAGE_SIZE);
@@ -69,33 +71,30 @@ public class GenreServiceTest {
 
     @Before
     public void setUp(){
-        System.out.println("setUp()");
-        memberRepository.deleteAll();
-        novelRepository.deleteAll();
-        episodeRepository.deleteAll();
-        commentRepository.deleteAll();
-        genreRepository.deleteAll();
         setMember();
         setNovel();
         setEpisode();
         setComment();
-        setGenre();
+        setGenres();
         catchFlag = false;
     }
+
+    @After
+    public void cleanUp(){}
 
     @Test
     public void 장르_하나_가져오기(){
         GenreResponseDto responseDto = genreService.getGenre(genrePk);
 
-        Genre genre = genreFindById(genrePk);
+        genre = genreFindById(genrePk);
 
-        assertThat(responseDto.getGenreName()).isEqualTo(genre.getGenreName()).isEqualTo(STR+4);
+        assertThat(responseDto.getGenreName()).isEqualTo(genre.getGenreName()).isEqualTo(STR+COUNT);
     }
     @Test
     public void 장르_전체_가져오기(){
         List<GenreResponseDto> responseDtoList = genreService.getGenres();
 
-        assertThat(responseDtoList.size()).isEqualTo(5);
+        assertThat(responseDtoList.size()).isEqualTo(COUNT);
     }
     @Test
     public void 장르_추가(){
@@ -104,14 +103,14 @@ public class GenreServiceTest {
                 .build();
         GenreResponseDto responseDto = genreService.registGenre(requestDto);
 
-        Genre genre = genreFindById(responseDto.getGenrePk());
+        genre = genreFindById(responseDto.getGenrePk());
         assertThat(genre.getGenreName()).isEqualTo(UPDATE_STR);
     }
-    
-    @Transactional
+
+
     @Test
     public void 장르_삭제(){
-        Genre genre = genreFindById(genrePk);
+        genre = genreFindById(genrePk);
 
         // 삭제 되어야 할 데이터
         List<Novel> novels = genre.getNovels();
@@ -126,7 +125,7 @@ public class GenreServiceTest {
         }
         assertThat(catchFlag).isEqualTo(true);
 
-        // 에피소드의 댓글들 삭제
+        // 장르에 속한 소설 데이터 삭제
         for(Novel novel : novels){
             catchFlag = false;
             try{
@@ -146,7 +145,7 @@ public class GenreServiceTest {
                 .build();
 
         GenreResponseDto responseDto = genreService.updateGenre(genrePk, requestDto);
-        Genre genre = genreRepository.findById(genrePk)
+        genre = genreRepository.findById(genrePk)
                 .orElseThrow(() -> new GenreException(GenreException.NOT_EXIST));
 
         assertThat(genre.getGenreName()).isEqualTo(responseDto.getGenreName()).isEqualTo(UPDATE_STR);
@@ -166,7 +165,7 @@ public class GenreServiceTest {
                 .build();
         member = memberRepository.save(member);
         memPk = member.getMemPk();
-        System.out.println("setMember() - member : " + new MemberResponseDto(member));
+        System.out.println(new MemberResponseDto(member));
     }
 
     private void setNovel(){
@@ -182,22 +181,25 @@ public class GenreServiceTest {
                 .build();
         novel = novelRepository.save(novel);
         novelPk = novel.getNovelPk();
-        System.out.println("setNovel() - novel : " + new NovelResponseDto(novel));
+        System.out.println(new NovelResponseDto(novel));
     }
 
     private void setEpisode(){
-        episode = Episode.builder()
-                .novel(novel)
-                .episodeTitle(STR)
-                .episodeContent(STR)
-                .episodeCreatedAt(LocalDateTime.now())
-                .episodeView(0)
-                .episodeWriter(STR)
-                .build();
+        for(int i = 0; i < COUNT; i++){
+            String str = STR +i;
+            episode = Episode.builder()
+                    .novel(novel)
+                    .episodeTitle(str)
+                    .episodeContent(str)
+                    .episodeCreatedAt(LocalDateTime.now())
+                    .episodeView(0)
+                    .episodeWriter(str)
+                    .build();
 
-        episode = episodeRepository.save(episode);
-        episodePk = episode.getEpisodePk();
-        System.out.println("setEpisode() - episode : " + new EpisodeResponseDto(episode));
+            episode = episodeRepository.save(episode);
+            episodePk = episode.getEpisodePk();
+            System.out.println(new EpisodeResponseDto(episode));
+        }
     }
 
     private void setComment(){
@@ -210,17 +212,16 @@ public class GenreServiceTest {
 
         comment = commentRepository.save(comment);
         commentPk = comment.getCommentPk();
-        System.out.println("setComment() - comment : " + new CommentResponseDto(comment));
+        System.out.println(new CommentResponseDto(comment));
     }
-
-    private void setGenre(){
-        for(int i = 0; i<GENRE_COUNT; i++){
+    private void setGenres(){
+        for(int i = 1; i<=COUNT; i++){
             genre = Genre.builder()
                     .genreName(STR+i)
                     .build();
             genre = genreRepository.save(genre);
             genrePk = genre.getGenrePk();
-            System.out.println("setGenre() - genre : " + new GenreResponseDto(genre));
+            System.out.println(new GenreResponseDto(genre));
         }
     }
 

@@ -271,4 +271,16 @@ public class NovelServiceImpl implements NovelService {
         return null;
     }
 
+    @Transactional
+    public void deleteNovel(Novel novel){
+        novel.beforeDelete();
+        nRepo.save(novel);
+        nRepo.delete(novel);
+    }
+
+    @Transactional
+    public void deleteAllNovel(){
+        List<Novel> novelList = nRepo.findAll();
+        novelList.forEach(novel -> deleteNovel(novel));
+    }
 }

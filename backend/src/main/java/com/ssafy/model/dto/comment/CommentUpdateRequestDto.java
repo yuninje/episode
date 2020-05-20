@@ -1,9 +1,6 @@
 package com.ssafy.model.dto.comment;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @Setter
@@ -11,4 +8,10 @@ import lombok.ToString;
 @NoArgsConstructor
 public class CommentUpdateRequestDto {
     private String commentContent;
+    @Builder
+    public CommentUpdateRequestDto(String commentContent) {
+        this.commentContent = commentContent;
+    }
 }
+
+

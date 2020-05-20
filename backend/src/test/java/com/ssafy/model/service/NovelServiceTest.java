@@ -2,12 +2,14 @@ package com.ssafy.model.service;
 
 import com.ssafy.model.dto.comment.CommentResponseDto;
 import com.ssafy.model.dto.episode.EpisodeResponseDto;
+import com.ssafy.model.dto.genre.GenreResponseDto;
 import com.ssafy.model.dto.member.MemberResponseDto;
 import com.ssafy.model.dto.novel.NovelResponseDto;
 import com.ssafy.model.dto.novel.NovelSaveRequestDto;
 import com.ssafy.model.dto.novel.NovelUpdateRequestDto;
 import com.ssafy.model.entity.*;
 import com.ssafy.model.repository.*;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,14 +19,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Transactional
 @RunWith(SpringRunner.class) // JUnit에 내장된 Runner 대신 이 클래스를 실행한다.
 @SpringBootTest( properties = {"spring.config.location=classpath:application-test.properties"} )
 public class NovelServiceTest {
@@ -52,9 +55,9 @@ public class NovelServiceTest {
     private int novelPk;
     private int episodePk;
     private int commentPk;
-    private List<Integer> genrePks;
+    private int genrePk;
 
-    private final int GENRE_COUNT = 5;
+    private final int COUNT = 5;
     private final int PAGE = 0;
     private final int PAGE_SIZE = 5;
     private final Pageable page = PageRequest.of(PAGE, PAGE_SIZE);
@@ -67,14 +70,9 @@ public class NovelServiceTest {
     private final String UPDATE_STR = "UPDATE_STR";
     boolean catchFlag;
 
+
     @Before
     public void setUp(){
-        System.out.println("setUp()");
-        memberRepository.deleteAll();
-        novelRepository.deleteAll();
-        episodeRepository.deleteAll();
-        commentRepository.deleteAll();
-        genreRepository.deleteAll();
         setMember();
         setNovel();
         setEpisode();
@@ -83,7 +81,10 @@ public class NovelServiceTest {
         catchFlag = false;
     }
 
-    @Transactional
+    @After
+    public void cleanUp(){}
+
+    
     @Test
     public void 소설_페이지_가져오기(){
         Page<NovelResponseDto> responseDtoPage = novelService.getNovels(page, STR);
@@ -94,11 +95,10 @@ public class NovelServiceTest {
         assertThat(responseDtoList.size()).isGreaterThanOrEqualTo(1);
     }
 
-    @Transactional
     @Test
     public void 소설_하나_가져오기(){
         NovelResponseDto responseDto = novelService.getNovel(novelPk);
-        Novel novel = novelFindById(novelPk);
+        novel = novelFindById(novelPk);
 
         assertThat(responseDto.getNovelPk()).isEqualTo(novel.getNovelPk());
         assertThat(responseDto.getNovelName()).isEqualTo(novel.getNovelName());
@@ -111,25 +111,26 @@ public class NovelServiceTest {
         assertThat(responseDto.getRecommends()).isEqualTo(novel.getRecommends());
     }
 
-    @Transactional
+
     @Test
-    public void 소설_페이지_이름으로_가져오기(){
+    public void 소설_페이지_이름으로_가져오기_아직안함(){
+        assertThat(true).isEqualTo(false);
+    }
+
+
+    @Test
+    public void 소설_페이지_닉네임으로_가져오기_아직안함(){
+        assertThat(true).isEqualTo(false);
 
     }
 
-    @Transactional
+
     @Test
-    public void 소설_페이지_닉네임으로_가져오기(){
+    public void 소설_페이지_이름또는닉네임으로_가져오기_아직안함(){
+        assertThat(true).isEqualTo(false);
 
     }
 
-    @Transactional
-    @Test
-    public void 소설_페이지_이름또는닉네임으로_가져오기(){
-
-    }
-
-    @Transactional
     @Test
     public void 소설_추가(){
         NovelSaveRequestDto requestDto = NovelSaveRequestDto.builder()
@@ -143,7 +144,7 @@ public class NovelServiceTest {
                 .novelStatus(0)
                 .build();
         NovelResponseDto responseDto = novelService.registNovel(requestDto);
-        Novel novel = novelFindById(responseDto.getNovelPk());
+        novel = novelFindById(responseDto.getNovelPk());
 
         assertThat(responseDto.getNovelName()).isEqualTo(novel.getNovelName()).isEqualTo(UPDATE_STR);
         assertThat(responseDto.getNovelIntro()).isEqualTo(novel.getNovelIntro()).isEqualTo(UPDATE_STR);
@@ -155,7 +156,7 @@ public class NovelServiceTest {
         assertThat(responseDto.getRecommends()).isEqualTo(novel.getRecommends());
     }
 
-    @Transactional
+
     @Test
     public void 소설_수정(){
         NovelUpdateRequestDto requestDto = NovelUpdateRequestDto.builder()
@@ -168,7 +169,7 @@ public class NovelServiceTest {
                 .novelStatus(1)
                 .build();
         NovelResponseDto responseDto = novelService.updateNovel(novelPk, requestDto);
-        Novel novel = novelFindById(responseDto.getNovelPk());
+        novel = novelFindById(responseDto.getNovelPk());
 
         assertThat(responseDto.getNovelPk()).isEqualTo(novel.getNovelPk());
         assertThat(responseDto.getNovelName()).isEqualTo(novel.getNovelName());
@@ -182,10 +183,12 @@ public class NovelServiceTest {
     }
 
 
-    @Transactional
+
     @Test
     public void 소설_삭제_성공(){
-        Novel novel = novelFindById(novelPk);
+        novel = novelFindById(novelPk);
+
+        // 삭제 되어야 할 데이터
         List<Genre> genres = novel.getGenres();
         List<Episode> episodes = novel.getEpisodes();
         List<Member> likedMembers = novel.getLikedMembers();
@@ -225,20 +228,11 @@ public class NovelServiceTest {
             assertThat(catchFlag).isEqualTo(true);
         }
 
-        // 소설의 좋아요 데이터 삭제
-        for(Member member : likedMembers){
-            catchFlag = false;
-            try{
-                memberFindById(member.getMemPk());
-            }catch (MemberException e){
-                assertThat(e.getMessage()).isEqualTo(MemberException.NOT_EXIST);
-                catchFlag = true;
-            }
-            assertThat(catchFlag).isEqualTo(true);
-        }
+        // 소설 좋아요 데이터 삭제 확인
+        assertThat(member.getLikeNovels().contains(novel)).isEqualTo(false);
     }
 
-    @Transactional
+
     @Test
     public void 소설_삭제_실패(){
         try {
@@ -250,22 +244,23 @@ public class NovelServiceTest {
         assertThat(catchFlag).isEqualTo(true);
     }
 
-    @Transactional
     @Test
     public void 소설_페이지_장르로_가져오기_아직안함(){
         assertThat(true).isEqualTo(false);
     }
-    @Transactional
+
     @Test
     public void 소설의_장르_업데이트(){
+        List<Integer> genrePks = new ArrayList<>();
+        genrePks.add(genrePk);
         novelService.updateGenreOfNovel(novelPk, genrePks);
 
-        Novel novel = novelFindById(novelPk);
+        novel = novelFindById(novelPk);
 
-        assertThat(novel.getGenres().size()).isEqualTo(GENRE_COUNT);
+        assertThat(novel.getGenres().size()).isEqualTo(1);
     }
 
-    @Transactional
+
     @Test
     public void 소설_페이지_회원으로_가져오기_아직안함(){
         assertThat(true).isEqualTo(false);
@@ -283,7 +278,7 @@ public class NovelServiceTest {
                 .build();
         member = memberRepository.save(member);
         memPk = member.getMemPk();
-        System.out.println("setMember() - member : " + new MemberResponseDto(member));
+        System.out.println(new MemberResponseDto(member));
     }
 
     private void setNovel(){
@@ -299,22 +294,25 @@ public class NovelServiceTest {
                 .build();
         novel = novelRepository.save(novel);
         novelPk = novel.getNovelPk();
-        System.out.println("setNovel() - novel : " + new NovelResponseDto(novel));
+        System.out.println(new NovelResponseDto(novel));
     }
 
     private void setEpisode(){
-        episode = Episode.builder()
-                .novel(novel)
-                .episodeTitle(STR)
-                .episodeContent(STR)
-                .episodeCreatedAt(LocalDateTime.now())
-                .episodeView(0)
-                .episodeWriter(STR)
-                .build();
+        for(int i = 0; i < COUNT; i++){
+            String str = STR +i;
+            episode = Episode.builder()
+                    .novel(novel)
+                    .episodeTitle(str)
+                    .episodeContent(str)
+                    .episodeCreatedAt(LocalDateTime.now())
+                    .episodeView(0)
+                    .episodeWriter(str)
+                    .build();
 
-        episode = episodeRepository.save(episode);
-        episodePk = episode.getEpisodePk();
-        System.out.println("setEpisode() - episode : " + new EpisodeResponseDto(episode));
+            episode = episodeRepository.save(episode);
+            episodePk = episode.getEpisodePk();
+            System.out.println(new EpisodeResponseDto(episode));
+        }
     }
 
     private void setComment(){
@@ -327,20 +325,18 @@ public class NovelServiceTest {
 
         comment = commentRepository.save(comment);
         commentPk = comment.getCommentPk();
-        System.out.println("setComment() - comment : " + new CommentResponseDto(comment));
+        System.out.println(new CommentResponseDto(comment));
     }
-
     private void setGenres(){
-        genrePks = new ArrayList<>();
-        for(int i = 0; i < GENRE_COUNT; i++){
+        for(int i = 1; i<=COUNT; i++){
             genre = Genre.builder()
                     .genreName(STR+i)
                     .build();
             genre = genreRepository.save(genre);
-            genrePks.add(genre.getGenrePk());
+            genrePk = genre.getGenrePk();
+            System.out.println(new GenreResponseDto(genre));
         }
     }
-
 
     Member memberFindById(int memPk){
         return memberRepository.findById(memPk).orElseThrow(

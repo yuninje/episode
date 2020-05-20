@@ -67,10 +67,25 @@ public class GenreServiceImpl implements GenreService{
 	public void deleteGenre(int genrePk) {
 		Genre genre = gRepo.findById(genrePk)
 				.orElseThrow(() -> new GenreException(GenreException.NOT_EXIST));
+		// 장르에 속한 소설 데이터 삭제
 		for(Novel novel : genre.getNovels()){
 			novel.notBelongGenre(genre);
 		}
+
 		gRepo.save(genre);
 		gRepo.deleteById(genrePk);
+	}
+
+	@Transactional
+	public void deleteGenre(Genre genre){
+		genre.beforeDelete();
+		gRepo.save(genre);
+		gRepo.delete(genre);
+	}
+
+	@Transactional
+	public void deleteAllGenre(){
+		List<Genre> genreList = gRepo.findAll();
+		genreList.forEach(genre -> deleteGenre(genre));
 	}
 }

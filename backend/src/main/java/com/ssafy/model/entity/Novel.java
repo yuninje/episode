@@ -72,7 +72,7 @@ public class Novel {
 	private List<Genre> genres = new ArrayList<>();
 
 	// novel <-> hashtag >> N : M 관계
-	@ManyToMany(mappedBy = "novels", cascade = CascadeType.REMOVE)
+	@ManyToMany(mappedBy = "novels")
 	private List<HashTag> hashTags = new ArrayList<>();
 
 	// 이 소설을 좋아하는 사람들 | novel : member = N : M
@@ -161,26 +161,60 @@ public class Novel {
 		return this;
 	}
 
+	// 좋아요
+	@Transactional
+	public void likedMember(Member member){
+		likedMembers.add(member);
+//		member.getLikeNovels().remove(this);
+	}
 	// 좋아요 취소
 	@Transactional
-	public void unLiked(Member member){
+	public void unLikedMember(Member member){
 		likedMembers.remove(member);
-		member.getLikeNovels().remove(this);
+//		member.getLikeNovels().remove(this);
 	}
 	// 장르 취소
 	@Transactional
 	public void belongGenre(Genre genre){
 		genres.add(genre);
-		genre.getNovels().add(this);
+//		genre.getNovels().add(this);
 	}
 	// 장르 추가
 	@Transactional
 	public void notBelongGenre(Genre genre){
 		genres.remove(genre);
-		genre.getNovels().remove(this);
+//		genre.getNovels().remove(this);
 	}
 
 	public void updateUpdatedAt(){
 		this.novelUpdatedAt = LocalDateTime.now();
+	}
+	public void updateView(){ this.novelView += 1;}
+
+
+
+	public void beforeDelete(){
+		// 에피소드
+		for(Episode episode : this.episodes){
+			episode.beforeDelete();
+		}
+
+		// 장르
+		for (Genre genre : this.genres){
+			genre.removeGenreAtNovel(this);
+		}
+		genres = new ArrayList<>();
+
+		// 해쉬태그 | 추가 예정
+//		for (HashTag hashTag : this.hashTags){
+//			hashTag.
+//		}
+		// 연재요일 | 추가 예정
+
+		// 좋아요 데이터
+		for (Member member : this.likedMembers) {
+			member.unLikeNovel(this);
+		}
+		likedMembers = new ArrayList<>();
 	}
 }

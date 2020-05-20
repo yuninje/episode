@@ -1,9 +1,11 @@
 package com.ssafy.model.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,36 +106,59 @@ public class Member {
 
 
 
-	@Transactional
 	public void likeNovel(Novel novel){
 		likeNovels.add(novel);
-		novel.getLikedMembers().add(this);
+//		novel.getLikedMembers().add(this);
 	}
-	@Transactional
 	public void unLikeNovel(Novel novel){
 		likeNovels.remove(novel);
-		novel.getLikedMembers().remove(this);
+//		novel.getLikedMembers().remove(this);
 	}
 
-	@Transactional
 	public void likeEpisode(Episode episode){
 		likeEpisodes.add(episode);
-		episode.getLikedMembers().add(this);
+//		episode.getLikedMembers().add(this);
 	}
-	@Transactional
 	public void unLikeEpisode(Episode episode){
 		likeEpisodes.remove(episode);
-		episode.getLikedMembers().remove(this);
+//		episode.getLikedMembers().remove(this);
 	}
-
-	@Transactional
 	public void likeComment(Comment comment){
 		likeComments.add(comment);
-		comment.getLikedMembers().add(this);
+//		comment.getLikedMembers().add(this);
 	}
-	@Transactional
 	public void unLikeComment(Comment comment){
 		likeComments.remove(comment);
-		comment.getLikedMembers().remove(this);
+//		comment.getLikedMembers().remove(this);
+	}
+
+	public void beforeDelete(){
+		// 소설
+		for(Novel novel : this.novels){
+			novel.beforeDelete();
+		}
+		novels = new ArrayList<>();
+
+		// 댓글
+		for(Comment comment : this.comments){
+			comment.beforeDelete();
+		}
+		comments = new ArrayList<>();
+
+		// 좋아요 데이터
+		for(Novel novel : this.likeNovels){
+			novel.unLikedMember(this);
+		}
+		likeNovels = new ArrayList<>();
+
+		for(Episode episode : this.likeEpisodes){
+			episode.unLikedMember(this);
+		}
+		likeEpisodes = new ArrayList<>();
+
+		for(Comment comment : this.likeComments){
+			comment.unLikedMember(this);
+		}
+		likeComments = new ArrayList<>();
 	}
 }

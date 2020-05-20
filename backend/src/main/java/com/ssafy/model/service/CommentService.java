@@ -3,6 +3,7 @@ package com.ssafy.model.service;
 import com.ssafy.model.dto.comment.CommentResponseDto;
 import com.ssafy.model.dto.comment.CommentSaveRequestDto;
 import com.ssafy.model.dto.comment.CommentUpdateRequestDto;
+import com.ssafy.model.entity.Comment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -13,4 +14,6 @@ public interface CommentService {
 	void deleteComment(int commentPk);
 	CommentResponseDto updateComment(int commentPk, CommentUpdateRequestDto requestDto);
 	Page<CommentResponseDto> getCommentByEpisode(int episodePk, Pageable pageable);
+	void deleteComment(Comment comment);
+	void deleteAllComment();
 }

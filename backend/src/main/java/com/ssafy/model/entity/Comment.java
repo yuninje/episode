@@ -66,10 +66,25 @@ public class Comment {
 		return this;
 	}
 
+
+	// 좋아요
+	@Transactional
+	public void likedMember(Member member){
+		likedMembers.add(member);
+//		member.getLikeNovels().remove(this);
+	}
 	// 좋아요 취소
 	@Transactional
-	public void unLiked(Member member){
+	public void unLikedMember(Member member){
 		likedMembers.remove(member);
-		member.getLikeNovels().remove(this);
+//		member.getLikeNovels().remove(this);
+	}
+
+	public void beforeDelete(){
+		// 좋아요 데이터
+		for (Member member : this.likedMembers) {
+			member.unLikeComment(this);
+		}
+		likedMembers = new ArrayList<>();
 	}
 }

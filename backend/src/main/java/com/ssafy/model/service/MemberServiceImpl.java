@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -122,20 +123,7 @@ public class MemberServiceImpl implements MemberService {
     public void deleteMember(int memPk) {
         Member member = mRepo.findById(memPk)
                 .orElseThrow(() -> new MemberException(MemberException.NOT_EXIST));
-
-        // 좋아요 데이터 삭제
-        for(Novel novel : member.getLikeNovels()){
-            novel.unLiked(member);
-        }
-        for(Episode episode : member.getLikeEpisodes()){
-            episode.unLiked(member);
-        }
-        for(Comment comment : member.getLikeComments()){
-            comment.unLiked(member);
-        }
-
-        mRepo.save(member);
-        mRepo.deleteById(memPk);
+        deleteMember(member);
     }
 
     @Transactional
@@ -154,11 +142,13 @@ public class MemberServiceImpl implements MemberService {
                     if (!member.getLikeNovels().contains(novel)) {
                         // 이미 있으면 넘어가고
                         member.likeNovel(novel);
+                        novel.likedMember(member);
                     }
                 } else { // 좋아요 취소
                     if (member.getLikeNovels().contains(novel)) {
                         // 이미 있으면 넘어가고
                         member.unLikeNovel(novel);
+                        novel.unLikedMember(member);
                     }
                 }
                 mRepo.save(member);
@@ -172,11 +162,13 @@ public class MemberServiceImpl implements MemberService {
                     if (!member.getLikeEpisodes().contains(episode)) {
                         // 이미 있으면 넘어가고
                         member.likeEpisode(episode);
+                        episode.likedMember(member);
                     }
                 } else { // 좋아요 취소
                     if (member.getLikeEpisodes().contains(episode)) {
                         // 이미 있으면 넘어가고
                         member.unLikeEpisode(episode);
+                        episode.unLikedMember(member);
                     }
                 }
                 mRepo.save(member);
@@ -190,11 +182,13 @@ public class MemberServiceImpl implements MemberService {
                     if (!member.getLikeComments().contains(comment)) {
                         // 이미 있으면 넘어가고
                         member.likeComment(comment);
+                        comment.likedMember(member);
                     }
                 } else { // 좋아요 취소
                     if (member.getLikeComments().contains(comment)) {
                         // 이미 있으면 넘어가고
                         member.unLikeComment(comment);
+                        comment.unLikedMember(member);
                     }
                 }
                 mRepo.save(member);
@@ -203,5 +197,18 @@ public class MemberServiceImpl implements MemberService {
             default:
                 throw new IllegalArgumentException("요청하신 타입 " + objectPk + "은 없는 타입입니다.");
         }
+    }
+
+    @Transactional
+    public void deleteAllMembers(){
+        List<Member> memberList = mRepo.findAll();
+        memberList.forEach(member -> deleteMember(member));
+    }
+
+    @Transactional
+    public void deleteMember(Member member){
+        member.beforeDelete();
+        mRepo.save(member);
+        mRepo.delete(member);
     }
 }

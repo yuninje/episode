@@ -43,6 +43,14 @@ public class Genre {
 	@Transactional
 	public void removeGenreAtNovel(Novel novel){
 		novels.remove(novel);
-		novel.getGenres().remove(this);
+//		novel.getGenres().remove(this);
+	}
+
+	@Transactional
+	public void beforeDelete(){
+		// 소설
+		for(Novel novel : this.novels){
+			novel.notBelongGenre(this);
+		}
 	}
 }

@@ -3,6 +3,7 @@ package com.ssafy.model.service;
 import com.ssafy.model.dto.novel.NovelResponseDto;
 import com.ssafy.model.dto.novel.NovelSaveRequestDto;
 import com.ssafy.model.dto.novel.NovelUpdateRequestDto;
+import com.ssafy.model.entity.Novel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,4 +24,6 @@ public interface NovelService {
 	void deleteNovel(int novelPk);
 	NovelResponseDto updateGenreOfNovel(int novelPk, List<Integer> genrePks);
 	Page<NovelResponseDto> getNovelByMember(int memPk, Pageable pageable, String sort);
+	void deleteNovel(Novel novel);
+	void deleteAllNovel();
 }
