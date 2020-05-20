@@ -83,6 +83,12 @@ public class NovelRestController {
 		return handleSuccess(nService.getNovelByMember(memPk, pageable, sort));
 	}
 	
+	@ApiOperation("조회수 기준으로 top 100 구하기")
+	@GetMapping("/top100")
+	ResponseEntity<Map<String, Object>> getTop100(){
+		return handleSuccess(nService.getTop100());
+	}
+	
 	public ResponseEntity<Map<String, Object>> handleSuccess(Object data) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("state", "ok");

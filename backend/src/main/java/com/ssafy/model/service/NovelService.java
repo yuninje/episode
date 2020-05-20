@@ -20,4 +20,5 @@ public interface NovelService {
 	void deleteNovel(int novelPk);
 	void updateGenreOfNovel(int novelPk, List<Integer> genrePks);
 	Page<NovelResponseDto> getNovelByMember(int memPk, Pageable pageable, String sort);
+	List<NovelResponseDto> getTop100();
 }

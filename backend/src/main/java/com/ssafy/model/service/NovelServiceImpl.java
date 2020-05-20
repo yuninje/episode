@@ -201,6 +201,14 @@ public class NovelServiceImpl implements NovelService {
         return novels;
     }
     
+    public List<NovelResponseDto> getTop100(){
+    	List<Novel> novelEntityList = nRepo.findTop100ByOrderByNovelViewDesc();
+    	List<NovelResponseDto> novels = novelEntityList.stream().map(novelEntity -> new NovelResponseDto(novelEntity))
+                .collect(Collectors.toList());
+    	
+    	return novels;
+    }
+    
     public PageRequest getPageRequest(Pageable pageable, String sort) {
     	if(sort != null) {
     		switch(sort) {
