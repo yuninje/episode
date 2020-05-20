@@ -9,6 +9,7 @@ import Editor from '../components/editor/PageEditor'
 import TestEditor1 from '../components/editor/TestEditor1'
 import TestTest from '../components/editor/TestTest'
 import Feel from '../components/feel/PageFeel'  //  여긴 나중에 바뀔 예정
+import Top100 from '../components/top/PageTop100'  //  여긴 나중에 바뀔 예정
 
 Vue.use(VueRouter)
 
@@ -49,6 +50,11 @@ const routes = [
     path: '/feel',
     name: 'Feel',
     component: Feel
+  },
+  {
+    path: '/top100',
+    name: 'Top100',
+    component: Top100
   }
 ]
 

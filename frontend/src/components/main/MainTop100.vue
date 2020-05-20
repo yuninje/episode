@@ -4,11 +4,12 @@
         <span class="sub-title-red">TOP 100</span>
         &nbsp;
         <!-- 더 보기 버튼을 누를 경우 Top100 페이지로 이동시킬 것 -->
-        <v-btn x-small color="rgba(192,0,0,1)" rounded class="more-btn">더 보기</v-btn>
+        <v-btn x-small color="rgba(192,0,0,1)" rounded class="more-btn" @click="gotoTop100()">더 보기</v-btn>
       </div>
         <v-row>
           <v-col 
-            cols="4" 
+            cols="4"
+            sm="2" 
             md="1" 
             v-for="(item, i) in items"
             :key=i
@@ -66,7 +67,12 @@ export default {
         }
       ]
     }
-  }
+  },
+  methods: {
+    gotoTop100() {
+      this.$router.push('/top100');
+    }
+  },
 }
 </script>
 
