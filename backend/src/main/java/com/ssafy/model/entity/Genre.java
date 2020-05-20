@@ -19,7 +19,7 @@ public class Genre {
 	@Column(name = "genre_pk")
 	private Integer genrePk;
 	
-	@Column(name = "genre_name", length = 30, nullable = false)
+	@Column(name = "genre_name", length = 30, unique = true, nullable = false)
 	private String genreName;
 	
 	@ManyToMany

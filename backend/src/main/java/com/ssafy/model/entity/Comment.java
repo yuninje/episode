@@ -4,7 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class Comment {
 
 	@CreatedDate
 	@Column(name = "comment_created_at", nullable = false)
-	private LocalDate commentCreatedAt;
+	private LocalDateTime commentCreatedAt;
 
 	// comment <-> member >> N : 1 관계
 	@ManyToOne
@@ -53,7 +53,7 @@ public class Comment {
 	private List<Member> likedMembers = new ArrayList<Member>();
 
 	@Builder
-	public Comment(Integer commentPk, String commentContent, LocalDate commentCreatedAt, Member member, Episode episode) {
+	public Comment(Integer commentPk, String commentContent, LocalDateTime commentCreatedAt, Member member, Episode episode) {
 		this.commentPk = commentPk;
 		this.commentContent = commentContent;
 		this.commentCreatedAt = commentCreatedAt;

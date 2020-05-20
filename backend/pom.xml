@@ -51,6 +51,23 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+
+		<!-- JUnit  -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+
+<!--		테스트용 인메모리 디비-->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.200</version>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- swagger --> 
 		<dependency> 
 			<groupId>io.springfox</groupId> 

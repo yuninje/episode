@@ -1,7 +1,7 @@
 package com.ssafy.model.dto.novel;
 
+import com.ssafy.model.entity.Member;
 import com.ssafy.model.entity.Novel;
-import com.ssafy.model.repository.MemberRepository;
 import lombok.*;
 
 @Getter
@@ -39,10 +39,9 @@ public class NovelSaveRequestDto{
         this.novelOnly = novelOnly;
     }
 
-    public Novel toEntity(MemberRepository memberRepository){
+    public Novel toEntity(Member member){
         return Novel.builder()
-                .member(memberRepository.findById(memberPk)
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이디입니다.")))
+                .member(member)
                 .novelName(novelName)
                 .novelIntro(novelIntro)
                 .novelImage(novelImage)

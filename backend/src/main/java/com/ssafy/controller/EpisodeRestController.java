@@ -44,7 +44,7 @@ public class EpisodeRestController {
         return handleSuccess(eService.getEpisodesByNovel(novelPk, pageable));
     }
 
-    @ApiOperation("에피소드 등록")
+    @ApiOperation("에피소드 등록 | 소설 update 시간 갱신")
     @PostMapping()
     ResponseEntity<Map<String, Object>> registEpisode(@RequestBody EpisodeSaveRequestDto requestDto) {
         return handleSuccess(eService.registEpisode(requestDto));

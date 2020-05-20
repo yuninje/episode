@@ -1,11 +1,11 @@
 package com.ssafy.model.dto.comment;
 
 import com.ssafy.model.entity.Comment;
-import com.ssafy.model.repository.EpisodeRepository;
-import com.ssafy.model.repository.MemberRepository;
+import com.ssafy.model.entity.Episode;
+import com.ssafy.model.entity.Member;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -23,14 +23,12 @@ public class CommentSaveRequestDto {
         this.episodePk = episodePk;
     }
 
-    public Comment toEntity(MemberRepository memberRepository, EpisodeRepository episodeRepository){
+    public Comment toEntity(Member member, Episode episode){
         return Comment.builder()
-                .member(memberRepository.findById(memPk)
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다.")))
-                .episode(episodeRepository.findById(episodePk)
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 에피소드입니다.")))
+                .member(member)
+                .episode(episode)
                 .commentContent(commentContent)
-                .commentCreatedAt(LocalDate.now())
+                .commentCreatedAt(LocalDateTime.now())
                 .build();
     }
 }

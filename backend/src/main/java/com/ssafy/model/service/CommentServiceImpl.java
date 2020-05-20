@@ -3,9 +3,7 @@ package com.ssafy.model.service;
 import com.ssafy.model.dto.comment.CommentResponseDto;
 import com.ssafy.model.dto.comment.CommentSaveRequestDto;
 import com.ssafy.model.dto.comment.CommentUpdateRequestDto;
-import com.ssafy.model.entity.Comment;
-import com.ssafy.model.entity.Episode;
-import com.ssafy.model.entity.Member;
+import com.ssafy.model.entity.*;
 import com.ssafy.model.repository.CommentRepository;
 import com.ssafy.model.repository.EpisodeRepository;
 import com.ssafy.model.repository.MemberRepository;
@@ -46,7 +44,12 @@ public class CommentServiceImpl implements CommentService{
 
 	@Override
 	public CommentResponseDto registComment(CommentSaveRequestDto requestDto) {
-		Comment commentEntity = requestDto.toEntity(mRepo, eRepo);
+		Member member = mRepo.findById(requestDto.getMemPk())
+				.orElseThrow(() -> new MemberException(MemberException.NOT_EXIST));
+		Episode episode = eRepo.findById(requestDto.getEpisodePk())
+				.orElseThrow(() -> new EpisodeException(EpisodeException.NOT_EXIST));
+
+		Comment commentEntity = requestDto.toEntity(member, episode);
 		commentEntity = cRepo.save(commentEntity);
 
 		CommentResponseDto comment = new CommentResponseDto(commentEntity);

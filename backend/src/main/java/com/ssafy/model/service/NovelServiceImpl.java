@@ -3,10 +3,7 @@ package com.ssafy.model.service;
 import com.ssafy.model.dto.novel.NovelResponseDto;
 import com.ssafy.model.dto.novel.NovelSaveRequestDto;
 import com.ssafy.model.dto.novel.NovelUpdateRequestDto;
-import com.ssafy.model.entity.Genre;
-import com.ssafy.model.entity.Member;
-import com.ssafy.model.entity.Novel;
-import com.ssafy.model.entity.Search;
+import com.ssafy.model.entity.*;
 import com.ssafy.model.repository.GenreRepository;
 import com.ssafy.model.repository.MemberRepository;
 import com.ssafy.model.repository.NovelRepository;
@@ -46,7 +43,7 @@ public class NovelServiceImpl implements NovelService {
                 = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
                 Sort.by("novelUpdatedAt").descending());
 
-        Page<Novel> novelEntityPage = nRepo.findAll(pageable);
+        Page<Novel> novelEntityPage = nRepo.findAll(pageRequest);
         Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
 
         return novels;
@@ -144,8 +141,8 @@ public class NovelServiceImpl implements NovelService {
 
     @Override
     public NovelResponseDto registNovel(NovelSaveRequestDto requestDto) {
-
-    	Novel novelEntity = nRepo.save(requestDto.toEntity(mRepo));
+        Member member = mRepo.findById(requestDto.getMemberPk()).orElseThrow(() -> new MemberException(MemberException.NOT_EXIST));
+    	Novel novelEntity = nRepo.save(requestDto.toEntity(member));
         NovelResponseDto novel = new NovelResponseDto(novelEntity);
         return novel;
 //		Novel registN = modelMapper.map(novel, Novel.class);
@@ -186,7 +183,7 @@ public class NovelServiceImpl implements NovelService {
     @Override
     public NovelResponseDto updateNovel(int novelPk, NovelUpdateRequestDto requestDto) {
         Novel novelEntity = nRepo.findById(novelPk).orElseThrow(() ->
-                new IllegalArgumentException("novel pk :  " + novelPk + "가 존재하지 않습니다."));
+                new NovelException(NovelException.NOT_EXIST));
 
         novelEntity.update(
                 requestDto.getNovelName(),
@@ -203,8 +200,8 @@ public class NovelServiceImpl implements NovelService {
 
     @Override
     public void deleteNovel(int novelPk) {
-        Novel novelEntity = nRepo.findById(novelPk).orElseThrow(() ->
-                new IllegalArgumentException("comment " + novelPk + "가 존재하지 않습니다."));
+        Novel novelEntity = nRepo.findById(novelPk)
+                .orElseThrow(() -> new NovelException(NovelException.NOT_EXIST));
         for (Member memberEntity : novelEntity.getLikedMembers()) {
             memberEntity.unLikeNovel(novelEntity);
         }
@@ -213,10 +210,9 @@ public class NovelServiceImpl implements NovelService {
     }
 
     @Override
-    public List<NovelResponseDto> getNovelsByGenre(int genrePk) {
-        Genre genre = gRepo.findById(genrePk).orElseThrow(() ->
-                new IllegalArgumentException("genre pk :  " + genrePk + "가 존재하지 않습니다."));
-
+    public List<NovelResponseDto> getNovelsByGenre(int genrePk) {   // 이거 바꿔야할듯
+        Genre genre = gRepo.findById(genrePk)
+                .orElseThrow(() -> new GenreException(GenreException.NOT_EXIST));
 
         List<NovelResponseDto> novels =
                 genre.getNovels().stream().map(novelEntity -> new NovelResponseDto(novelEntity))
@@ -227,13 +223,13 @@ public class NovelServiceImpl implements NovelService {
 
     @Override
     public NovelResponseDto updateGenreOfNovel(int novelPk, List<Integer> genrePks) {
-        Novel novelEntity = nRepo.findById(novelPk).orElseThrow(() ->
-                        new IllegalArgumentException("novel pk :  " + novelPk + "가 존재하지 않습니다."));
+        Novel novelEntity = nRepo.findById(novelPk)
+                .orElseThrow(() -> new NovelException(NovelException.NOT_EXIST));
         List<Genre> oGenres = novelEntity.getGenres(); // 원래 장르들
         // 새로운 장로들
         List<Genre> uGenres = genrePks.stream().map(genrePk ->
-                gRepo.findById(genrePk).orElseThrow(() ->
-                        new IllegalArgumentException("genre pk :  " + genrePk + "가 존재하지 않습니다."))).collect(Collectors.toList());
+                gRepo.findById(genrePk).orElseThrow(() -> new GenreException(GenreException.NOT_EXIST)))
+                .collect(Collectors.toList());
 
         // uGenres 중에서 oGenre에 없는것을 추가
         for(Genre genreEntity : uGenres){

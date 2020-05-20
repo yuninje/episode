@@ -1,10 +1,7 @@
 package com.ssafy.model.service;
 
 import com.ssafy.model.dto.member.*;
-import com.ssafy.model.entity.Comment;
-import com.ssafy.model.entity.Episode;
-import com.ssafy.model.entity.Member;
-import com.ssafy.model.entity.Novel;
+import com.ssafy.model.entity.*;
 import com.ssafy.model.repository.CommentRepository;
 import com.ssafy.model.repository.EpisodeRepository;
 import com.ssafy.model.repository.MemberRepository;
@@ -31,10 +28,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberResponseDto login(Auth auth) {
+        System.out.println(auth);
         Member member = mRepo.findByMemId(auth.getMemId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이디입니다."));
+                .orElseThrow(() -> new AuthException(AuthException.ID_ERROR));
         if (!member.getMemPw().equals(auth.getMemPw())) {
-            throw new AuthException("올바르지 않은 비밀번호입니다.");
+            throw new AuthException(AuthException.PASSWORD_ERROR);
         }
         return new MemberResponseDto(member);
     }
@@ -57,7 +55,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberResponseDto getMember(int memPk) {
         Member member = mRepo.findById(memPk)
-                .orElseThrow(() -> new IllegalArgumentException("member pk :  " + memPk + "가 존재하지 않습니다."));
+                .orElseThrow(() -> new MemberException(MemberException.NOT_EXIST));
 
         return new MemberResponseDto(member);
     }
@@ -105,7 +103,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberResponseDto updateMember(int memPk, MemberUpdateRequestDto requestDto) {
         Member member = mRepo.findById(memPk)
-                .orElseThrow(() -> new IllegalArgumentException("member pk :  " + memPk + "가 존재하지 않습니다."));
+                .orElseThrow(() -> new MemberException(MemberException.NOT_EXIST));
 
         member.update(
                 requestDto.getMemEmail(),
@@ -127,11 +125,11 @@ public class MemberServiceImpl implements MemberService {
     public void doLike(int memPk, int objectPk, int objectType, boolean flag) {
 
         Member member = mRepo.findById(memPk)
-                .orElseThrow(() -> new IllegalArgumentException("요청하신 member의 " + memPk + "가 없습니다."));
+                .orElseThrow(() -> new MemberException(MemberException.NOT_EXIST));
         switch (objectType) {
             case 1: // 소설
                 Novel novelEntity = nRepo.findById(objectPk)
-                        .orElseThrow(() -> new IllegalArgumentException("요청하신 novel의 " + objectPk + "가 없습니다."));
+                        .orElseThrow(() -> new NovelException(NovelException.NOT_EXIST));
 
 
                 if (flag) { // 좋아요
@@ -152,7 +150,7 @@ public class MemberServiceImpl implements MemberService {
                 break;
             case 2: // 에피소드
                 Episode episode = eRepo.findById(objectPk)
-                        .orElseThrow(() -> new IllegalArgumentException("요청하신 episode의 " + objectPk + "가 없습니다."));
+                        .orElseThrow(() -> new EpisodeException(EpisodeException.NOT_EXIST));
 
                 if (flag) { // 좋아요
                     if (!member.getLikeEpisodes().contains(episode)) {
@@ -172,7 +170,7 @@ public class MemberServiceImpl implements MemberService {
                 break;
             case 3: // 댓글
                 Comment comment = cRepo.findById(objectPk)
-                        .orElseThrow(() -> new IllegalArgumentException("요청하신 comment의 " + objectPk + "가 없습니다."));
+                        .orElseThrow(() -> new CommentException(CommentException.NOT_EXIST));
 
                 if (flag) { // 좋아요
                     if (!member.getLikeComments().contains(comment)) {

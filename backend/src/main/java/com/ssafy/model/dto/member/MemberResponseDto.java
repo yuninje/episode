@@ -42,5 +42,4 @@ public class MemberResponseDto {
 		this.memBirth = memBirth;
 		this.memGender = memGender;
 	}
-    
 }

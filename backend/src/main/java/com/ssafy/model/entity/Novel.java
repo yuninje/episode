@@ -162,13 +162,18 @@ public class Novel {
 		return this;
 	}
 
+	// 장르 취소
 	public void belongGenre(Genre genre){
 		genres.add(genre);
 		genre.getNovels().add(this);
 	}
-
+	// 장르 추가
 	public void notBelongGenre(Genre genre){
 		genres.remove(genre);
 		genre.getNovels().remove(this);
+	}
+
+	public void updateUpdatedAt(){
+		this.novelUpdatedAt = LocalDateTime.now();
 	}
 }

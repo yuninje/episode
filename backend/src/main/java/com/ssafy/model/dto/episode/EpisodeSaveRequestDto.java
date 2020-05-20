@@ -1,7 +1,7 @@
 package com.ssafy.model.dto.episode;
 
 import com.ssafy.model.entity.Episode;
-import com.ssafy.model.repository.NovelRepository;
+import com.ssafy.model.entity.Novel;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -24,10 +24,9 @@ public class EpisodeSaveRequestDto {
         this.episodeWriter = episodeWriter;
     }
 
-    public Episode toEntity(NovelRepository novelRepository){
+    public Episode toEntity(Novel novel){
         return Episode.builder()
-                .novel(novelRepository.findById(novelPk)
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 소설입니다.")))
+                .novel(novel)
                 .episodeTitle(episodeTitle)
                 .episodeContent(episodeContent)
                 .episodeWriter(episodeWriter)
