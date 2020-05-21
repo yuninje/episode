@@ -27,9 +27,12 @@
 </template>
 
 <script>
+import http from "../../http-common"
+
 export default {
   data() {
     return {
+      data:[],
       items: [
         {
           src:"https://comicthumb-phinf.pstatic.net/20181101_25/pocket_1541053325022bMb9z_JPEG/cover.jpg?type=m260",
@@ -67,8 +70,13 @@ export default {
         {
           src:"https://comicthumb-phinf.pstatic.net/20200428_133/pocket_1588044467650zDp5T_JPEG/packseller.jpg?type=m260",
         }
-      ]
+      ],
+      errored: false,
+      loading: true
     }
+  },
+  mounted() {
+    this.getTop100();
   },
   methods: {
     gotoTop100() {
@@ -76,6 +84,20 @@ export default {
     },
     gotoNovelDetail() {
       this.$router.push('/noveldetail');
+    },
+    getTop100() {
+      http
+        .get('/novels/top100')
+        .then(response => {
+          console.log(response.data.data);
+          this.data = response.data.data;
+        })
+        .catch(() => {
+          this.errored = true;
+        })
+        .finally(() => {
+          this.loading = false;
+        })
     }
   },
 }
