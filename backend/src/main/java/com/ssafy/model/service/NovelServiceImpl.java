@@ -245,7 +245,10 @@ public class NovelServiceImpl implements NovelService {
     }
     
     public PageRequest getPageRequest(Pageable pageable, String sort) {
-    	switch(sort) {
+    	if(sort == null){
+    	    sort = "updated";
+        }
+        switch(sort) {
     	case "likes":
     		sort = "novelLikes";
     		break;
@@ -256,11 +259,10 @@ public class NovelServiceImpl implements NovelService {
     		sort = "novelView";
     		break;
     	}
-    	
         PageRequest pageRequest
-                = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-                	sort.equals("updated") ? Sort.by("novelUpdatedAt").descending() :
-                		Sort.by(sort, "novelUpdatedAt").descending());
+            = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+                sort.equals("updated") ? Sort.by("novelUpdatedAt").descending() :
+                    Sort.by(sort, "novelUpdatedAt").descending());
         
         return pageRequest;
     }
