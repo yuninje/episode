@@ -11,6 +11,8 @@ import Feel from '../components/feel/PageFeel'  //  여긴 나중에 바뀔 예�
 import Top100 from '../components/top/PageTop100'  //  여긴 나중에 바뀔 예정
 import NovelDetail from '../components/novel/PageNovelDetail'
 
+import Viewer from '../components/viewer/PageViewer'
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -56,8 +58,12 @@ const routes = [
     path: '/noveldetail',
     name: 'NovelDetail',
     component: NovelDetail
+  },
+  {
+    path: '/viewer',
+    name: 'Viewer',
+    component: Viewer
   }
-
 ]
 
 function rejectAuthUser (to, from, next) {

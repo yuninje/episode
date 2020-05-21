@@ -55,7 +55,7 @@
                                 <td>{{index+1}}화</td>
                                 <td>{{episode.createdAt}}</td>
                                 <td>{{episode.title}}</td>
-                                <td><v-btn outlined color="rgba(192,0,0,1)">보기</v-btn></td>
+                                <td><v-btn outlined color="rgba(192,0,0,1)" @click="gotoNovelViewer()">보기</v-btn></td>
                             </tr>
                         </tbody>
                     </template>
@@ -97,6 +97,11 @@ export default {
                 },
             ]
         }
+    },
+    methods: {
+            gotoNovelViewer() {
+                this.$router.push('/viewer');
+            }
     }
 }
 </script>
