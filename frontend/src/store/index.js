@@ -4,14 +4,16 @@ import axios from "axios";
 import router from "@/router/index";
 
 import moduleMember from "./modules/moduleMember"
-import moduleEditor from "./modules/moduleEditor";
+import moduleEditor from "./modules/moduleEditor"
+import moduleMywork from "./modules/moduleMywork"
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
     storeMember: moduleMember,
-    storeEditor: moduleEditor
+    storeEditor: moduleEditor,
+    storeMywork: moduleMywork
   },
   state: {
     server: "http://13.125.145.32:8080",

@@ -19,7 +19,7 @@
         <template v-if="getDesktopSize()">
             <v-flex>
                 <v-btn color="black" text>소설 전체보기</v-btn>
-                <v-btn color="black" text @click="gotoEditor()">에디터</v-btn>
+                <v-btn color="black" text @click="gotoMywork()">작품쓰기</v-btn>
             </v-flex>
             <v-spacer></v-spacer>
             <v-flex v-show="!getIsLogin">
@@ -44,7 +44,7 @@
                 <v-list>
                     <!-- v-for로 @click에 함수 연결이 어려워 직접 코딩 -->
                     <v-list-item @click=""><v-list-item-title>소설 전체 보기</v-list-item-title></v-list-item>
-                    <v-list-item @click="gotoEditor()"><v-list-item-title>에디터</v-list-item-title></v-list-item>
+                    <v-list-item @click="gotoMywork()"><v-list-item-title>작품쓰기</v-list-item-title></v-list-item>
                     <v-list-item @click="gotoSignIn()" v-show="!getIsLogin"><v-list-item-title>로그인</v-list-item-title></v-list-item>
                     <v-list-item @click="gotoSignUp()" v-show="!getIsLogin"><v-list-item-title>회원가입</v-list-item-title></v-list-item>
                     <v-list-item @click="signout()" v-show="getIsLogin"><v-list-item-title>로그아웃</v-list-item-title></v-list-item>
@@ -82,8 +82,8 @@ export default {
                     link: ""
                 },
                 {
-                    title:"에디터",
-                    link: "gotoEditor"
+                    title:"작품쓰기",
+                    link: "gotoMywork"
                 },
                 {
                     title:"로그인",
@@ -105,16 +105,20 @@ export default {
             alert(this.searchText + " 검색");
         },
         gotoMain() {
-            this.$router.push('/');
+            console.log(this.getSession.memPk)
+            this.$router.push('/')
+                        .catch(err => {});
         },
         gotoSignIn() {
-            this.$router.push('/signin');
+            this.$router.push('/signin')
         },
         gotoSignUp() {
-            this.$router.push('/signup');
+            this.$router.push('/signup')
+                        .catch(err => {});
         },
-        gotoEditor() {
-            this.$router.push('/editor');
+        gotoMywork() {
+            this.$router.push('/mywork')
+                        .catch(err => {});
         },
         signout() {
             this.$store.dispatch("signout");

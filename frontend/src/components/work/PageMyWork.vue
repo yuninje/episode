@@ -4,20 +4,17 @@
       <div class="work-category">전체작품</div>
       <section class="work-section">
         <div class="card-grid">
-          <a v-for="item in all" :key="item.title" class="card" href="#">
-            <div
-              class="card__background"
-              style="background-image: url(https://images.unsplash.com/photo-1557177324-56c542165309?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80)"
-            ></div>
+          <router-link :to="`noveldetail/${ item.novelPk }`" v-for="item in allList" :key="item.novelPk" class="card">
+            <img class="card__background" v-bind:src="item.novelImage">
             <div class="card__content">
-              <h3 class="card__heading">{{ item.title }}</h3>
+              <h3 class="card__heading">{{ item.novelName }}</h3>
             </div>
-          </a>
+          </router-link>
 
           <a class="card" href="#">
-          <div class="card__background" style="border: solid 1px rgb(192, 0, 0)"></div>
-          <div class="card__content">+</div>
-        </a>
+            <div class="card__background" style="border: solid 1px rgb(192, 0, 0)"></div>
+            <div class="card__content">+</div>
+          </a>
         </div>
       </section>
     </div>
@@ -26,20 +23,17 @@
       <div class="work-category">연재 중 작품</div>
       <section class="work-section">
         <div class="card-grid">
-          <a v-for="item in publish" :key="item.title" class="card" href="#">
-            <div
-              class="card__background"
-              style="background-image: url(https://images.unsplash.com/photo-1557187666-4fd70cf76254?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60)"
-            ></div>
+          <a v-for="item in publishList" :key="item.novelPk" class="card" href="#">
+            <img class="card__background" v-bind:src="item.novelImage">
             <div class="card__content">
-              <h3 class="card__heading">{{ item.title }}</h3>
+              <h3 class="card__heading">{{ item.novelName }}</h3>
             </div>
           </a>
 
           <a class="card" href="#">
-          <div class="card__background" style="border: solid 1px rgb(192, 0, 0)"></div>
-          <div class="card__content">+</div>
-        </a>
+            <div class="card__background" style="border: solid 1px rgb(192, 0, 0)"></div>
+            <div class="card__content">+</div>
+          </a>
         </div>
       </section>
     </div>
@@ -48,20 +42,17 @@
       <div class="work-category">작성 중 작품</div>
       <section class="work-section">
         <div class="card-grid">
-          <a v-for="item in write" :key="item.title" class="card" href="#">
-            <div
-              class="card__background"
-              style="background-image: url(https://images.unsplash.com/photo-1556680262-9990363a3e6d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60)"
-            ></div>
+          <a v-for="item in writeList" :key="item.novelPk" class="card" href="#">
+            <img class="card__background" v-bind:src="item.novelImage">
             <div class="card__content">
-              <h3 class="card__heading">{{ item.title }}</h3>
+              <h3 class="card__heading">{{ item.novelName }}</h3>
             </div>
           </a>
 
           <a class="card" href="#">
-          <div class="card__background" style="border: solid 1px rgb(192, 0, 0)"></div>
-          <div class="card__content">+</div>
-        </a>
+            <div class="card__background" style="border: solid 1px rgb(192, 0, 0)"></div>
+            <div class="card__content">+</div>
+          </a>
         </div>
       </section>
     </div>
@@ -69,30 +60,33 @@
 </template>
 
 <script>
+import { mapActions, mapMutations, mapGetters } from "vuex";
+
 export default {
   data() {
     return {
-      all: [
-        { title: "전체작품 소설 1" },
-        { title: "전체작품 소설 2" },
-        { title: "전체작품 소설 3" }
+      novelList: [
+        { title: "전체 소설 1" },
+        { title: "전체 소설 2" },
+        { title: "전체 소설 3" }
       ],
-      publish: [
-        { title: "연재중인 소설 1" },
-        { title: "연재중인 소설 2" },
-        { title: "연재중인 소설 3" }
-      ],
-      write: [
-        { title: "작성중인 소설 1" },
-        { title: "작성중인 소설 2" },
-        { title: "작성중인 소설 3" }
-      ]
     };
+  },
+  beforeCreate() {
+    this.$store.dispatch("storeMywork/getNovelByMemPk");
   },
   created() {
     savedId: this.$session.get("savedId");
   },
-  computed: {},
+  computed: {
+    ...mapGetters(["getSession"]),
+
+    ...mapGetters("storeMywork", {
+      allList: "getNovAllList",
+      publishList: "getNovPubList",
+      writeList: "getNovWriList",
+    })
+  },
   methods: {}
 };
 </script>
@@ -116,6 +110,7 @@ export default {
 }
 
 .work-category {
+  padding: 0 var(--spacing-s);
   font-weight: 700;
 }
 .work-section {
@@ -124,7 +119,7 @@ export default {
   min-height: 100%;
   justify-content: center;
   padding-top: var(--spacing-s);
-  padding-bottom: var(--spacing-xl)
+  padding-bottom: var(--spacing-xl);
   // padding: var(--spacing-l) var(--spacing-l);
 }
 
@@ -135,6 +130,14 @@ export default {
   grid-row-gap: var(--spacing-l);
   max-width: var(--width-container);
   width: 100%;
+
+  img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
 }
 
 @media (min-width: 540px) {
