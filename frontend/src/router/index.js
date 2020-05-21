@@ -7,6 +7,8 @@ import Signup from '../components/member/PageSignUp'
 import Signin from '../components/member/PageSignIn'
 import Editor from '../components/editor/PageEditor'
 import Mywork from '../components/work/PageMyWork'
+import Feel from '../components/feel/PageFeel'  //  여긴 나중에 바뀔 예정
+import Top100 from '../components/top/PageTop100'  //  여긴 나중에 바뀔 예정
 
 Vue.use(VueRouter)
 
@@ -39,6 +41,16 @@ const routes = [
     component: Mywork
   },
 
+  {
+    path: '/feel',
+    name: 'Feel',
+    component: Feel
+  },
+  {
+    path: '/top100',
+    name: 'Top100',
+    component: Top100
+  }
 
 ]
 

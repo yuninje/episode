@@ -37,7 +37,6 @@
 export default {
     data() {
         return {
-            slides: [1,2,3,4,5,6,7,8,9,10],
             keywords:[
                 '로맨스 소설',
                 '판타지 소설',

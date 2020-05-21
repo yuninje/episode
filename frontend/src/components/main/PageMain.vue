@@ -3,19 +3,19 @@
     <MainCarousel/>
     <v-container>
       <v-row>
-        <v-col cols="10">
+        <!-- 느낌별 소설 모음 -->
+        <v-col cols="12">
+          <MainFeel/>
+        </v-col>
+        <v-col cols="12" md="10">
           <v-row>
-            <!-- 느낌별 소설 모음 -->
-            <v-col cols="12">
-              <MainFeel/>
-            </v-col>
             <!-- Top 100 -->
             <v-col cols="12">
               <MainTop100/>
             </v-col>
           </v-row>
         </v-col>
-        <v-col cols="2" class="pa-5">
+        <v-col cols="2" class="pa-5 hidden-sm-and-down">
           <v-row>
             <!-- 검색 순위 들어갈 곳 -->
             <v-col cols="12">
