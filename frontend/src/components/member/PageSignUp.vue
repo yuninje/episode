@@ -245,7 +245,7 @@ export default {
           if (this.mem_pw === this.mem_pw_check) {
             // 여기에서 axios post 함수 시작
             http
-              .post('/members/regist', {
+              .post('/members', {
                 memId: this.mem_id,
                 memEmail: this.mem_email,
                 memPw: this.mem_pw,
