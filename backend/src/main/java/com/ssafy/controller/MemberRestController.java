@@ -70,7 +70,9 @@ public class MemberRestController {
 	@ApiOperation("아이디/닉네임/이메일/전화번호 중복 검사, 비밀번호 유효성 검사 | 성공 시 data는 비어있으며(state는 ok) 실패시 data에는 에러 문구가 들어감(state는 fail)")
 	@PostMapping("/check/{key}")
 	ResponseEntity<Map<String, Object>> check(
-			@ApiParam("1: 아이디\n2: 닉네임\n3: 비밀번호\n4: 이메일\n5: 전화번호") @PathVariable int key, 
+			@ApiParam(value="1: 아이디\n2: 닉네임\n3: 비밀번호\n4: 이메일\n5: 전화번호", 
+				allowableValues="1, 2, 3, 4, 5",
+				required=true) @PathVariable int key, 
 			@ApiParam("스웨거에서 테스트 시 양 옆의 쌍따옴표도 문자로 간주하므로 제거해야 함") @RequestBody String input){
 		boolean res = false;
 		String fail[] = {"중복된 아이디입니다.", "중복된 닉네임입니다.", "올바르지 않은 비밀번호입니다.", 
@@ -101,11 +103,12 @@ public class MemberRestController {
 	@ApiOperation("좋아요 요청 | 성공시 data에 문자열이 반환")
 	@GetMapping("/{memPk}/{objectType}/{objectPk}/{flag}") // 임시 URL
 	ResponseEntity<Map<String, Object>> doLike(
-			@ApiParam("요청한 회원의 PK") @PathVariable int memPk, 
-			@ApiParam("요청한 대상의 PK") @PathVariable int objectPk,
+			@ApiParam(value="요청한 회원의 PK", required=true) @PathVariable int memPk, 
+			@ApiParam(value="요청한 대상의 PK", required=true) @PathVariable int objectPk,
 			@ApiParam(value = "요청한 대상의 타입 | 1 : 소설, 2 : 에피소드, 3 : 댓글",
-					allowableValues = "1,2,3") @PathVariable int objectType,
-			@ApiParam("좋아요 / 좋아요 취소 요청 | true : 좋아요, false : 좋아요 취소") @PathVariable boolean flag ){
+					allowableValues = "1, 2, 3", required=true) @PathVariable int objectType,
+			@ApiParam(value="좋아요 / 좋아요 취소 요청 | true : 좋아요, false : 좋아요 취소", 
+					allowableValues = "true, false", required=true) @PathVariable boolean flag ){
 		mService.doLike(memPk, objectPk, objectType, flag);			
 		if(flag)
 			return handleSuccess("좋아요 완료");

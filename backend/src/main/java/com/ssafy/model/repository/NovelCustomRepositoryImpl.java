@@ -57,7 +57,7 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 			.from(novel);
 			
 		switch(type) {
-		case "all":
+		case "all":	
 			query.where((authorNameLike(word)
 					.or(novelNameLike(word))
 					.or(hashTagLike(word)))
