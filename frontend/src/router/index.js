@@ -54,7 +54,7 @@ const routes = [
     component: Top100
   },
   {
-    path: '/noveldetail',
+    path: '/noveldetail/:novelPk',
     name: 'NovelDetail',
     component: NovelDetail
   },

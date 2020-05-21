@@ -11,13 +11,13 @@
             cols="4"
             sm="2" 
             md="1" 
-            v-for="(item, i) in items"
-            :key=i
+            v-for="i in Math.min(topNovels.length, limit)"
+            :key="i"
           >
             <v-img
-              :src="item.src"
+              :src="topNovels[i-1].novelImage"
               aspect-ratio=0.7
-              @click="gotoNovelDetail()"
+              @click="gotoNovelDetail(topNovels[i-1].novelPk)"
               class="novel-image"
             >
             </v-img>
@@ -27,9 +27,13 @@
 </template>
 
 <script>
+import http from "../../http-common"
+
 export default {
   data() {
     return {
+      topNovels:[],
+      limit: 12,
       items: [
         {
           src:"https://comicthumb-phinf.pstatic.net/20181101_25/pocket_1541053325022bMb9z_JPEG/cover.jpg?type=m260",
@@ -67,15 +71,37 @@ export default {
         {
           src:"https://comicthumb-phinf.pstatic.net/20200428_133/pocket_1588044467650zDp5T_JPEG/packseller.jpg?type=m260",
         }
-      ]
+      ],
+      errored: false,
+      loading: true
     }
+  },
+  mounted() {
+    this.getTop100();
   },
   methods: {
     gotoTop100() {
       this.$router.push('/top100');
     },
-    gotoNovelDetail() {
-      this.$router.push('/noveldetail');
+    gotoNovelDetail(novelPk) {
+      console.log("받은 novelPk : " + novelPk);
+      this.$router.push(`/noveldetail/${novelPk}`);
+      this.$store.state.novelPk = novelPk;
+      console.log("this.$store.state.novelPk : " + this.$store.state.novelPk);
+    },
+    getTop100() {
+      http
+        .get('/novels/top100')
+        .then(response => {
+          console.log(response.data.data);
+          this.topNovels = response.data.data;
+        })
+        .catch(() => {
+          this.errored = true;
+        })
+        .finally(() => {
+          this.loading = false;
+        })
     }
   },
 }
