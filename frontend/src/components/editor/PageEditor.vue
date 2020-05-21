@@ -1,18 +1,17 @@
 <template>
   <div class="editor-page">
     <div class="editor-page-title">
-      <h2>에디터 테스트 페이지 입니다</h2>
     </div>
 
     <div class="editor-page-wrap">
       <div class="left-wrap">
-        오른쪽은 - 타임라인 Div
+        <!-- 오른쪽은 - 타임라인 Div -->
         <br>
       </div>
 
       <div class="middle-wrap">
         <div class="middle-top">
-          <div id="top-ep-title">Episode 1. 에피소드의 제목~</div>
+          <div id="top-ep-title">Episode 1. 에피소드의 제목</div>
           <div id="top-timer">
             ⏰마감까지 남은시간
             <div id="top-timer-time">{{ minutes }}분 {{ seconds }}초</div>
@@ -44,16 +43,16 @@
         </div>
 
         <div class="middle-btm">
-          <div id="btm-hashtag">Episode 태그 | #사이다 #시작 #스승</div>
-          <div id="btm-autosave">(자동 저장됨) 마지막 저장 시간: 2020.05.07 오후 1시 57분 27초</div>
-          <div class="div-save-wrap">
-            <button class="btn-save">저장하기</button>
-          </div>
+          <!-- <div id="btm-hashtag">Episode 태그 | #사이다 #시작 #스승</div> -->
+          <span v-show="this.saveTime" id="btm-autosave">(자동 저장됨) 마지막 저장 시간: {{ saveTime.toLocaleString() }}</span>
+          <span class="div-save-wrap">
+            <button id="btn-save">저장하기</button>
+          </span>
         </div>
       </div>
 
       <div class="right-wrap">
-        <br>왼쪽은 - 등장인물, 주요사건, 연관에피소드, 맞춤법검사 Div
+        <!-- <br>왼쪽은 - 등장인물, 주요사건, 연관에피소드, 맞춤법검사 Div -->
       </div>
     </div>
   </div>
@@ -116,7 +115,8 @@ export default {
       // 자동 저장
       autoSave: null, // 자동 저장 함수
       savingContent: "",
-      episodeContent:""
+      episodeContent:"",
+      saveTime : "",
     };
   },
   filters: {
@@ -181,21 +181,31 @@ export default {
 
     // 자동 저장
     startAutoSave() {
-      this.autoSave = setInterval(() => this.saveTmp(), 300000); // 1000 = 1초 ->  주기 변경  // (5분 * 60초 * 1000 = 300000)
+      this.autoSave = setInterval(() => this.save(), 300000); // 1000 = 1초 -> (5분 * 60초 * 1000 = 300000)
     },
     // 임시 저장
     saveTmp() {
       this.savingContent = this.htmlContent;
-      this.fetchAutoSave(this.savingContent)
+      localStorage.setItem("autoSaved", this.savingContent);
+      this.saveTime = new Date().toLocaleString()
+      // this.fetchAutoSave(this.savingContent)
       this.save()
+      
     },
-    // 진짜 저장
+    // 저장
     save() {
+      this.saveTime = new Date().toLocaleString()
+      // 데이터 처리
       let { episodeContent } = this.savingContent;
       let data = {
-        episodeContent
+        episodePk:1,
+        episodeContent,
+        novelDTO: {
+          novelPk: 1
+        }
       };
-      this.fetchPostsave(this.savingContent)
+      // this.fetchPostsave(this.savingContent)
+      
 
     },
 
@@ -214,7 +224,7 @@ export default {
     // }, 300),
 
     onEditorFocus(editor) {
-      console.log("editor focus!", editor);
+      // console.log("editor focus!", editor);
       // 타이머 시작, 0분 남으면 타이머 스탑
       if (!this.timer) {
         this.startTimer();
@@ -222,10 +232,10 @@ export default {
       }
     },
     onEditorBlur(editor) {
-      console.log("editor blur!", editor);
+      // console.log("editor blur!", editor);
     },
     onEditorReady(editor) {
-      console.log("editor ready!", editor);
+      // console.log("editor ready!", editor);
     }
   },
   computed: {
@@ -238,6 +248,8 @@ export default {
       const seconds = this.totalTime - this.minutes * 60;
       return this.padTime(seconds);
     },
+
+    // 자동저장
 
     editor() {
       return this.$refs.myTextEditor.quill;
@@ -256,6 +268,7 @@ export default {
 .editor-page {
   margin-left: auto;
   margin-right: auto;
+  margin-top: 50px;
 }
 .editor-page-title {
   margin-top: 50px;
@@ -303,6 +316,36 @@ export default {
   #pb {
     display: block;
     width: calc(100% + 50px);
+  }
+}
+
+.middle-btm {
+
+  #btm-autosave {
+    vertical-align: middle;
+    width: 70%;
+  }
+  #btn-save {
+    float: right;
+    padding: 5px 20px;
+    border: solid 1px rgb(204, 197, 197);
+    outline: 0;
+    border-radius: 2px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    -webkit-transition: all 0.1s;
+    -moz-transition: all 0.1s;
+    -o-transition: all 0.1s;
+    transition: all 0.1s;
+    transition: all 0.1s;
+
+    &:hover {
+      color: #fff;
+      box-shadow: 300px 0 0 0 rgb(192, 0, 0) inset;
+      border: 0;
+      outline: 0;
+    }
   }
 }
 </style>

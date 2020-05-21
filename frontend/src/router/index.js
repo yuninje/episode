@@ -6,8 +6,7 @@ import Main from '../components/main/PageMain'
 import Signup from '../components/member/PageSignUp'
 import Signin from '../components/member/PageSignIn'
 import Editor from '../components/editor/PageEditor'
-import TestEditor1 from '../components/editor/TestEditor1'
-import TestTest from '../components/editor/TestTest'
+import Mywork from '../components/work/PageMyWork'
 import Feel from '../components/feel/PageFeel'  //  여긴 나중에 바뀔 예정
 import Top100 from '../components/top/PageTop100'  //  여긴 나중에 바뀔 예정
 
@@ -37,15 +36,11 @@ const routes = [
     component: Editor
   },
   {
-    path: '/testeditor1',
-    name: 'TestEditor1',
-    component: TestEditor1
+    path: '/mywork',
+    name: 'mywork',
+    component: Mywork
   },
-  {
-    path: '/testtest',
-    name: 'TestTest',
-    component: TestTest
-  },
+
   {
     path: '/feel',
     name: 'Feel',
@@ -56,6 +51,7 @@ const routes = [
     name: 'Top100',
     component: Top100
   }
+
 ]
 
 function rejectAuthUser (to, from, next) {

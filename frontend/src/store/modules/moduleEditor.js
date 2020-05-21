@@ -20,15 +20,23 @@ export default {
     fetchAutoSave({ state, dispatch, commit, getters, rootGetters }, data) {
       console.log("fetchAutoSave 들어옴");
       // commit("setSavedContent", "fetchAutoSave Data");
+      localStorage.setItem("autoSaved", data);
       setTimeout(() => commit('setSavedContent', data), 1000);
     },
     // 서버에 저장
     fetchPostSave({ state, dispatch, commit, getters, rootGetters }, data) {
       axios
-        .post(`${rootGetters.getServer}/api/episodes/1`, data)
+        .put(`http://localhost:8080/api/episodes` + 1, {
+          "episodeContent": "수정되라 얍ㅜㅜ",
+          "episodeTitle": "수정이 왜 안되니 ㅠㅠㅠ",
+          "episodeWriter": "string"
+        })
         .then( res => {
           console.log(red.data.data)
         })
+        .catch(err => {
+          console.error("fetchPostSave()", err);
+        });
     }
   } 
 };
