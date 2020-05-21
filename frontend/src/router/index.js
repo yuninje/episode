@@ -43,7 +43,6 @@ const routes = [
     name: 'mywork',
     component: Mywork
   },
-
   {
     path: '/feel',
     name: 'Feel',
