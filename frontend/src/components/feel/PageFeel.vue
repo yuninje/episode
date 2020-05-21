@@ -51,9 +51,7 @@
   </svg>
   </div>
   <div class="card-text">
-    <div class="portada">
-    
-    </div>
+    <img class="portada" src="https://comicthumb-phinf.pstatic.net/20190325_108/pocket_1553525187132gW0BF_JPEG/untitled.jpg">
     <div class="title-total">   
       <div class="total">총 152화</div>
       <h2>서울역 드루이드</h2>
@@ -186,7 +184,7 @@ path {
   height: 100%;
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
-  background-image: url("https://comicthumb-phinf.pstatic.net/20190325_108/pocket_1553525187132gW0BF_JPEG/untitled.jpg");
+  // background-image: url("https://comicthumb-phinf.pstatic.net/20190325_108/pocket_1553525187132gW0BF_JPEG/untitled.jpg");
   background-position: bottom center;
   background-size: cover;
 }
@@ -229,10 +227,11 @@ button {
 }
 .tab {
     border-top: 2px solid;
-    border-left: 1px solid;
+    border-left: 2px solid;
     border-right: 1px solid;
     border-color:rgba(255,83,83,1);
     color: black !important;
+    margin-right: -1px;
 }
 .v-tab--active {
     background-color: rgba(255,83,83,1) !important;
