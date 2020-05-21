@@ -20,6 +20,7 @@ import java.util.Map;
 @Api(tags = { "2. Novel" })
 @RestController
 @RequestMapping("/novels")
+@CrossOrigin(origins = {"*"}, maxAge = 6000)
 public class NovelRestController {
 	@Autowired
 	NovelService nService;
