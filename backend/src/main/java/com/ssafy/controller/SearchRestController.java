@@ -26,15 +26,16 @@ public class SearchRestController {
 	SearchService sService;
 	
 	@ApiOperation("검색")
-	@GetMapping("/{type}/{word}")
+	@GetMapping("/{type}")
 	ResponseEntity<Map<String, Object>> getNovelsBySearchWord(
-			@ApiParam(allowableValues="all, author_name, novel_name, hashtag")
+			@ApiParam(value="all : 전체검색\nauthor_name : 작가명 검색\nnovel_name : 작품명 검색\nhashtag : 해시태그 검색",
+				allowableValues="all, author_name, novel_name, hashtag", required=true)
 			@PathVariable String type,
-			@PathVariable String word, 
+			@RequestParam(required=true) String word, 
 			@PageableDefault(page=0, size=10) Pageable pageable,
-			@ApiParam(value="-- : 업데이트순\nlikes : 선호작순\nrecommends : 추천순\nview : 조회수순",
-				allowableValues="likes, recommends, view")
-			@RequestParam(required=false) String sort,
+			@ApiParam(value="updated : 업데이트순\nlikes : 선호작순\nrecommends : 추천순\nview : 조회수순",
+				allowableValues="updated, likes, recommends, view", required=true)
+			@RequestParam String sort,
 			@ApiParam("검색한 유저의 memPk")
 			@RequestParam(required=false, defaultValue="0") int memPk,
 			@ApiParam("장르 pk")

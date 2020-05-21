@@ -29,9 +29,9 @@ public class NovelRestController {
 	@GetMapping()
 	ResponseEntity<Map<String, Object>> getNovels(
 			@PageableDefault(page=0, size=10) Pageable pageable, 
-			@ApiParam(value="-- : 업데이트순\nlikes : 선호작순\nrecommends : 추천순\nview : 조회수순",
-					allowableValues="likes, recommends, view")
-			@RequestParam(required=false) String sort){
+			@ApiParam(value="updated : 업데이트순\nlikes : 선호작순\nrecommends : 추천순\nview : 조회수순",
+				allowableValues="updated, likes, recommends, view", required=true)
+			@RequestParam String sort){
 		return handleSuccess(nService.getNovels(pageable, sort));
 	}
 	
@@ -76,9 +76,9 @@ public class NovelRestController {
 	@GetMapping("/member-pk={memPk}") // url 바꿔야함
 	ResponseEntity<Map<String, Object>> getNovelByMember(@PathVariable int memPk, 
 			@PageableDefault(page=0, size=10) Pageable pageable,
-			@ApiParam(value="-- : 업데이트순\nlikes : 선호작순\nrecommends : 추천순\nview : 조회수순",
-				allowableValues="likes, recommends, view")
-			@RequestParam(required=false) String sort) {
+			@ApiParam(value="updated : 업데이트순\nlikes : 선호작순\nrecommends : 추천순\nview : 조회수순",
+				allowableValues="updated, likes, recommends, view", required=true)
+			@RequestParam String sort) {
 		return handleSuccess(nService.getNovelByMember(memPk, pageable, sort));
 	}
 	
