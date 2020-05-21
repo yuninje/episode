@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 
+@Transactional
 @Service
 public class MemberServiceImpl implements MemberService {
     @Autowired
@@ -114,7 +115,6 @@ public class MemberServiceImpl implements MemberService {
         return new MemberResponseDto(member);
     }
 
-    @Transactional
     @Override
     public void deleteMember(int memPk) {
         Member member = mRepo.findById(memPk)
@@ -122,7 +122,6 @@ public class MemberServiceImpl implements MemberService {
         deleteMember(member);
     }
 
-    @Transactional
     @Override
     public void doLike(int memPk, int objectPk, int objectType, boolean flag) {
 
@@ -195,13 +194,11 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-    @Transactional
     public void deleteAllMembers(){
         List<Member> memberList = mRepo.findAll();
         memberList.forEach(member -> deleteMember(member));
     }
 
-    @Transactional
     public void deleteMember(Member member){
         member.beforeDelete();
         mRepo.save(member);

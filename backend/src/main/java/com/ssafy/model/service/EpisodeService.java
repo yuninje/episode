@@ -16,7 +16,6 @@ public interface EpisodeService {
 	EpisodeResponseDto getEpisode(int episodePk);
 	EpisodeResponseDto updateEpisode(int episodePk, EpisodeUpdateRequestDto requestDto);
 	void deleteEpisode(int episodePk);
-
 	Map getEpisodesByNovel(int novelPk, Pageable pageable);
 	void deleteEpisode(Episode episode);
 	void deleteAllEpisode();

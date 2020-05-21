@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 
+@org.springframework.transaction.annotation.Transactional
 @Service
 public class CommentServiceImpl implements CommentService{
 	@Autowired
@@ -59,7 +60,6 @@ public class CommentServiceImpl implements CommentService{
 		return comment;
 	}
 
-	@Transactional
 	@Override
 	public void deleteComment(int commentPk) {
 		Comment commentEntity = cRepo.findById(commentPk).orElseThrow(()->
@@ -96,14 +96,12 @@ public class CommentServiceImpl implements CommentService{
 		return comments;
 	}
 
-	@Transactional
 	public void deleteComment(Comment comment){
 		comment.beforeDelete();
 		cRepo.save(comment);
 		cRepo.delete(comment);
 	}
 
-	@Transactional
 	public void deleteAllComment(){
 		List<Comment> commentList = cRepo.findAll();
 		commentList.stream().forEach(comment -> deleteComment(comment));

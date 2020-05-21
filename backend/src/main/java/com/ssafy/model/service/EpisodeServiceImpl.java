@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Transactional
 @Service
 public class EpisodeServiceImpl implements EpisodeService {
 
@@ -32,7 +33,6 @@ public class EpisodeServiceImpl implements EpisodeService {
     @Autowired
     CommentRepository cRepo;
 
-    @Transactional
     @Override
     public EpisodeResponseDto registEpisode(EpisodeSaveRequestDto requestDto) {
         Novel novel = nRepo.findById(requestDto.getNovelPk())
@@ -57,7 +57,6 @@ public class EpisodeServiceImpl implements EpisodeService {
         return episodes;
     }
 
-    @Transactional
     @Override
     public EpisodeResponseDto getEpisode(int episodePk) {    // 조회수 + 1
         Episode episode = eRepo.findById(episodePk).orElseThrow(() ->
@@ -86,7 +85,6 @@ public class EpisodeServiceImpl implements EpisodeService {
         return episode;
     }
 
-    @Transactional
     @Override
     public void deleteEpisode(int episodePk) {
         Episode episode = eRepo.findById(episodePk).orElseThrow(() ->
@@ -111,7 +109,6 @@ public class EpisodeServiceImpl implements EpisodeService {
         return data;
     }
 
-    @Transactional
     public void deleteEpisode(Episode episode){
         episode.beforeDelete();
         eRepo.save(episode);

@@ -1,13 +1,9 @@
 package com.ssafy.model.service;
 
-import com.ssafy.model.dto.comment.CommentResponseDto;
+import com.ssafy.Dummy;
 import com.ssafy.model.dto.episode.EpisodeResponseDto;
 import com.ssafy.model.dto.episode.EpisodeSaveRequestDto;
 import com.ssafy.model.dto.episode.EpisodeUpdateRequestDto;
-import com.ssafy.model.dto.genre.GenreResponseDto;
-import com.ssafy.model.dto.hashtag.HashTagResponseDto;
-import com.ssafy.model.dto.member.MemberResponseDto;
-import com.ssafy.model.dto.novel.NovelResponseDto;
 import com.ssafy.model.entity.*;
 import com.ssafy.model.repository.*;
 import org.junit.After;
@@ -25,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -32,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class) // JUnit에 내장된 Runner 대신 이 클래스를 실행한다.
 @SpringBootTest( properties = {"spring.config.location=classpath:application-test.properties"} )
 public class EpisodeServiceTest {
-
+    Dummy dummy;
     @Autowired
     private MemberService memberService;
     @Autowired
@@ -43,6 +40,10 @@ public class EpisodeServiceTest {
     private CommentService commentService;
     @Autowired
     private GenreService genreService;
+    @Autowired
+    private HashTagService hashTagService;
+    @Autowired
+    private SearchService searchService;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -54,6 +55,8 @@ public class EpisodeServiceTest {
     private CommentRepository commentRepository;
     @Autowired
     private GenreRepository genreRepository;
+    @Autowired
+    private SearchRepository searchRepository;
     @Autowired
     private HashTagRepository hashTagRepository;
 
@@ -89,19 +92,52 @@ public class EpisodeServiceTest {
     private final String UPDATE_STR = "UPDATE_STR";
     boolean catchFlag;
 
-
     @Before
     public void setUp(){
-        setMember();
-        setHashTags();
-        setGenres();
-        setNovel();
-        setEpisode();
-        setComment();
-        setRelation();
+        dummy = Dummy.builder()
+                .memberRepository(memberRepository)
+                .novelRepository(novelRepository)
+                .episodeRepository(episodeRepository)
+                .genreRepository(genreRepository)
+                .commentRepository(commentRepository)
+                .searchRepository(searchRepository)
+                .hashTagRepository(hashTagRepository)
+                .memberService(memberService)
+                .novelService(novelService)
+                .episodeService(episodeService)
+                .commentService(commentService)
+                .genreService(genreService)
+                .hashTagService(hashTagService)
+                .searchService(searchService)
+                .build();
+
+        Map<String, Object> data = dummy.getRet();
+
+        member = (Member) data.get("member");
+        memPk = (int) data.get("memPk");
+
+        novelPk = (int) data.get("novelPk");
+        novel = (Novel) data.get("novel");
+
+        episode = (Episode) data.get("episode");
+        episodePk = (int) data.get("episodePk");
+
+        comment = (Comment) data.get("comment");
+        commentPk = (int) data.get("commentPk");
+
+        genres = (ArrayList) data.get("genres");
+        genrePks = (ArrayList) data.get("genrePks");
+        genre = (Genre) data.get("genre");
+        genrePk = (int) data.get("genrePk");
+
+        hashTag = (HashTag) data.get("hashTag");
+        hashTagStrs = (ArrayList) data.get("hashTagStrs");
+        hashTags = (ArrayList) data.get("hashTags");
+        hashTagPk = (int) data.get("hashTagPk");
+
+        dummy.setRelation();
         catchFlag = false;
     }
-
     @After
     public void cleanUp(){}
 
@@ -117,7 +153,7 @@ public class EpisodeServiceTest {
                 .build();
         EpisodeResponseDto responseDto = episodeService.registEpisode(requestDto);
 
-        episode = episodeFindById(responseDto.getEpisodePk());
+        episode = dummy.episodeFindById(responseDto.getEpisodePk());
 
         assertThat(episode.getEpisodeTitle()).isEqualTo(responseDto.getEpisodeTitle());
         assertThat(episode.getEpisodeContent()).isEqualTo(responseDto.getEpisodeContent());
@@ -168,7 +204,7 @@ public class EpisodeServiceTest {
 
         EpisodeResponseDto responseDto = episodeService.updateEpisode(episodePk, requestDto);
 
-        episode = episodeFindById(episodePk);
+        episode = dummy.episodeFindById(episodePk);
 
         assertThat(episode.getEpisodeTitle()).isEqualTo(responseDto.getEpisodeTitle()).isEqualTo(UPDATE_STR);
         assertThat(episode.getEpisodeContent()).isEqualTo(responseDto.getEpisodeContent()).isEqualTo(UPDATE_STR);
@@ -185,7 +221,7 @@ public class EpisodeServiceTest {
 
         episodeService.deleteEpisode(episodePk);
         try {
-            episodeFindById(episodePk);
+            dummy.episodeFindById(episodePk);
         }catch (EpisodeException e){
             assertThat(e.getMessage()).isEqualTo(EpisodeException.NOT_EXIST);
             catchFlag = true;
@@ -196,7 +232,7 @@ public class EpisodeServiceTest {
         for(Comment comment : commentList){
             catchFlag = false;
             try{
-                commentFindById(comment.getCommentPk());
+                dummy.commentFindById(comment.getCommentPk());
             }catch (CommentException e){
                 assertThat(e.getMessage()).isEqualTo(CommentException.NOT_EXIST);
                 catchFlag = true;
@@ -213,133 +249,4 @@ public class EpisodeServiceTest {
         assertThat(false).isEqualTo(true);
     }
 
-
-    private void setMember(){
-        for(int i = 0; i<COUNT; i++){
-            String str = i > 0 ? STR+i : STR;
-            member = Member.builder()
-                    .memId(str)
-                    .memPw(str)
-                    .memNick(str)
-                    .memEmail(str)
-                    .memBirth(str)
-                    .memPhone(str)
-                    .memGender(true)
-                    .build();
-            member = memberRepository.save(member);
-            memPk = member.getMemPk();
-            System.out.println(new MemberResponseDto(member));
-        }
-    }
-
-    private void setNovel(){
-        novel = Novel.builder()
-                .member(member)
-                .genres(genres)
-                .hashTags(hashTags)
-                .novelName(STR)
-                .novelImage(STR)
-                .novelIntro(STR)
-                .novelLimit(true)
-                .novelOnly(true)
-                .novelOpen(true)
-                .novelStatus(0)
-                .build();
-        novel = novelRepository.save(novel);
-        novelPk = novel.getNovelPk();
-        System.out.println(new NovelResponseDto(novel));
-    }
-
-    private void setEpisode(){
-        for(int i = 0; i < COUNT; i++){
-            String str = STR +i;
-            episode = Episode.builder()
-                    .novel(novel)
-                    .episodeTitle(str)
-                    .episodeContent(str)
-                    .episodeCreatedAt(LocalDateTime.now())
-                    .episodeView(0L)
-                    .episodeWriter(str)
-                    .build();
-
-            episode = episodeRepository.save(episode);
-            episodePk = episode.getEpisodePk();
-            System.out.println(new EpisodeResponseDto(episode));
-        }
-    }
-
-    private void setComment(){
-        for(int i = 0; i<COUNT; i++){
-            comment = Comment.builder()
-                    .member(member)
-                    .episode(episode)
-                    .commentContent(STR)
-                    .commentCreatedAt(LocalDateTime.now())
-                    .build();
-
-            comment = commentRepository.save(comment);
-            commentPk = comment.getCommentPk();
-            System.out.println(new CommentResponseDto(comment));
-        }
-    }
-
-    private void setGenres(){
-        genrePks = new ArrayList<>();
-        genres = new ArrayList<>();
-        for(int i = 1; i<=COUNT; i++){
-            genre = Genre.builder()
-                    .genreName(STR+i)
-                    .build();
-            genre = genreRepository.save(genre);
-            genrePk = genre.getGenrePk();
-            genrePks.add(genrePk);
-            System.out.println(new GenreResponseDto(genre));
-        }
-    }
-
-    private void setHashTags(){
-        hashTags = new ArrayList<>();
-        hashTagStrs = new ArrayList<>();
-        for(int i = 0; i< COUNT; i++){
-
-            hashTagStrs.add(STR+i);
-            hashTag = HashTag.builder()
-                    .hashTagName(STR+i)
-                    .build();
-            hashTagRepository.save(hashTag);
-            hashTagPk = hashTag.getHashTagPk();
-            hashTags.add(hashTag);
-            System.out.println(new HashTagResponseDto(hashTag));
-        }
-    }
-
-    void setRelation(){
-        memberService.doLike(memPk, novelPk, NOVEL, true);
-        memberService.doLike(memPk, episodePk, EPISODE, true);
-        memberService.doLike(memPk, commentPk, COMMENT, true);
-    }
-    Member memberFindById(int memPk){
-        return memberRepository.findById(memPk).orElseThrow(
-                () -> new MemberException(MemberException.NOT_EXIST));
-    }
-    Novel novelFindById(int novelPk){
-        return novelRepository.findById(novelPk).orElseThrow(
-                () -> new NovelException(NovelException.NOT_EXIST));
-    }
-    Episode episodeFindById(int episodePk){
-        return episodeRepository.findById(episodePk).orElseThrow(
-                () -> new EpisodeException(EpisodeException.NOT_EXIST));
-    }
-    Comment commentFindById(int commentPk){
-        return commentRepository.findById(commentPk).orElseThrow(
-                () -> new CommentException(CommentException.NOT_EXIST));
-    }
-    Genre genreFindById(int genrePk){
-        return genreRepository.findById(genrePk).orElseThrow(
-                () -> new GenreException(GenreException.NOT_EXIST));
-    }
-    HashTag hashTagFindById(int hashTagPk){
-        return hashTagRepository.findById(hashTagPk).orElseThrow(
-                () -> new HashTagException(HashTagException.NOT_EXIST));
-    }
 }

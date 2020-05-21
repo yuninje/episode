@@ -127,7 +127,7 @@ public class NovelServiceImpl implements NovelService {
     }
     @Override
     public NovelResponseDto updateNovel(int novelPk, NovelUpdateRequestDto requestDto) {
-        Novel novelEntity = nRepo.findById(novelPk).orElseThrow(() ->
+        Novel novel = nRepo.findById(novelPk).orElseThrow(() ->
                 new NovelException(NovelException.NOT_EXIST));
 
         List<Genre> genres = requestDto.getGenrePks().stream().map(genrePk ->
@@ -136,7 +136,7 @@ public class NovelServiceImpl implements NovelService {
         List<HashTag> hashtags = requestDto.getHashTagStrs().stream().map(hashTagStr ->
                 hashTagService.findOrRegistHashTag(hashTagStr)).collect(Collectors.toList());
 
-        novelEntity.update(
+        novel.update(
                 genres,
                 hashtags,
                 requestDto.getNovelName(),
@@ -147,8 +147,8 @@ public class NovelServiceImpl implements NovelService {
                 requestDto.getNovelStatus(),
                 requestDto.isNovelOnly()
         );
-        NovelResponseDto novel = new NovelResponseDto(nRepo.save(novelEntity));
-        return novel;
+        NovelResponseDto responseDto = new NovelResponseDto(nRepo.save(novel));
+        return responseDto;
     }
 
     @Override

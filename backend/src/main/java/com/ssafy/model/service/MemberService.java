@@ -20,7 +20,6 @@ public interface MemberService {
 	boolean checkEmail(String memEmail);
 	boolean checkPhone(String memPhone);
 	MemberResponseDto updateMember(int memPk, MemberUpdateRequestDto requestDto);
-	@Transactional
 	void deleteMember(int memPk);
 	void doLike(int memPk, int objectPk, int objectType, boolean flag);
 	void deleteAllMembers();
