@@ -76,6 +76,7 @@ export default {
     data() {
         return {
             data: {},
+            curNovelPk:'',
             item: {
                 src : "https://comicthumb-phinf.pstatic.net/20181101_25/pocket_1541053325022bMb9z_JPEG/cover.jpg?type=m260",
                 writer : "김소설",
@@ -109,6 +110,7 @@ export default {
         ...mapGetters(["getSession"])
     },
     mounted() {
+        this.curNovelPk = this.$store.state.novelPk;
         this.getNovel();
         this.checkRight();
     },
@@ -118,7 +120,7 @@ export default {
         },
         getNovel() {
             http
-                .get("/episodes/novel-pk=1")
+                .get(`/episodes/novel-pk=${this.$store.state.novelPk}`)
                 .then(response => {
                     // console.log(response.data.data);
                     this.data = response.data.data;

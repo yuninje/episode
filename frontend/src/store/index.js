@@ -17,6 +17,7 @@ export default new Vuex.Store({
     server: "http://13.125.145.32:8080",
     isLogin: false,
     session: "",
+    novelPk: ''
   },
   getters: {
     getServer: state => {
