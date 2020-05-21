@@ -16,19 +16,48 @@
             class="pt-6"    
         ></v-text-field>
         <v-spacer></v-spacer>
-        <template v-if="true">
+        <template v-if="getDesktopSize()">
             <v-flex>
-            <v-btn color="black" text>소설 전체보기</v-btn>
-            <v-btn color="black" text>에디터</v-btn>
+                <v-btn color="black" text>소설 전체보기</v-btn>
+                <v-btn color="black" text @click="gotoEditor()">에디터</v-btn>
             </v-flex>
             <v-spacer></v-spacer>
-            <v-flex>
-            <v-btn color="black" text @click="gotoSignIn()">로그인</v-btn>
-            <v-btn color="black" text @click="gotoSignUp()">회원가입</v-btn>
+            <v-flex v-show="!getIsLogin">
+                <v-btn color="black" text @click="gotoSignIn()">로그인</v-btn>
+                <v-btn color="black" text @click="gotoSignUp()">회원가입</v-btn>
+            </v-flex>
+            <v-flex v-show="getIsLogin">
+                <v-btn color="black" text @click="signout()">로그아웃</v-btn>
+                <v-btn color="black" text @click="">마이페이지</v-btn>
             </v-flex>
         </template>
         <template v-else>
-            
+            <v-menu offset-y>
+                <template v-slot:activator="{on}">
+                    <v-btn 
+                        icon
+                        v-on="on"
+                    >
+                        <v-icon>mdi-dots-vertical</v-icon>
+                    </v-btn>
+                </template>
+                <v-list>
+                    <!-- v-for로 @click에 함수 연결이 어려워 직접 코딩 -->
+                    <v-list-item @click=""><v-list-item-title>소설 전체 보기</v-list-item-title></v-list-item>
+                    <v-list-item @click="gotoEditor()"><v-list-item-title>에디터</v-list-item-title></v-list-item>
+                    <v-list-item @click="gotoSignIn()" v-show="!getIsLogin"><v-list-item-title>로그인</v-list-item-title></v-list-item>
+                    <v-list-item @click="gotoSignUp()" v-show="!getIsLogin"><v-list-item-title>회원가입</v-list-item-title></v-list-item>
+                    <v-list-item @click="signout()" v-show="getIsLogin"><v-list-item-title>로그아웃</v-list-item-title></v-list-item>
+                    <v-list-item @click="" v-show="getIsLogin"><v-list-item-title>마이페이지</v-list-item-title></v-list-item>
+                    <!-- <v-list-item
+                        v-for="(item, index) in items"
+                        :key="index"
+                        @click="item.link"
+                    >
+                        <v-list-item-title>{{item.title}}</v-list-item-title>
+                    </v-list-item> -->
+                </v-list>
+            </v-menu>
         </template>
         <v-spacer></v-spacer>
     </v-toolbar>
@@ -36,6 +65,8 @@
 
 <script>
 import http from '../../http-common';
+import { mapActions, mapMutations, mapGetters } from "vuex";
+
 
 export default {
     name: 'NavigationBar',
@@ -44,8 +75,30 @@ export default {
             searchText:'',
             loading: true,
             errored: false,
-            desktopSize: false
+            desktopSize: false,
+            items: [
+                {
+                    title:"소설 전체 보기",
+                    link: ""
+                },
+                {
+                    title:"에디터",
+                    link: "gotoEditor"
+                },
+                {
+                    title:"로그인",
+                    link: "gotoSignIn"
+                },
+                {
+                    title:"회원가입",
+                    link: "gotoSignUp"
+                },
+            ]
         }
+    },
+    computed: {
+        ...mapGetters(["getIsLogin"]),
+        ...mapGetters(["getSession"])
     },
     methods: {
         search() {
@@ -60,13 +113,19 @@ export default {
         gotoSignUp() {
             this.$router.push('/signup');
         },
+        gotoEditor() {
+            this.$router.push('/editor');
+        },
+        signout() {
+            this.$store.dispatch("signout");
+        },
         getDesktopSize() {
             if(window.innerWidth > 600) {
-                console.log("함수 트루");
+                console.log("데스크탑 화면");
                 this.desktopSize = true;
                 return true;
             } else {
-                console.log("함수 폴스");
+                console.log("모바일 화면");
                 this.desktopSize = false;
                 return false;
             }
