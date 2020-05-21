@@ -14,7 +14,12 @@ export default new Vuex.Store({
     storeEditor: moduleEditor
   },
   state: {
+<<<<<<< HEAD
     server: "http://13.125.145.32:8080",
+=======
+    server: "http://localhost:8080",
+    // server: "http://13.125.145.32:8080/",
+>>>>>>> dev/front
 
     isLogin: false,
     session: "",
