@@ -23,12 +23,12 @@
       <div class="work-category">연재 중 작품</div>
       <section class="work-section">
         <div class="card-grid">
-          <a v-for="item in publishList" :key="item.novelPk" class="card" href="#">
+          <router-link :to="`noveldetail/${ item.novelPk }`" v-for="item in allList" :key="item.novelPk" class="card">
             <img class="card__background" v-bind:src="item.novelImage">
             <div class="card__content">
               <h3 class="card__heading">{{ item.novelName }}</h3>
             </div>
-          </a>
+          </router-link>
 
           <a class="card" href="#">
             <div class="card__background" style="border: solid 1px rgb(192, 0, 0)"></div>
@@ -42,12 +42,12 @@
       <div class="work-category">작성 중 작품</div>
       <section class="work-section">
         <div class="card-grid">
-          <a v-for="item in writeList" :key="item.novelPk" class="card" href="#">
+          <router-link :to="`noveldetail/${ item.novelPk }`" v-for="item in allList" :key="item.novelPk" class="card">
             <img class="card__background" v-bind:src="item.novelImage">
             <div class="card__content">
               <h3 class="card__heading">{{ item.novelName }}</h3>
             </div>
-          </a>
+          </router-link>
 
           <a class="card" href="#">
             <div class="card__background" style="border: solid 1px rgb(192, 0, 0)"></div>

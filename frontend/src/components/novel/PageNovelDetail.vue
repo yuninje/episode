@@ -57,7 +57,7 @@
                                 <td>{{episode.episodeTitle}}</td>
                                 <td>
                                     <v-btn outlined color="rgba(192,0,0,1)" @click="gotoNovelViewer(episode.episodePk)">보기</v-btn>
-                                    <v-btn outlined color="rgba(192,0,0,1)" @click="" v-show="checkRight()">수정</v-btn>
+                                    <v-btn outlined color="rgba(192,0,0,1)" @click="gotoNovelEditor(episode.episodePk, index+1)" v-show="checkRight()">수정</v-btn>
                                 </td>                            
                             </tr>
                         </tbody>
@@ -116,6 +116,9 @@ export default {
     methods: {
         gotoNovelViewer(episodePk) {
             this.$router.push(`/viewer/${episodePk}`);
+        },
+        gotoNovelEditor(episodePk, index) {
+            this.$router.push({name: 'Editor', params: { episodePk: episodePk, index: index }});
         },
         getNovel() {
             http
