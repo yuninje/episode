@@ -59,7 +59,7 @@ const routes = [
     component: NovelDetail
   },
   {
-    path: '/viewer',
+    path: '/viewer/:episodePk',
     name: 'Viewer',
     component: Viewer
   }

@@ -56,7 +56,7 @@
                                 <td>{{episode.episodeCreatedAt}}</td>
                                 <td>{{episode.episodeTitle}}</td>
                                 <td>
-                                    <v-btn outlined color="rgba(192,0,0,1)" @click="gotoNovelViewer()">보기</v-btn>
+                                    <v-btn outlined color="rgba(192,0,0,1)" @click="gotoNovelViewer(episode.episodePk)">보기</v-btn>
                                     <v-btn outlined color="rgba(192,0,0,1)" @click="" v-show="checkRight()">수정</v-btn>
                                 </td>                            
                             </tr>
@@ -76,7 +76,6 @@ export default {
     data() {
         return {
             data: {},
-            curNovelPk:'',
             item: {
                 src : "https://comicthumb-phinf.pstatic.net/20181101_25/pocket_1541053325022bMb9z_JPEG/cover.jpg?type=m260",
                 writer : "김소설",
@@ -109,21 +108,22 @@ export default {
     computed: {
         ...mapGetters(["getSession"])
     },
-    mounted() {
-        this.curNovelPk = this.$store.state.novelPk;
+    created() {
         this.getNovel();
-        this.checkRight();
+    },
+    mounted() {
     },
     methods: {
-        gotoNovelViewer() {
-            this.$router.push('/viewer');
+        gotoNovelViewer(episodePk) {
+            this.$router.push(`/viewer/${episodePk}`);
         },
         getNovel() {
             http
-                .get(`/episodes/novel-pk=${this.$store.state.novelPk}`)
+                .get(`/episodes/novel-pk=${this.$route.params.novelPk}`)
                 .then(response => {
                     // console.log(response.data.data);
                     this.data = response.data.data;
+                    this.checkRight();
                 })
                 .catch(() => {
                     this.errored = true;
