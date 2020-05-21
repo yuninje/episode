@@ -188,7 +188,7 @@ export default {
 
     // 자동 저장
     startAutoSave() {
-      this.autoSave = setInterval(() => this.saveAuto(), 10000); // 1000 = 1초 -> (5분 * 60초 * 1000 = 300000)
+      this.autoSave = setInterval(() => this.saveAuto(), 300000); // 1000 = 1초 -> (5분 * 60초 * 1000 = 300000)
     },
     // 임시 저장
     saveTmp() {
