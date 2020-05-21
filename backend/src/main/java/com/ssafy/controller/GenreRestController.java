@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Api(tags = { "4. Genre" })
 @RestController
-@RequestMapping("/genres")
+@RequestMapping("/genrePks")
 @CrossOrigin(origins = {"*"}, maxAge = 6000)
 public class GenreRestController {
 	@Autowired

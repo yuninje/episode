@@ -46,9 +46,9 @@ public class NovelResponseDto {
         this.novelUpdatedAt = novel.getNovelUpdatedAt();
         this.member = new MemberResponseDto(novel.getMember());
         this.genres = novel.getGenres().stream().map(
-                genreEntity -> new GenreResponseDto(genreEntity)).collect(Collectors.toList());
+                genre -> new GenreResponseDto(genre)).collect(Collectors.toList());
         this.hashTags = novel.getHashTags().stream().map(
-        		hashTagEntity -> new HashTagResponseDto(hashTagEntity)).collect(Collectors.toList());
+        		hashTag -> new HashTagResponseDto(hashTag)).collect(Collectors.toList());
         this.novelLikes = novel.getEpisodes().stream().mapToInt(episode -> episode.getLikedMembers().size()).sum();
         this.novelRecommends = novel.getNovelRecommends();
     }

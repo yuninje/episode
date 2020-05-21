@@ -7,8 +7,6 @@ import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 @Entity
@@ -64,11 +62,11 @@ public class Novel {
 	private Member member;
 
 	// novel <-> episode >> 1: N 관계
-	@OneToMany(mappedBy = "novel", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "novel", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
 	private List<Episode> episodes = new ArrayList<Episode>();
 	
 	// novel <-> genre >> N : M 관계
-	@ManyToMany(mappedBy = "novels")
+	@ManyToMany(mappedBy = "novels", cascade = CascadeType.PERSIST)
 	private List<Genre> genres = new ArrayList<>();
 
 	// novel <-> hashtag >> N : M 관계
@@ -86,8 +84,10 @@ public class Novel {
 
 
 	@Builder
-	public Novel(Member member, String novelName, String novelIntro, String novelImage, Boolean novelLimit, Boolean novelOpen, Integer novelStatus, Boolean novelOnly) {
+	public Novel(Member member, List<Genre> genres, List<HashTag> hashTags, String novelName, String novelIntro, String novelImage, Boolean novelLimit, Boolean novelOpen, Integer novelStatus, Boolean novelOnly) {
 		this.member = member;
+		this.genres = genres;
+		this.hashTags = hashTags;
 		this.novelName = novelName;
 		this.novelIntro = novelIntro;
 		this.novelImage = novelImage;
@@ -97,7 +97,9 @@ public class Novel {
 		this.novelOnly = novelOnly;
 	}
 
-	public Novel update(String novelName, String novelIntro, String novelImage, Boolean novelLimit, Boolean novelOpen, Integer novelStatus, Boolean novelOnly){
+	public Novel update(List<Genre> genres, List<HashTag> hashTags, String novelName, String novelIntro, String novelImage, Boolean novelLimit, Boolean novelOpen, Integer novelStatus, Boolean novelOnly){
+		this.genres = genres;
+		this.hashTags = hashTags;
 		this.novelName = novelName;
 		this.novelIntro = novelIntro;
 		this.novelImage = novelImage;
@@ -149,7 +151,7 @@ public class Novel {
 		genres = new ArrayList<>();
 
 		// 해쉬태그 | 추가 예정
-//		for (HashTag hashTag : this.hashTags){
+//		for (HashTag hashTag : this.hashTagStrs){
 //			hashTag.removeHashTagAtNovel();
 //		}
 		// 연재요일 | 추가 예정

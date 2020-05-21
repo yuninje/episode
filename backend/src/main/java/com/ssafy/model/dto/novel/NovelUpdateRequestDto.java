@@ -2,11 +2,15 @@ package com.ssafy.model.dto.novel;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 public class NovelUpdateRequestDto{
+    private List<String> hashTagStrs;
+    private List<Integer> genrePks;
     private String novelName;
     private String novelIntro;
     private String novelImage;
@@ -18,6 +22,8 @@ public class NovelUpdateRequestDto{
 
     @Builder
     public NovelUpdateRequestDto(
+            List<Integer> genrePks,
+            List<String> hashTagStrs,
             String novelName,
             String novelIntro,
             String novelImage,
@@ -26,6 +32,8 @@ public class NovelUpdateRequestDto{
             int novelStatus,
             boolean novelOnly) {
 
+        this.genrePks = genrePks;
+        this.hashTagStrs = hashTagStrs;
         this.novelName = novelName;
         this.novelIntro = novelIntro;
         this.novelImage = novelImage;

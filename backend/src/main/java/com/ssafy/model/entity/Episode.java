@@ -37,7 +37,7 @@ public class Episode {
 	
 	@Column(name = "episode_view", nullable = false)
 	@ColumnDefault("0")
-	private int episodeView;
+	private Long episodeView;
 
 	// episode <-> novel
 	@ManyToOne
@@ -45,7 +45,7 @@ public class Episode {
 	private Novel novel;
 	
 	// episode <-> comment
-	@OneToMany(mappedBy = "episode", cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "episode", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
 	private List<Comment> comments = new ArrayList<>();
 
 	// episode <-> like_episode >> 에피소드 좋아요
@@ -59,7 +59,7 @@ public class Episode {
 	private List<Member> likedMembers = new ArrayList<>();
 
 	@Builder
-	public Episode(Novel novel,Integer episodePk, String episodeTitle, String episodeContent, LocalDateTime episodeCreatedAt, String episodeWriter, int episodeView) {
+	public Episode(Novel novel,Integer episodePk, String episodeTitle, String episodeContent, LocalDateTime episodeCreatedAt, String episodeWriter, Long episodeView) {
 		this.novel = novel;
 		this.episodePk = episodePk;
 		this.episodeTitle = episodeTitle;
@@ -91,6 +91,7 @@ public class Episode {
 //		member.getLikeNovels().remove(this);
 	}
 
+	public void updateView(){ this.episodeView += 1;}
 
 	public void beforeDelete(){
 		//댓글

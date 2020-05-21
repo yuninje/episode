@@ -63,9 +63,9 @@ public class EpisodeServiceImpl implements EpisodeService {
         Episode episode = eRepo.findById(episodePk).orElseThrow(() ->
                 new EpisodeException(EpisodeException.NOT_EXIST));
 
-        Novel novel = episode.getNovel();
-        novel.updateView();
-        nRepo.save(novel);
+        episode.updateView();
+        episode.getNovel().updateView();
+        eRepo.save(episode);
 
         EpisodeResponseDto responseDto = new EpisodeResponseDto(episode);
         return responseDto;

@@ -16,7 +16,7 @@ public class EpisodeResponseDto {
     private String episodeContent;
     private LocalDateTime episodeCreatedAt;
     private String episodeWriter;
-    private int episodeView;
+    private Long episodeView;
     private NovelResponseDto novel;
 
     public EpisodeResponseDto(Episode episode){
@@ -30,7 +30,7 @@ public class EpisodeResponseDto {
     }
 
     @Builder
-    public EpisodeResponseDto(int episodePk, String episodeTitle, String episodeContent, LocalDateTime episodeCreatedAt, String episodeWriter, int episodeView, NovelResponseDto novel) {
+    public EpisodeResponseDto(int episodePk, String episodeTitle, String episodeContent, LocalDateTime episodeCreatedAt, String episodeWriter, Long episodeView, NovelResponseDto novel) {
         this.episodePk = episodePk;
         this.episodeTitle = episodeTitle;
         this.episodeContent = episodeContent;

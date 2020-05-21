@@ -28,8 +28,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class NovelServiceImpl implements NovelService {
+    @Autowired
+    HashTagService hashTagService;
+
     @Autowired
 	NovelRepository nRepo;
     @Autowired
@@ -97,46 +101,44 @@ public class NovelServiceImpl implements NovelService {
 
     @Override
     public NovelResponseDto registNovel(NovelSaveRequestDto requestDto) {
-        Member member = mRepo.findById(requestDto.getMemberPk()).orElseThrow(() -> new MemberException(MemberException.NOT_EXIST));
-    	Novel novel = nRepo.save(requestDto.toEntity(member));
+        Member member = mRepo.findById(requestDto.getMemberPk()).orElseThrow(() ->
+                new MemberException(MemberException.NOT_EXIST));
 
-        List<Integer> genreList = requestDto.getGenres();
+        List<Genre> genres = requestDto.getGenrePks().stream().map(genrePk ->
+                gRepo.findById(genrePk).orElseThrow(() ->
+                        new GenreException(GenreException.NOT_EXIST))).collect(Collectors.toList());
+        List<HashTag> hashTags = requestDto.getHashTagStrs().stream().map(hashTagStr ->
+                hashTagService.findOrRegistHashTag(hashTagStr)).collect(Collectors.toList());
+
+    	Novel novel = nRepo.save(requestDto.toEntity(member, genres, hashTags));
 
         // 장르 추가
-        for(int genrePk : genreList) {
-            Genre genre = gRepo.findById(genrePk).orElse(null);
+        for(Genre genre : genres){
             genre.getNovels().add(novel);
-            novel.getGenres().add(genre);
         }
 
-        List<String> hashTagList = requestDto.getHashTags();
-
-        // 없는 해시태그에 대해서 추가.
-        for(String hashTagName : hashTagList) {
-            HashTag hashTag = hRepo.findByHashTagName(hashTagName);
-
-            if(hashTag == null) {
-                HashTag addHashTag = new HashTag();
-                addHashTag.setHashTagName(hashTagName);
-                hashTag = hRepo.save(addHashTag);
-            }
-
+        // 해시태그 추가
+        for(HashTag hashTag : hashTags){
             hashTag.getNovels().add(novel);
-            novel.getHashTags().add(hashTag);
         }
-
-        nRepo.save(novel);
 
         NovelResponseDto responseDto = new NovelResponseDto(novel);
         return responseDto;
     }
-
     @Override
     public NovelResponseDto updateNovel(int novelPk, NovelUpdateRequestDto requestDto) {
         Novel novelEntity = nRepo.findById(novelPk).orElseThrow(() ->
                 new NovelException(NovelException.NOT_EXIST));
 
+        List<Genre> genres = requestDto.getGenrePks().stream().map(genrePk ->
+                gRepo.findById(genrePk).orElseThrow(() ->
+                        new GenreException(GenreException.NOT_EXIST))).collect(Collectors.toList());
+        List<HashTag> hashtags = requestDto.getHashTagStrs().stream().map(hashTagStr ->
+                hashTagService.findOrRegistHashTag(hashTagStr)).collect(Collectors.toList());
+
         novelEntity.update(
+                genres,
+                hashtags,
                 requestDto.getNovelName(),
                 requestDto.getNovelIntro(),
                 requestDto.getNovelImage(),
@@ -149,7 +151,6 @@ public class NovelServiceImpl implements NovelService {
         return novel;
     }
 
-    @Transactional
     @Override
     public void deleteNovel(int novelPk) {
         Novel novel = nRepo.findById(novelPk)
@@ -224,14 +225,12 @@ public class NovelServiceImpl implements NovelService {
         return novels;
     }
 
-    @Transactional
     public void deleteNovel(Novel novel){
         novel.beforeDelete();
         nRepo.save(novel);
         nRepo.delete(novel);
     }
 
-    @Transactional
     public void deleteAllNovel() {
         List<Novel> novelList = nRepo.findAll();
         novelList.forEach(novel -> deleteNovel(novel));

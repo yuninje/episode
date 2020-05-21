@@ -59,15 +59,15 @@ public class Member {
 	private List<Comment> likeComments = new ArrayList<>();
 	
 	// member <-> novel 
-	@OneToMany(mappedBy = "member",cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "member",cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
 	private List<Novel> novels = new ArrayList<>();
 
 	// member <-> comment 
-	@OneToMany(mappedBy = "member",cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "member",cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
 	private List<Comment> comments = new ArrayList<>();
 	
 	// member <-> search
-	@OneToMany(mappedBy = "member",cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "member",cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
 	private List<Search> searchs = new ArrayList<>();
 
 	public Member(Integer memPk, String memNick) {

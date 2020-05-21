@@ -44,7 +44,7 @@ public class Genre {
 	@Transactional
 	public void removeGenreAtNovel(Novel novel){
 		novels.remove(novel);
-//		novel.getGenres().remove(this);
+//		novel.getGenrePks().remove(this);
 	}
 
 	@Transactional

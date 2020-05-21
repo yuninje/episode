@@ -31,7 +31,7 @@ public class EpisodeSaveRequestDto {
                 .episodeContent(episodeContent)
                 .episodeWriter(episodeWriter)
                 .episodeCreatedAt(LocalDateTime.now())
-                .episodeView(0)
+                .episodeView(0L)
                 .build();
     }
 }

@@ -6,7 +6,6 @@ import com.ssafy.model.repository.CommentRepository;
 import com.ssafy.model.repository.EpisodeRepository;
 import com.ssafy.model.repository.MemberRepository;
 import com.ssafy.model.repository.NovelRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,9 +24,6 @@ public class MemberServiceImpl implements MemberService {
     EpisodeRepository eRepo;
     @Autowired
     NovelRepository nRepo;
-
-    @Autowired
-    ModelMapper modelMapper;
 
     @Override
     public MemberResponseDto login(Auth auth) {

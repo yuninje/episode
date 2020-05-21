@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,11 +45,22 @@ public class HashTagServiceImpl implements HashTagService {
 	
 	@Override
 	public void registHashTag(HashTagSaveRequestDto requestDto) {
-		hRepo.save(modelMapper.map(requestDto, HashTag.class));
+		hRepo.save(requestDto.toEntity());
 	}
 	
 	@Override
 	public void deleteHashTag(int hashTagPk) {
 		hRepo.deleteById(hashTagPk);
+	}
+
+	@Transactional
+	public HashTag findOrRegistHashTag(String hashTagName){
+		HashTag hashTag = hRepo.findByHashTagName(hashTagName);
+		if(hashTag == null){
+			hashTag = HashTag.builder().hashTagName(hashTagName).build();
+			hRepo.save(hashTag);
+			System.out.println("findOrRegistHashTag - pk : " + hashTag.getHashTagPk());
+		}
+		return hashTag;
 	}
 }

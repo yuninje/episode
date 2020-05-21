@@ -14,7 +14,7 @@ public class HashTagSaveRequestDto {
         this.hashTagName = hashTagName;
     }
 
-    public HashTag toEntity(HashTag hashTag){
+    public HashTag toEntity(){
         return HashTag.builder()
                 .hashTagName(hashTagName)
                 .build();
