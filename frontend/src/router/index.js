@@ -11,6 +11,8 @@ import TestTest from '../components/editor/TestTest'
 import Feel from '../components/feel/PageFeel'  //  여긴 나중에 바뀔 예정
 import Top100 from '../components/top/PageTop100'  //  여긴 나중에 바뀔 예정
 
+import Viewer from '../components/viewer/PageViewer'
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -55,6 +57,11 @@ const routes = [
     path: '/top100',
     name: 'Top100',
     component: Top100
+  },
+  {
+    path: '/viewer',
+    name: 'Viewer',
+    component: Viewer
   }
 ]
 
