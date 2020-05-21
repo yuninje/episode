@@ -17,6 +17,8 @@
             <v-img
               :src="item.src"
               aspect-ratio=0.7
+              @click="gotoNovelDetail()"
+              class="novel-image"
             >
             </v-img>
           </v-col> 
@@ -71,6 +73,9 @@ export default {
   methods: {
     gotoTop100() {
       this.$router.push('/top100');
+    },
+    gotoNovelDetail() {
+      this.$router.push('/noveldetail');
     }
   },
 }
@@ -99,5 +104,8 @@ export default {
   color:white !important;
   font-size: 0.7rem;
   font-weight: bold;
+}
+.novel-image {
+  cursor: pointer;
 }
 </style>

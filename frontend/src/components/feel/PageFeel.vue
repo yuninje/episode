@@ -37,8 +37,8 @@
                             <v-col
                               v-for="i in 6"
                               :key="i"
-                              cols="5"
-                              md="5"
+                              cols="6"
+                              md="6"
                               >
                         <div class="card">
   <div class="img-avatar">
@@ -230,7 +230,8 @@ button {
     border-left: 2px solid;
     border-right: 1px solid;
     border-color:rgba(255,83,83,1);
-    color: black !important;
+    color: rgba(255,83,83,1) !important;
+    font-weight: bold;
     margin-right: -1px;
 }
 .v-tab--active {

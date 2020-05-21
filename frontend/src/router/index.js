@@ -10,6 +10,7 @@ import TestEditor1 from '../components/editor/TestEditor1'
 import TestTest from '../components/editor/TestTest'
 import Feel from '../components/feel/PageFeel'  //  여긴 나중에 바뀔 예정
 import Top100 from '../components/top/PageTop100'  //  여긴 나중에 바뀔 예정
+import NovelDetail from '../components/novel/PageNovelDetail'
 
 Vue.use(VueRouter)
 
@@ -55,6 +56,11 @@ const routes = [
     path: '/top100',
     name: 'Top100',
     component: Top100
+  },
+  {
+    path: '/noveldetail',
+    name: 'NovelDetail',
+    component: NovelDetail
   }
 ]
 
