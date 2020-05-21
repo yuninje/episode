@@ -16,6 +16,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class GenreServiceImpl implements GenreService{
 	@Autowired
@@ -62,7 +63,6 @@ public class GenreServiceImpl implements GenreService{
 		return genreResponseDto;
 	}
 
-	@Transactional
 	@Override
 	public void deleteGenre(int genrePk) {
 		Genre genre = gRepo.findById(genrePk)
@@ -76,14 +76,12 @@ public class GenreServiceImpl implements GenreService{
 		gRepo.deleteById(genrePk);
 	}
 
-	@Transactional
 	public void deleteGenre(Genre genre){
 		genre.beforeDelete();
 		gRepo.save(genre);
 		gRepo.delete(genre);
 	}
 
-	@Transactional
 	public void deleteAllGenre(){
 		List<Genre> genreList = gRepo.findAll();
 		genreList.forEach(genre -> deleteGenre(genre));

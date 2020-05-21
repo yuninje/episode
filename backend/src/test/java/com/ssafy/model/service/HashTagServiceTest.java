@@ -1,10 +1,6 @@
 package com.ssafy.model.service;
 
 import com.ssafy.Dummy;
-import com.ssafy.model.dto.genre.GenreResponseDto;
-import com.ssafy.model.dto.genre.GenreSaveRequestDto;
-import com.ssafy.model.dto.genre.GenreUpdateRequestDto;
-import com.ssafy.model.dto.member.MemberResponseDto;
 import com.ssafy.model.entity.*;
 import com.ssafy.model.repository.*;
 import org.junit.After;
@@ -27,7 +23,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 @RunWith(SpringRunner.class) // JUnit에 내장된 Runner 대신 이 클래스를 실행한다.
 @SpringBootTest( properties = {"spring.config.location=classpath:application-test.properties"} )
-public class GenreServiceTest {
+public class HashTagServiceTest {
+
     Dummy dummy;
     @Autowired
     private MemberService memberService;
@@ -136,94 +133,12 @@ public class GenreServiceTest {
         dummy.setRelation();
         catchFlag = false;
     }
+
     @After
     public void cleanUp(){}
 
     @Test
-    public void 장르_하나_가져오기(){
-        GenreResponseDto responseDto = genreService.getGenre(genrePk);
-
-        genre = dummy.genreFindById(genrePk);
-
-        assertThat(responseDto.getGenreName()).isEqualTo(genre.getGenreName()).isEqualTo(STR+(COUNT-1));
-    }
-    @Test
-    public void 장르_전체_가져오기(){
-        List<GenreResponseDto> responseDtoList = genreService.getGenres();
-
-        assertThat(responseDtoList.size()).isEqualTo(COUNT);
-    }
-    @Test
-    public void 장르_추가(){
-        GenreSaveRequestDto requestDto = GenreSaveRequestDto.builder()
-                .genreName(UPDATE_STR)
-                .build();
-        GenreResponseDto responseDto = genreService.registGenre(requestDto);
-
-        genre = dummy.genreFindById(responseDto.getGenrePk());
-        assertThat(genre.getGenreName()).isEqualTo(UPDATE_STR);
-    }
-
-
-    @Test
-    public void 장르_삭제(){
-        genre = dummy.genreFindById(genrePk);
-
-        // 삭제 되어야 할 데이터
-        List<Novel> novels = genre.getNovels();
-
-        genreService.deleteGenre(genrePk);
-        try{
-            genreRepository.findById(genrePk)
-                    .orElseThrow(() -> new GenreException(GenreException.NOT_EXIST));
-        }catch (GenreException e){
-            catchFlag = true;
-            assertThat(e.getMessage()).isEqualTo(GenreException.NOT_EXIST);
-        }
-        assertThat(catchFlag).isEqualTo(true);
-
-        // 장르에 속한 소설 데이터 삭제
-        for(Novel novel : novels){
-            catchFlag = false;
-            try{
-                dummy.novelFindById(novel.getNovelPk());
-            }catch (NovelException e){
-                assertThat(e.getMessage()).isEqualTo(NovelException.NOT_EXIST);
-                catchFlag = true;
-            }
-            assertThat(catchFlag).isEqualTo(true);
-        }
-    }
-
-    @Test
-    public void 장르_수정(){
-        GenreUpdateRequestDto requestDto = GenreUpdateRequestDto.builder()
-                .genreName(UPDATE_STR)
-                .build();
-
-        GenreResponseDto responseDto = genreService.updateGenre(genrePk, requestDto);
-        genre = genreRepository.findById(genrePk)
-                .orElseThrow(() -> new GenreException(GenreException.NOT_EXIST));
-
-        assertThat(genre.getGenreName()).isEqualTo(responseDto.getGenreName()).isEqualTo(UPDATE_STR);
-    }
-
-
-    private void setMember(){
-        for(int i = 0; i<COUNT; i++){
-            String str = i > 0 ? STR+i : STR;
-            member = Member.builder()
-                    .memId(str)
-                    .memPw(str)
-                    .memNick(str)
-                    .memEmail(str)
-                    .memBirth(str)
-                    .memPhone(str)
-                    .memGender(true)
-                    .build();
-            member = memberRepository.save(member);
-            memPk = member.getMemPk();
-            System.out.println(new MemberResponseDto(member));
-        }
+    public void 에피소드_소설로_가져오기_아직안함(){
+        assertThat(false).isEqualTo(true);
     }
 }

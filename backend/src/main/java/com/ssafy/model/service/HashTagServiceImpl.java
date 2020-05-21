@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class HashTagServiceImpl implements HashTagService {
 	@Autowired
@@ -53,7 +54,6 @@ public class HashTagServiceImpl implements HashTagService {
 		hRepo.deleteById(hashTagPk);
 	}
 
-	@Transactional
 	public HashTag findOrRegistHashTag(String hashTagName){
 		HashTag hashTag = hRepo.findByHashTagName(hashTagName);
 		if(hashTag == null){
