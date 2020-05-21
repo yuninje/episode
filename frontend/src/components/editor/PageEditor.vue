@@ -114,8 +114,10 @@ export default {
 
       // 자동 저장
       autoSave: null, // 자동 저장 함수
-      savingContent: "",
-      episodeContent:"",
+      episodeContent: "",
+      episodeTitle:"제목이제목이지모야",
+      episodeWriter:"",
+
       saveTime : "",
     };
   },
@@ -151,7 +153,7 @@ export default {
   methods: {
     ...mapActions("storeEditor", {
       fetchAutoSave : "fetchAutoSave",
-      fetchPostsave : "fetchPostSave",
+      putEpisode : "putEpisode",
     }),
 
     // 타이머
@@ -181,14 +183,14 @@ export default {
 
     // 자동 저장
     startAutoSave() {
-      this.autoSave = setInterval(() => this.save(), 300000); // 1000 = 1초 -> (5분 * 60초 * 1000 = 300000)
+      this.autoSave = setInterval(() => this.save(), 10000); // 1000 = 1초 -> (5분 * 60초 * 1000 = 300000)
     },
     // 임시 저장
     saveTmp() {
-      this.savingContent = this.htmlContent;
-      localStorage.setItem("autoSaved", this.savingContent);
+      this.episodeContent = this.htmlContent;
+      localStorage.setItem("autoSaved", this.episodeContent);
       this.saveTime = new Date().toLocaleString()
-      // this.fetchAutoSave(this.savingContent)
+      // this.fetchAutoSave(this.episodeContent)
       this.save()
       
     },
@@ -196,17 +198,14 @@ export default {
     save() {
       this.saveTime = new Date().toLocaleString()
       // 데이터 처리
-      let { episodeContent } = this.savingContent;
+      this.episodeContent = this.htmlContent
+      let { episodeContent, episodeTitle, episodeWriter } = this;
       let data = {
-        episodePk:1,
         episodeContent,
-        novelDTO: {
-          novelPk: 1
-        }
+        episodeTitle,
+        episodeWriter
       };
-      // this.fetchPostsave(this.savingContent)
-      
-
+      this.putEpisode(data)
     },
 
     // 에디터

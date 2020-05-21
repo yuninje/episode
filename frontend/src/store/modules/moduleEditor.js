@@ -4,38 +4,43 @@ import axios from "axios";
 export default {
   namespaced: true,
   state: {
+    savedTime:null,
     savedContent: ""
   },
   getters: {
+    getSavedTime: state => { return state.savedTime; },
     getSavedContent: state => { return state.savedContent; }
   },
   mutations: {
-    setSavedContent(state, payload, rootState) {
-      console.log("setSavedContent 들어옴");
+    changeSavedTime(state, payload, rootState) {
+      state.savedTime = payload;
+    },
+    changeSavedContent(state, payload, rootState) {
+      console.log("changeSavedContent 들어옴");
       state.savedContent = payload;
     }
   },
   actions: {
-    // vuex에 자동저장
+    // session 자동저장
     fetchAutoSave({ state, dispatch, commit, getters, rootGetters }, data) {
       console.log("fetchAutoSave 들어옴");
-      // commit("setSavedContent", "fetchAutoSave Data");
+      // commit("changeSavedContent", "fetchAutoSave Data");
       localStorage.setItem("autoSaved", data);
-      setTimeout(() => commit('setSavedContent', data), 1000);
+      setTimeout(() => commit('changeSavedContent', data), 1000);
     },
     // 서버에 저장
-    fetchPostSave({ state, dispatch, commit, getters, rootGetters }, data) {
+    putEpisode({ state, dispatch, commit, getters, rootGetters }, data) {
+      console.log(data)
       axios
-        .put(`http://localhost:8080/api/episodes` + 1, {
-          "episodeContent": "수정되라 얍ㅜㅜ",
-          "episodeTitle": "수정이 왜 안되니 ㅠㅠㅠ",
-          "episodeWriter": "string"
-        })
+        .put(`${rootGetters.getServer}/api/episodes/3`, data)
         .then( res => {
-          console.log(red.data.data)
+          console.log(res.data.data)
+
+          let time = new Date().toLocaleString()
+          commit("changeSavedTime", time)
         })
         .catch(err => {
-          console.error("fetchPostSave()", err);
+          console.error("putEpisode()", err);
         });
     }
   } 
