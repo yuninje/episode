@@ -22,8 +22,7 @@
 
         <!-- 소설 본문 -->
         <div class="novel-content">
-            <div class="novel-text">
-                {{data.episodeContent}}
+            <div class="novel-text" v-html="data.episodeContent">
             </div>
         </div>
 
