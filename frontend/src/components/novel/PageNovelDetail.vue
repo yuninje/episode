@@ -1,7 +1,11 @@
 <template>
     <v-container>
         <v-row>
-            <v-col cols="2">
+            <v-col 
+                cols="12"
+                md="4"
+                lg="2"
+            >
                 <v-row>
                     <v-col cols="12">
                         <v-img
@@ -15,7 +19,11 @@
                     </v-col>
                 </v-row>
             </v-col>
-            <v-col cols="10">
+            <v-col 
+                cols="12"
+                md="8"
+                lg="10"
+            >
                 <v-row>
                     <v-col cols="12">
                         <p>작가 | {{item.writer}}</p>
@@ -26,6 +34,7 @@
                         <p>{{item.novelIntro}}</p>
                     </v-col>
                     <v-col cols="12">
+                        <br/>
                         <p class="tags">{{item.tags}}</p>
                     </v-col>
                 </v-row>
@@ -100,5 +109,8 @@ export default {
 }
 .like {
     text-align: right;
+}
+.container {
+    max-width: 1300px;
 }
 </style>
