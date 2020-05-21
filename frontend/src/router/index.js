@@ -9,6 +9,9 @@ import Editor from '../components/editor/PageEditor'
 import Mywork from '../components/work/PageMyWork'
 import Feel from '../components/feel/PageFeel'  //  여긴 나중에 바뀔 예정
 import Top100 from '../components/top/PageTop100'  //  여긴 나중에 바뀔 예정
+import NovelDetail from '../components/novel/PageNovelDetail'
+
+import Viewer from '../components/viewer/PageViewer'
 
 Vue.use(VueRouter)
 
@@ -49,8 +52,17 @@ const routes = [
     path: '/top100',
     name: 'Top100',
     component: Top100
+  },
+  {
+    path: '/noveldetail',
+    name: 'NovelDetail',
+    component: NovelDetail
+  },
+  {
+    path: '/viewer',
+    name: 'Viewer',
+    component: Viewer
   }
-
 ]
 
 function rejectAuthUser (to, from, next) {

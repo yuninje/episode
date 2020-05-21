@@ -1,7 +1,7 @@
 <template>
     <v-toolbar fixed>
         <v-spacer></v-spacer>
-        <v-toolbar-title class="toolbar-title" @click="gotoMain()">EPISODE</v-toolbar-title>
+        <v-toolbar-title class="toolbar-title" @click="gotoMain()"><a><img class="logo" src="@/assets/images/logo1.png"></a></v-toolbar-title>
         <v-spacer></v-spacer>
         <!-- class="pt-6" 는 padding-top:6 줌-->
         <v-text-field
@@ -139,11 +139,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.toolbar-title{
-    color: rgb(192,0,0);
-    font-size: 1.8rem;
-    font-weight: bold;
-    cursor: pointer;
-}
+// .toolbar-title{
+//     color: rgb(192,0,0);
+//     font-size: 1.8rem;
+//     font-weight: bold;
+//     cursor: pointer;
+// }
 
+.logo {
+    max-width: 150px;
+    width: 15vw;
+}
 </style>
