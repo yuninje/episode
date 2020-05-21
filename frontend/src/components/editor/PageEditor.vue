@@ -1,7 +1,6 @@
 <template>
   <div class="editor-page">
-    <div class="editor-page-title">
-    </div>
+    <div class="editor-page-title"></div>
 
     <div class="editor-page-wrap">
       <div class="left-wrap">
@@ -11,7 +10,8 @@
 
       <div class="middle-wrap">
         <div class="middle-top">
-          <div id="top-ep-title">Episode 1. 에피소드의 제목</div>
+          <div id="top-ep-title">Episode {{ index }}. <input type="text"  :value="title" ></div>
+          
           <div id="top-timer">
             ⏰마감까지 남은시간
             <div id="top-timer-time">{{ minutes }}분 {{ seconds }}초</div>
@@ -31,7 +31,6 @@
           <quill-editor
             class="editor"
             ref="myTextEditor"
-            v-model="model"
             :value="content"
             :options="editorOption"
             @change="onEditorChange"
@@ -44,9 +43,10 @@
 
         <div class="middle-btm">
           <!-- <div id="btm-hashtag">Episode 태그 | #사이다 #시작 #스승</div> -->
-          <span v-show="this.saveTime" id="btm-autosave">(자동 저장됨) 마지막 저장 시간: {{ saveTime.toLocaleString() }}</span>
+          <span v-show="this.getSavingTimeAuto" id="btm-autosave">(자동 저장됨) 마지막 저장 시간: {{ getSavingTimeAuto }}</span>
+          <span v-show="this.getSavingTime" id="btm-autosave">마지막 저장 시간: {{ getSavingTime }}</span>
           <span class="div-save-wrap">
-            <button id="btn-save">저장하기</button>
+            <button id="btn-save" v-on:click="save">저장하기</button>
           </span>
         </div>
       </div>
@@ -100,11 +100,10 @@ export default {
       // 에디터 글자수 프로그레스바
       htmlContent: "",
       textContent: "",
-      content: "",
+      // content: "",
       // content: dedent``,
       textLength: 0, // 입력중인 글자 포함
       textCount: 0, // 화면에 표시되는 글자 길이
-      model: "", // html로 작성, 저장된 글이 있다면 불러오기
       percent: 0, // 프로그레스바의 퍼센트
 
       // 타이머
@@ -112,12 +111,19 @@ export default {
       timerSetTime: 1800, // 타이머 시간 설정 : 30분 ( 30 * 60 = 1800 )
       totalTime: 1800, // 남은 시간
 
-      // 자동 저장
+      // 저장
       autoSave: null, // 자동 저장 함수
-      savingContent: "",
-      episodeContent:"",
-      saveTime : "",
+      episodeContent: "",
+      episodeTitle: "",
+      episodeWriter: "",
+      setTitle:"",
+      setWriter:"",
     };
+  },
+  created() {
+    this.index = this.$route.params.index
+    this.episodePk = this.$route.params.episodePk
+    this.$store.dispatch("storeEditor/getEpisodeByPk", this.episodePk);
   },
   filters: {
     // 숫자 단위당 쉼표 필터
@@ -150,8 +156,9 @@ export default {
   },
   methods: {
     ...mapActions("storeEditor", {
-      fetchAutoSave : "fetchAutoSave",
-      fetchPostsave : "fetchPostSave",
+      fetchAutoSave: "fetchAutoSave",
+      putEpisodeAuto: "putEpisodeAuto",
+      putEpisode: "putEpisode",
     }),
 
     // 타이머
@@ -181,34 +188,46 @@ export default {
 
     // 자동 저장
     startAutoSave() {
-      this.autoSave = setInterval(() => this.save(), 300000); // 1000 = 1초 -> (5분 * 60초 * 1000 = 300000)
+      this.autoSave = setInterval(() => this.saveAuto(), 10000); // 1000 = 1초 -> (5분 * 60초 * 1000 = 300000)
     },
     // 임시 저장
     saveTmp() {
-      this.savingContent = this.htmlContent;
-      localStorage.setItem("autoSaved", this.savingContent);
-      this.saveTime = new Date().toLocaleString()
-      // this.fetchAutoSave(this.savingContent)
-      this.save()
-      
+      this.episodeContent = this.htmlContent;
+      localStorage.setItem("autoSaved", this.episodeContent);
+      // this.fetchAutoSave(this.episodeContent)
+      this.save();
     },
-    // 저장
-    save() {
-      this.saveTime = new Date().toLocaleString()
+    // 저장 : 자동 저장
+    saveAuto() {
       // 데이터 처리
-      let { episodeContent } = this.savingContent;
+      this.episodeContent = this.htmlContent;
+      this.episodeTitle = this.title;
+      // this.episodeWriter = this.episode.episodeWriter
+
+      let { episodeContent, episodeTitle, episodeWriter } = this;
       let data = {
-        episodePk:1,
         episodeContent,
-        novelDTO: {
-          novelPk: 1
-        }
+        episodeTitle,
+        episodeWriter
       };
-      // this.fetchPostsave(this.savingContent)
-      
-
+      this.putEpisodeAuto(data);
     },
+    // 저장 : 버튼 이벤트
+    save() {
+      // 데이터 처리
+      this.episodeContent = this.htmlContent;
+      this.episodeTitle = this.title;
+      // this.episodeWriter = this.episode.episodeWritera
 
+      let { episodeContent, episodeTitle, episodeWriter } = this;
+      let data = {
+        episodeContent,
+        episodeTitle,
+        episodeWriter
+      };
+      this.putEpisode(data);
+    },
+    
     // 에디터
     onEditorChange(value) {
       // console.log(value);
@@ -239,6 +258,12 @@ export default {
     }
   },
   computed: {
+    ...mapGetters("storeEditor", {
+      title: "getImportTitle",
+      content: "getImportContent",
+      getSavingTime: "getSavingTime",
+      getSavingTimeAuto: "getSavingTimeAuto"
+    }),
     // 타이머
     minutes: function() {
       const minutes = Math.floor(this.totalTime / 60);
@@ -259,7 +284,7 @@ export default {
     }
   },
   mounted() {
-    console.log("this is Quill instance:", this.editor);
+    // console.log("this is Quill instance:", this.editor);
   }
 };
 </script>
@@ -320,7 +345,6 @@ export default {
 }
 
 .middle-btm {
-
   #btm-autosave {
     vertical-align: middle;
     width: 70%;
