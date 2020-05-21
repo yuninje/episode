@@ -21,13 +21,13 @@ public class Novel {
 	@Column(name = "novel_pk")
 	private Integer novelPk;
 	
-	@Column(name = "novel_name", length = 30, nullable = false)
+	@Column(name = "novel_name", length = 150, nullable = false)
 	private String novelName;
 	
-	@Column(name = "novel_intro", length = 100, nullable = true)
+	@Column(name = "novel_intro", length = 1000, nullable = true)
 	private String novelIntro;
 	
-	@Column(name = "novel_image", length = 50, nullable = true)
+	@Column(name = "novel_image", length = 300, nullable = true)
 	private String novelImage;
 	
 	@Column(name = "novel_limit", columnDefinition="TINYINT(1)", nullable = false)
