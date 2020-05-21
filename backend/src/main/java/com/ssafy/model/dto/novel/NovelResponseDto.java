@@ -2,6 +2,7 @@ package com.ssafy.model.dto.novel;
 
 
 import com.ssafy.model.dto.genre.GenreResponseDto;
+import com.ssafy.model.dto.hashtag.HashTagResponseDto;
 import com.ssafy.model.dto.member.MemberResponseDto;
 import com.ssafy.model.entity.Novel;
 import lombok.*;
@@ -28,8 +29,9 @@ public class NovelResponseDto {
     private LocalDateTime novelUpdatedAt;
     private MemberResponseDto member;
     private List<GenreResponseDto> genres = new ArrayList<>();
-    private long likes;
-    private long recommends;
+    private List<HashTagResponseDto> hashTags = new ArrayList<>();
+    private long novelLikes = 0L;
+    private long novelRecommends = 0L;
 
     public NovelResponseDto(Novel novel) {
         this.novelPk = novel.getNovelPk();
@@ -45,8 +47,10 @@ public class NovelResponseDto {
         this.member = new MemberResponseDto(novel.getMember());
         this.genres = novel.getGenres().stream().map(
                 genreEntity -> new GenreResponseDto(genreEntity)).collect(Collectors.toList());
-        this.likes = novel.getEpisodes().stream().mapToInt(episode -> episode.getLikedMembers().size()).sum();
-        this.recommends = novel.getRecommends();
+        this.hashTags = novel.getHashTags().stream().map(
+        		hashTagEntity -> new HashTagResponseDto(hashTagEntity)).collect(Collectors.toList());
+        this.novelLikes = novel.getEpisodes().stream().mapToInt(episode -> episode.getLikedMembers().size()).sum();
+        this.novelRecommends = novel.getNovelRecommends();
     }
 
     @Builder
@@ -63,7 +67,7 @@ public class NovelResponseDto {
         this.novelUpdatedAt = novelUpdatedAt;
         this.member = member;
         this.genres = genres;
-        this.likes = likes;
-        this.recommends = recommends;
+        this.novelLikes = likes;
+        this.novelRecommends = recommends;
     }
 }

@@ -87,7 +87,7 @@ public class NovelServiceTest {
     
     @Test
     public void 소설_페이지_가져오기(){
-        Page<NovelResponseDto> responseDtoPage = novelService.getNovels(page, STR);
+        Page<NovelResponseDto> responseDtoPage = novelService.getNovels(page, null);
 
         List<NovelResponseDto> responseDtoList = responseDtoPage.getContent();
 
@@ -104,11 +104,11 @@ public class NovelServiceTest {
         assertThat(responseDto.getNovelName()).isEqualTo(novel.getNovelName());
         assertThat(responseDto.getNovelIntro()).isEqualTo(novel.getNovelIntro());
         assertThat(responseDto.getNovelImage()).isEqualTo(novel.getNovelImage());
-        assertThat(responseDto.getLikes()).isEqualTo(novel.getLikes());
+        assertThat(responseDto.getNovelLikes()).isEqualTo(novel.getNovelLikes());
         assertThat(responseDto.getNovelStatus()).isEqualTo(novel.getNovelStatus());
         assertThat(responseDto.getNovelUpdatedAt()).isEqualTo(novel.getNovelUpdatedAt());
         assertThat(responseDto.getNovelView()).isEqualTo(novel.getNovelView());
-        assertThat(responseDto.getRecommends()).isEqualTo(novel.getRecommends());
+        assertThat(responseDto.getNovelRecommends()).isEqualTo(novel.getNovelRecommends());
     }
 
 
@@ -149,11 +149,11 @@ public class NovelServiceTest {
         assertThat(responseDto.getNovelName()).isEqualTo(novel.getNovelName()).isEqualTo(UPDATE_STR);
         assertThat(responseDto.getNovelIntro()).isEqualTo(novel.getNovelIntro()).isEqualTo(UPDATE_STR);
         assertThat(responseDto.getNovelImage()).isEqualTo(novel.getNovelImage()).isEqualTo(UPDATE_STR);
-        assertThat(responseDto.getLikes()).isEqualTo(novel.getLikes());
+        assertThat(responseDto.getNovelLikes()).isEqualTo(novel.getNovelLikes());
         assertThat(responseDto.getNovelStatus()).isEqualTo(novel.getNovelStatus());
         assertThat(responseDto.getNovelUpdatedAt()).isEqualTo(novel.getNovelUpdatedAt());
         assertThat(responseDto.getNovelView()).isEqualTo(novel.getNovelView());
-        assertThat(responseDto.getRecommends()).isEqualTo(novel.getRecommends());
+        assertThat(responseDto.getNovelRecommends()).isEqualTo(novel.getNovelRecommends());
     }
 
 
@@ -175,11 +175,11 @@ public class NovelServiceTest {
         assertThat(responseDto.getNovelName()).isEqualTo(novel.getNovelName());
         assertThat(responseDto.getNovelIntro()).isEqualTo(novel.getNovelIntro());
         assertThat(responseDto.getNovelImage()).isEqualTo(novel.getNovelImage());
-        assertThat(responseDto.getLikes()).isEqualTo(novel.getLikes());
+        assertThat(responseDto.getNovelLikes()).isEqualTo(novel.getNovelLikes());
         assertThat(responseDto.getNovelStatus()).isEqualTo(novel.getNovelStatus());
         assertThat(responseDto.getNovelUpdatedAt()).isEqualTo(novel.getNovelUpdatedAt());
         assertThat(responseDto.getNovelView()).isEqualTo(novel.getNovelView());
-        assertThat(responseDto.getRecommends()).isEqualTo(novel.getRecommends());
+        assertThat(responseDto.getNovelRecommends()).isEqualTo(novel.getNovelRecommends());
     }
 
 

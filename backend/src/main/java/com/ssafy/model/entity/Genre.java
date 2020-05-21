@@ -21,14 +21,15 @@ public class Genre {
 	
 	@Column(name = "genre_name", length = 30, unique = true, nullable = false)
 	private String genreName;
-	
-	@ManyToMany
+
+	@ManyToMany(cascade = CascadeType.PERSIST)
 	@JoinTable(
 			name = "novel_genre",
 			joinColumns = @JoinColumn(name = "genre_pk"),
 			inverseJoinColumns = @JoinColumn(name = "novel_pk") 
 			)	
 	private List<Novel> novels = new ArrayList<>();
+
 
 	@Builder
 	public Genre(String genreName) {

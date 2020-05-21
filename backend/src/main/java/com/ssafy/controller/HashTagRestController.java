@@ -1,28 +1,21 @@
 package com.ssafy.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.ssafy.model.dto.hashtag.HashTagSaveRequestDto;
+import com.ssafy.model.service.HashTagService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.ssafy.model.dto.HashTagDTO;
-import com.ssafy.model.service.HashTagService;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import java.util.HashMap;
+import java.util.Map;
 
 @Api(tags = { "7. HashTag" })
 @RestController
 @RequestMapping("/hashTag")
+@CrossOrigin(origins = {"*"}, maxAge = 6000)
 public class HashTagRestController {
 	@Autowired
 	HashTagService hService;
@@ -41,8 +34,8 @@ public class HashTagRestController {
 	
 	@ApiOperation("해시태그 등록")
 	@PostMapping()
-	ResponseEntity<Map<String, Object>> registHashTag(@RequestBody HashTagDTO hashTagDTO) {
-		hService.registHashTag(hashTagDTO);
+	ResponseEntity<Map<String, Object>> registHashTag(@RequestBody HashTagSaveRequestDto requestDto) {
+		hService.registHashTag(requestDto);
 		return handleSuccess("해시태그 생성 완료");
 	}
 

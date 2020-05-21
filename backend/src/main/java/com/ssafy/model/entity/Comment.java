@@ -39,11 +39,7 @@ public class Comment {
 	@JoinColumn(name = "episode_pk", nullable = false)
 	private Episode episode;
 
-	// comment <-> like_comment >> 댓글 좋아요
-	// 이 댓글을 좋아하는 멤버들 
-//	@OneToMany(mappedBy = "comment", cascade = CascadeType.REMOVE)
-//	private List<LikeComment> MembersLikeComment = new ArrayList<>();
-
+	// comment <-> member >> N : M
 	@ManyToMany
 	@JoinTable(
 			name = "like_comment",

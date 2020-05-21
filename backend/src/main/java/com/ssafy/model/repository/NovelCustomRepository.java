@@ -1,6 +1,10 @@
 package com.ssafy.model.repository;
 
+import com.ssafy.model.entity.Novel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 public interface NovelCustomRepository {
-//	Page<Novel> find(String type, String word, Pageable pageable, String sort);
-//	Novel findByNovelPk(int novelPk);
+	Page<Novel> findBySearchWord(String type, String word, Pageable pageable);
+	Page<Novel> findBySearchWordAndGenre(String type, String word, Pageable pageable, int genrePk);
 }

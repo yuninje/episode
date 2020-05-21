@@ -4,6 +4,8 @@ import com.ssafy.model.entity.Member;
 import com.ssafy.model.entity.Novel;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @ToString
@@ -17,6 +19,8 @@ public class NovelSaveRequestDto{
     private boolean novelOpen;
     private int novelStatus;
     private boolean novelOnly;
+    private List<Integer> genres;
+    private List<String> hashTags;
 
     @Builder
     public NovelSaveRequestDto(

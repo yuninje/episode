@@ -103,7 +103,8 @@ public class MemberRestController {
 	ResponseEntity<Map<String, Object>> doLike(
 			@ApiParam("요청한 회원의 PK") @PathVariable int memPk, 
 			@ApiParam("요청한 대상의 PK") @PathVariable int objectPk,
-			@ApiParam("요청한 대상의 타입 | 1 : 소설, 2 : 에피소드, 3 : 댓글") @PathVariable int objectType,
+			@ApiParam(value = "요청한 대상의 타입 | 1 : 소설, 2 : 에피소드, 3 : 댓글",
+					allowableValues = "1,2,3") @PathVariable int objectType,
 			@ApiParam("좋아요 / 좋아요 취소 요청 | true : 좋아요, false : 좋아요 취소") @PathVariable boolean flag ){
 		mService.doLike(memPk, objectPk, objectType, flag);			
 		if(flag)

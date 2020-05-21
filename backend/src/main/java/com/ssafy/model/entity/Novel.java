@@ -48,10 +48,10 @@ public class Novel {
 	private Long novelView = 0L;
 
 	@Column(name = "novel_likes")
-	private Long likes = 0L;
+	private Long novelLikes = 0L;
 
 	@Column(name = "novel_recommends")
-	private Long recommends = 0L;
+	private Long novelRecommends = 0L;
 
 	@LastModifiedDate
 	@Column(name = "novel_updated_at", nullable = false)
@@ -72,7 +72,7 @@ public class Novel {
 	private List<Genre> genres = new ArrayList<>();
 
 	// novel <-> hashtag >> N : M 관계
-	@ManyToMany(mappedBy = "novels")
+	@ManyToMany(mappedBy = "novels", cascade = CascadeType.PERSIST)
 	private List<HashTag> hashTags = new ArrayList<>();
 
 	// 이 소설을 좋아하는 사람들 | novel : member = N : M
@@ -84,59 +84,6 @@ public class Novel {
 	)
 	private List<Member> likedMembers = new ArrayList<>();
 
-	@Transient
-	private String genreName;
-	@Transient
-	private List<String> genreList;
-	@Transient
-	private String hashTagName;
-	@Transient
-	private List<String> hashTagList;
-
-	public Novel(Integer novelPk, String novelName, String novelIntro, String novelImage, Boolean novelLimit,
-			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, LocalDateTime novelUpdatedAt, Member member,
-			String genreName, String hashTagName, Long likes, Long recommends) {
-		this.novelPk = novelPk;
-		this.novelName = novelName;
-		this.novelIntro = novelIntro;
-		this.novelImage = novelImage;
-		this.novelLimit = novelLimit;
-		this.novelOpen = novelOpen;
-		this.novelStatus = novelStatus;
-		this.novelOnly = novelOnly;
-		this.novelUpdatedAt = novelUpdatedAt;
-		this.member = member;
-//		this.genreList = Arrays.asList(genreName.split(","));
-		this.genreList = new ArrayList<String>(new HashSet<String>(Arrays.asList(genreName.split(","))));
-		this.hashTagList = hashTagName != null 
-				? new ArrayList<String>(new HashSet<String>(Arrays.asList(hashTagName.split(","))))
-				: new ArrayList<>();
-//		this.hashTagList = new ArrayList<String>(new HashSet<String>(this.hashTagList));
-		this.likes = likes;
-		this.recommends = recommends;
-	}
-
-	public Novel(Integer novelPk, String novelName, String novelIntro, String novelImage, Boolean novelLimit,
-			Boolean novelOpen, Integer novelStatus, Boolean novelOnly, LocalDateTime novelUpdatedAt,
-			Member member, List<Genre> genres, String hashTagName, Long likes, Long recommends) {
-		this.novelPk = novelPk;
-		this.novelName = novelName;
-		this.novelIntro = novelIntro;
-		this.novelImage = novelImage;
-		this.novelLimit = novelLimit;
-		this.novelOpen = novelOpen;
-		this.novelStatus = novelStatus;
-		this.novelOnly = novelOnly;
-		this.novelUpdatedAt = novelUpdatedAt;
-		this.member = member;
-		this.genres = genres;
-		this.hashTagName = hashTagName;
-		this.hashTagList = hashTagName != null 
-				? new ArrayList<String>(new HashSet<String>(Arrays.asList(hashTagName.split(","))))
-				: new ArrayList<>();
-		this.likes = likes;
-		this.recommends = recommends;
-	}
 
 	@Builder
 	public Novel(Member member, String novelName, String novelIntro, String novelImage, Boolean novelLimit, Boolean novelOpen, Integer novelStatus, Boolean novelOnly) {
@@ -165,25 +112,21 @@ public class Novel {
 	@Transactional
 	public void likedMember(Member member){
 		likedMembers.add(member);
-//		member.getLikeNovels().remove(this);
 	}
 	// 좋아요 취소
 	@Transactional
 	public void unLikedMember(Member member){
 		likedMembers.remove(member);
-//		member.getLikeNovels().remove(this);
 	}
 	// 장르 취소
 	@Transactional
 	public void belongGenre(Genre genre){
 		genres.add(genre);
-//		genre.getNovels().add(this);
 	}
 	// 장르 추가
 	@Transactional
 	public void notBelongGenre(Genre genre){
 		genres.remove(genre);
-//		genre.getNovels().remove(this);
 	}
 
 	public void updateUpdatedAt(){
@@ -207,7 +150,7 @@ public class Novel {
 
 		// 해쉬태그 | 추가 예정
 //		for (HashTag hashTag : this.hashTags){
-//			hashTag.
+//			hashTag.removeHashTagAtNovel();
 //		}
 		// 연재요일 | 추가 예정
 

@@ -42,10 +42,6 @@ public class Member {
 	@Column(name = "mem_gender", nullable = false, columnDefinition="TINYINT(1)")
 	private Boolean memGender;
 
-	// member <-> like_novel >> 소설 즐겨찾기 ( = 소설 좋아요 )
-	// 이 멤버가 좋아하는 소설들
-//	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
-//	private List<LikeNovel> NovelsLikedMember = new ArrayList<>();
 
 	// member <-> like_comment >> 댓글 좋아요
 	// 이 멤버가 좋아하는 댓글들
@@ -144,6 +140,7 @@ public class Member {
 			comment.beforeDelete();
 		}
 		comments = new ArrayList<>();
+
 
 		// 좋아요 데이터
 		for(Novel novel : this.likeNovels){

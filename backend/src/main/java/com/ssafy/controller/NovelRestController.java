@@ -20,6 +20,7 @@ import java.util.Map;
 @Api(tags = { "2. Novel" })
 @RestController
 @RequestMapping("/novels")
+@CrossOrigin(origins = {"*"}, maxAge = 6000)
 public class NovelRestController {
 	@Autowired
 	NovelService nService;
@@ -28,8 +29,9 @@ public class NovelRestController {
 	@GetMapping()
 	ResponseEntity<Map<String, Object>> getNovels(
 			@PageableDefault(page=0, size=10) Pageable pageable, 
-			@ApiParam("비어있을 경우 업데이트순으로, likes 입력시 선호작순으로, recommends 입력시 추천순으로 내림차순 정렬")
-			@RequestParam(required=false, defaultValue="") String sort){
+			@ApiParam(value="-- : 업데이트순\nlikes : 선호작순\nrecommends : 추천순\nview : 조회수순",
+					allowableValues="likes, recommends, view")
+			@RequestParam(required=false) String sort){
 		return handleSuccess(nService.getNovels(pageable, sort));
 	}
 	
@@ -74,9 +76,16 @@ public class NovelRestController {
 	@GetMapping("/member-pk={memPk}") // url 바꿔야함
 	ResponseEntity<Map<String, Object>> getNovelByMember(@PathVariable int memPk, 
 			@PageableDefault(page=0, size=10) Pageable pageable,
-			@ApiParam("비어있을 경우 업데이트 순서대로, likes 입력시 선호작 순서대로 정렬")
-			@RequestParam(required=false, defaultValue="") String sort) {
+			@ApiParam(value="-- : 업데이트순\nlikes : 선호작순\nrecommends : 추천순\nview : 조회수순",
+				allowableValues="likes, recommends, view")
+			@RequestParam(required=false) String sort) {
 		return handleSuccess(nService.getNovelByMember(memPk, pageable, sort));
+	}
+	
+	@ApiOperation("조회수 기준으로 top 100 구하기")
+	@GetMapping("/top100")
+	ResponseEntity<Map<String, Object>> getTop100(){
+		return handleSuccess(nService.getTop100());
 	}
 	
 	public ResponseEntity<Map<String, Object>> handleSuccess(Object data) {
