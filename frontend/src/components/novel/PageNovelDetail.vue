@@ -4,7 +4,7 @@
             <v-col 
                 cols="12"
                 md="4"
-                lg="2"
+                lg="3"
             >
                 <v-row>
                     <v-col cols="12">
@@ -22,16 +22,16 @@
             <v-col 
                 cols="12"
                 md="8"
-                lg="10"
+                lg="9"
             >
                 <v-row>
                     <v-col cols="12">
-                        <p>작가 | {{item.writer}}</p>
-                        <p>생성일 | {{item.createdAt}}</p>
+                        <p class="write-info">작가 | {{item.writer}}</p>
+                        <p class="write-info">생성일 | {{item.createdAt}}</p>
                     </v-col>
                     <v-col cols="12">
                         <p class = "sub-title">작품 소개</p>
-                        <p>{{item.novelIntro}}</p>
+                        <p class="write-info">{{item.novelIntro}}</p>
                     </v-col>
                     <v-col cols="12">
                         <br/>
@@ -66,6 +66,8 @@
 </template>
 
 <script>
+import http from "../../http-common"
+
 export default {
     data() {
         return {
@@ -112,5 +114,9 @@ export default {
 }
 .container {
     max-width: 1300px;
+}
+.write-info {
+    font-size : 1.2rem;
+    font-weight: 500;
 }
 </style>
