@@ -40,10 +40,6 @@ const routes = [
     name: 'mywork',
     component: Mywork
   },
-<<<<<<< HEAD
-
-
-=======
   {
     path: '/feel',
     name: 'Feel',
@@ -54,7 +50,7 @@ const routes = [
     name: 'Top100',
     component: Top100
   }
->>>>>>> dev/front
+
 ]
 
 function rejectAuthUser (to, from, next) {
