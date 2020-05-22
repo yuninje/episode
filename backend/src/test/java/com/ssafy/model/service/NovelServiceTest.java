@@ -252,12 +252,11 @@ public class NovelServiceTest {
         novel = dummy.novelFindById(novelPk);
 
         // 삭제 되어야 할 데이터
-        List<Genre> genres = novel.getGenres();
         List<Episode> episodes = novel.getEpisodes();
-        List<Member> likedMembers = novel.getLikedMembers();
-        // 해시태그 추가해야함
 
         novelService.deleteNovel(novelPk);
+
+        // novel 이 삭제됬는지 확인
         try {
             dummy.novelFindById(novelPk);
         }catch (NovelException e){
@@ -267,7 +266,7 @@ public class NovelServiceTest {
         assertThat(catchFlag).isEqualTo(true);
 
 
-        // 소설의 에피소드들 삭제
+        // 소설의 에피소드들이 삭제됬는지 확인
         for(Episode episode : episodes){
             catchFlag = false;
             try{
@@ -279,32 +278,12 @@ public class NovelServiceTest {
             assertThat(catchFlag).isEqualTo(true);
         }
 
-        // 소설의 장르 데이터 삭제
-        for(Genre genre : genres){
-            catchFlag = false;
-            try{
-                dummy.genreFindById(genre.getGenrePk());
-            }catch (GenreException e){
-                assertThat(e.getMessage()).isEqualTo(GenreException.NOT_EXIST);
-                catchFlag = true;
-            }
-            assertThat(catchFlag).isEqualTo(true);
-        }
-
         // 소설 좋아요 데이터 삭제 확인
         assertThat(member.getLikeNovels().contains(novel)).isEqualTo(false);
-    }
-
-
-    @Test
-    public void 소설_삭제_실패(){
-        try {
-            novelService.deleteNovel(novelPk+1); //
-        }catch (NovelException e){
-            assertThat(e.getMessage()).isEqualTo(NovelException.NOT_EXIST);
-            catchFlag = true;
-        }
-        assertThat(catchFlag).isEqualTo(true);
+        // 소설 & 장르 데이터 삭제 확인
+        assertThat(genre.getNovels().contains(novel)).isEqualTo(false);
+        // 소설 & 해시태그 데이터 확인
+        assertThat(hashTag.getNovels().contains(novel)).isEqualTo(false);
     }
 
     @Test
