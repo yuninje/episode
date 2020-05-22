@@ -11,6 +11,8 @@ import Feel from '../components/feel/PageFeel'  //  여긴 나중에 바뀔 예�
 import Top100 from '../components/top/PageTop100'  //  여긴 나중에 바뀔 예정
 import NovelDetail from '../components/novel/PageNovelDetail'
 import GenNovel from '../components/novel/PageGenerateNovel'
+import Search from '../components/search/PageSearch'
+
 import Viewer from '../components/viewer/PageViewer'
 
 Vue.use(VueRouter)
@@ -69,6 +71,11 @@ const routes = [
     name: 'GenNovel',
     component: GenNovel,
     beforeEnter: rejectUnAuthUser
+  },
+  { 
+    path: '/search/:searchKeyword',
+    name: 'Search',
+    component: Search
   }
 ]
 

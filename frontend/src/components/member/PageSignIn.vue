@@ -4,7 +4,7 @@
     <div class="input-wrap">
       <div class="input-row">
         <label for="id">아이디</label>
-        <input type="text" name="id" v-model.lazy="memId" id="id" placeholder="아이디(이메일)">
+        <input type="text" name="id" v-model.lazy="memId" id="id" placeholder="아이디">
         <!-- <span v-if="idSaveCheck">{{ savedId }}</span> -->
       </div>
       <div class="input-row">
