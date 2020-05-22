@@ -10,6 +10,7 @@ import com.ssafy.model.repository.GenreRepository;
 import com.ssafy.model.repository.NovelRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -28,7 +29,7 @@ public class GenreServiceImpl implements GenreService{
 	
 	@Override
 	public List<GenreResponseDto> getGenres() {
-		List<Genre> genreEntityPage = gRepo.findAll();
+		List<Genre> genreEntityPage = gRepo.findAll(Sort.by("genrePk"));
 		List<GenreResponseDto> genres = genreEntityPage.stream().map(
 				genreEntity -> new GenreResponseDto(genreEntity)).collect(Collectors.toList());
 
