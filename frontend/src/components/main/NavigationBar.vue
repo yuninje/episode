@@ -7,8 +7,8 @@
         <v-text-field
             v-model="searchText"
             append-icon="mdi mdi-magnify"
-            @keyup.enter="search()"
-            @click:append="search()"
+            @keyup.enter="gotoSearch()"
+            @click:append="gotoSearch()"
             placeholder="작품명이나 작가명으로 검색"
             filled
             rounded
@@ -101,8 +101,8 @@ export default {
         ...mapGetters(["getSession"])
     },
     methods: {
-        search() {
-            alert(this.searchText + " 검색");
+        gotoSearch() {
+            this.$router.push(`/search/${this.searchKeyword}`)
         },
         gotoMain() {
             console.log(this.getSession.memPk)
