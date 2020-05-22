@@ -71,6 +71,13 @@
                     </template>
                 </v-simple-table>
             </v-col>
+            <v-col cols="12">
+                <div align="center">
+                    <v-btn text color="rgba(192,0,0,1)" @click="" v-show="checkRight()">
+                        <v-icon large>mdi mdi-plus</v-icon>
+                    </v-btn>
+                </div>
+            </v-col>
         </v-row>
     </v-container>
 </template>
