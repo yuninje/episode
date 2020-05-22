@@ -107,7 +107,6 @@ export default {
             postNovel: "postNovel",
         }),
         genNovel() {
-            console.log("genNovel()에 들어왔습니다.")
             let memberPk = this.getSession.memPk
             let { 
                 novelName, 
