@@ -4,39 +4,107 @@ import axios from "axios";
 export default {
   namespaced: true,
   state: {
-    savedContent: ""
+    episodepK:"",
+    episodeInfo:"",
+    importTitle:"",
+    importContent:"",
+
+    savingTime:null,
+    savingTimeAuto:null,
+    savingContent: ""
   },
   getters: {
-    getSavedContent: state => { return state.savedContent; }
+    getEpisodepK: state => { return state.episodepK; },
+    getEpisodeInfo: state => { return state.episodeInfo; },
+
+    getImportTitle: state => { return state.importTitle; },
+    getImportContent: state => { return state.importContent; },
+    getSavingTime: state => { return state.savingTime; },
+    getSavingTimeAuto: state => { return state.savingTimeAuto; },
+    getSavingContent: state => { return state.savingContent; }
   },
   mutations: {
-    setSavedContent(state, payload, rootState) {
-      console.log("setSavedContent 들어옴");
-      state.savedContent = payload;
+    changeEpisodepK(state, payload, rootState) {
+      state.episodepK = payload;
+    },
+    changeEpisodeInfo(state, payload, rootState) {
+      state.episodeInfo = payload;
+    },
+
+    changeImportTitle(state, payload, rootState) {
+      state.importTitle = payload;
+    },
+    changeImportContent(state, payload, rootState) {
+      state.importContent = payload;
+    },
+    changeSavingTime(state, payload, rootState) {
+      state.savingTime = payload;
+    },
+    changeSavingTimeAuto(state, payload, rootState) {
+      state.savingTimeAuto = payload;
+    },
+    changeSavingContent(state, payload, rootState) {
+      state.savingContent = payload;
     }
   },
   actions: {
-    // vuex에 자동저장
-    fetchAutoSave({ state, dispatch, commit, getters, rootGetters }, data) {
-      console.log("fetchAutoSave 들어옴");
-      // commit("setSavedContent", "fetchAutoSave Data");
-      localStorage.setItem("autoSaved", data);
-      setTimeout(() => commit('setSavedContent', data), 1000);
+    // 에피소드의 pk를 알아낸다
+    EpisodePk({ state, dispatch, commit, getters, rootGetters }, data) {
+      commit("changeEpisodepK", data)
+      localStorage.setItem("episodePk", data);
+
     },
-    // 서버에 저장
-    fetchPostSave({ state, dispatch, commit, getters, rootGetters }, data) {
+    // 에피소드 1개의 정보를 조회
+    getEpisodeByPk({ state, dispatch, commit, getters, rootGetters }, data) {
       axios
-        .put(`http://localhost:8080/api/episodes` + 1, {
-          "episodeContent": "수정되라 얍ㅜㅜ",
-          "episodeTitle": "수정이 왜 안되니 ㅠㅠㅠ",
-          "episodeWriter": "string"
-        })
+        .get(`${rootGetters.getServer}/api/episodes/${data}`)
         .then( res => {
-          console.log(red.data.data)
+          dispatch("EpisodePk", data)
+          commit("changeEpisodeInfo", res.data.data)
+
+          commit("changeImportTitle", res.data.data.episodeTitle)
+          commit("changeImportContent", res.data.data.episodeContent)
         })
         .catch(err => {
-          console.error("fetchPostSave()", err);
+          console.error("putEpisode()", err);
         });
-    }
+    },
+    // session 자동저장
+    fetchAutoSave({ state, dispatch, commit, getters, rootGetters }, data) {
+      console.log("fetchAutoSave 들어옴");
+      // commit("changeSavingContent", "fetchAutoSave Data");
+      localStorage.setItem("autoSaved", data);
+      setTimeout(() => commit('changeSavingContent', data), 1000);
+    },
+    // 서버에 저장 
+    putEpisode({ state, dispatch, commit, getters, rootGetters }, data) {
+      let url = getters.getEpisodepK
+      // console.log("putEpisode - data", data)
+      // console.log("putEpisode - url", url)
+      axios
+        .put(`${rootGetters.getServer}/api/episodes/`+url, data)
+        .then( res => {
+          let time = new Date().toLocaleString()
+          commit("changeSavingTimeAuto", null)
+          commit("changeSavingTime", time)
+        })
+        .catch(err => {
+          console.error("putEpisode()", err);
+        });
+    },
+    putEpisodeAuto({ state, dispatch, commit, getters, rootGetters }, data) {
+      let url = getters.getEpisodepK
+      axios
+        .put(`${rootGetters.getServer}/api/episodes/`+url, data)
+        .then( res => {
+          let time = new Date().toLocaleString()
+          commit("changeSavingTime", null)
+          commit("changeSavingTimeAuto", time)
+        })
+        .catch(err => {
+          console.error("putEpisode()", err);
+        });
+    },
+    
   } 
 };

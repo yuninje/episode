@@ -31,18 +31,19 @@ const routes = [
     path: '/signin',
     name: 'Signin',
     component: Signin, 
-    beforeEnter : rejectAuthUser
+    beforeEnter: rejectAuthUser
 
   },
   {
-    path: '/editor',
+    path: '/novel/edit',
     name: 'Editor',
     component: Editor
   },
   {
     path: '/mywork',
     name: 'mywork',
-    component: Mywork
+    component: Mywork,
+    beforeEnter: rejectUnAuthUser
   },
   {
     path: '/feel',
@@ -71,10 +72,18 @@ const routes = [
   }
 ]
 
+function rejectUnAuthUser (to, from, next) {
+  store.dispatch('checkSession');
+  if(!store.state.isLogin) {  // 로그인하지 않은 유저
+    alert("로그인 하여야 이용할 수 있습니다! \n로그인 해주세요.")
+    next("/signin")
+  }else {
+    next()
+  }
+}
 function rejectAuthUser (to, from, next) {
   store.dispatch('checkSession');
-  if(store.state.isLogin) {
-    // 이미 로그인 한 유저 가드
+  if(store.state.isLogin) { // 이미 로그인 한 유저 가드
     alert("이미 로그인 했습니다.")
     next("/")
   }else {
