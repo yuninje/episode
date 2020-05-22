@@ -155,17 +155,7 @@ public class NovelServiceImpl implements NovelService {
     public void deleteNovel(int novelPk) {
         Novel novel = nRepo.findById(novelPk)
                 .orElseThrow(() -> new NovelException(NovelException.NOT_EXIST));
-
-        // like_novels 테이블의 해당 소설의 좋아요 삭제
-        for (Member member : novel.getLikedMembers()) {
-            member.unLikeNovel(novel);
-        }
-        // novel_genre 테이블의 해당 소설의 장르 삭제
-        for (Genre genre : novel.getGenres()){
-            genre.removeGenreAtNovel(novel);
-        }
-        nRepo.save(novel);
-        nRepo.deleteById(novelPk);
+        deleteNovel(novel);
     }
 
     @Override

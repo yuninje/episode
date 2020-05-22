@@ -151,9 +151,9 @@ public class Novel {
 		genres = new ArrayList<>();
 
 		// 해쉬태그 | 추가 예정
-//		for (HashTag hashTag : this.hashTagStrs){
-//			hashTag.removeHashTagAtNovel();
-//		}
+		for (HashTag hashTag : this.hashTags){
+			hashTag.removeHashTagAtNovel(this);
+		}
 		// 연재요일 | 추가 예정
 
 		// 좋아요 데이터

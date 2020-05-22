@@ -3,6 +3,7 @@ package com.ssafy.model.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,5 +35,10 @@ public class HashTag {
 	@Builder
 	public HashTag(String hashTagName) {
 		this.hashTagName = hashTagName;
+	}
+
+	@Transactional
+	void removeHashTagAtNovel(Novel novel){
+		this.novels.remove(novel);
 	}
 }
