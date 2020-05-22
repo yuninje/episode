@@ -81,6 +81,19 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 		return new PageImpl<>(novels, pageable, query.fetchCount());
 	}
 	
+	@Override
+	public Page<Novel> findByFeel(int type, Pageable pageable) {
+		JPAQuery<Novel> query = 
+				queryFactory.select(novel)
+				.from(novel);
+		
+		query.where(feel(type -1));
+		
+		List<Novel> novels = getQuerydsl().applyPagination(pageable, query).fetch();
+		
+		return new PageImpl<>(novels, pageable, query.fetchCount());
+	}
+	
 	private BooleanBuilder authorNameLike(String word) {
 		String[] wordArr = word.split(" ");
 		BooleanBuilder builder = new BooleanBuilder();
@@ -109,6 +122,25 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 		
 		for(int i=0; i<wordArr.length; i++) {
 			builder.or(novel.hashTags.any().hashTagName.containsIgnoreCase(wordArr[i]));
+		}
+		
+		return builder;
+	}
+	
+	private BooleanBuilder feel(int type) {
+		String[][] hashTags = {
+			{"사이다", "통쾌", "고구마", "쎈케", "쎈", "김치", "막장", "능력자", "갑질", "복수", "뒷통수"},
+			{"쎈", "쎈케", "능력자", "회장", "사장", "지존", "랭커", "왕", "황제", "여왕", "황후", "왕자", "신", 
+				"절대신", "사기캐", "치트키", "마스터", "마왕", "아이돌", "천재", "군주", "먼치킨", "역대급"},
+			{"정략결혼", "연인", "썸", "로멘스", "팜므파탈", "옴므파탈", "짐승남", "운명", "우연"},
+			{"회귀", "빙의", "시간", "시간여행", "미래", "과거", "환생", "저승", "부활"},
+			{"미스테리", "스릴러", "범인", "살인범", "범죄자", "범죄", "경찰", "도둑", "살인"},
+			{"꿀잼", "하이텐션", "말빨"}
+		};
+		
+		BooleanBuilder builder = new BooleanBuilder();
+		for(int j=0; j<hashTags[type].length; j++) {
+			builder.or(novel.hashTags.any().hashTagName.containsIgnoreCase(hashTags[type][j]));
 		}
 		
 		return builder;

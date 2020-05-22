@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Api(tags = { "7. HashTag" })
 @RestController
-@RequestMapping("/hashTag")
+@RequestMapping("/hashTags")
 @CrossOrigin(origins = {"*"}, maxAge = 6000)
 public class HashTagRestController {
 	@Autowired

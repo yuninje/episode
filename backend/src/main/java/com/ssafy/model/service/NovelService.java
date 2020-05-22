@@ -24,4 +24,5 @@ public interface NovelService {
 	void deleteNovel(Novel novel);
 	void deleteAllNovel();
 	List<NovelResponseDto> getTop100();
+	Page<NovelResponseDto> getFeelNovels(int type, Pageable pageable, String sort);
 }

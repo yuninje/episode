@@ -88,6 +88,24 @@ public class NovelRestController {
 		return handleSuccess(nService.getTop100());
 	}
 	
+	@ApiOperation("느낌별 소설")
+	@GetMapping("/feel/{type}")
+	ResponseEntity<Map<String, Object>> getFeelNovels(
+			@ApiParam(value="1 : 사이다 같은 통쾌함\n"
+					+ "2 : 역대급 먼치킨 주인공\n"
+					+ "3 : 로맨스 치사량 주의\n"
+					+ "4 : 인생을 바로 살다\n"
+					+ "5 : 범인은 바로\n"
+					+ "6 : 저세상 텐션 꿀재미",
+				allowableValues="1, 2, 3, 4, 5, 6", required=true)
+			@PathVariable int type, 
+			@PageableDefault(page=0, size=10) Pageable pageable,
+			@ApiParam(value="updated : 업데이트순\nlikes : 선호작순\nrecommends : 추천순\nview : 조회수순",
+				allowableValues="updated, likes, recommends, view", required=true)
+			@RequestParam String sort) {
+		return handleSuccess(nService.getFeelNovels(type, pageable, sort));
+	}
+	
 	public ResponseEntity<Map<String, Object>> handleSuccess(Object data) {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("state", "ok");

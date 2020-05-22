@@ -244,10 +244,18 @@ public class NovelServiceImpl implements NovelService {
     	return novels;
     }
     
+    public Page<NovelResponseDto> getFeelNovels(int type, Pageable pageable, String sort) {
+    	PageRequest pageRequest = getPageRequest(pageable, sort);
+    	
+    	Page<Novel> novelEntityPage = nRepo.findByFeel(type, pageRequest);
+    	Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
+        
+    	return novels;
+    }
+    
     public PageRequest getPageRequest(Pageable pageable, String sort) {
-    	if(sort == null){
-    	    sort = "updated";
-        }
+    	if(sort == null) sort = "updated";
+    	
         switch(sort) {
     	case "likes":
     		sort = "novelLikes";
@@ -259,11 +267,13 @@ public class NovelServiceImpl implements NovelService {
     		sort = "novelView";
     		break;
     	}
+        
         PageRequest pageRequest
-            = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+            = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(),
                 sort.equals("updated") ? Sort.by("novelUpdatedAt").descending() :
                     Sort.by(sort, "novelUpdatedAt").descending());
         
         return pageRequest;
     }
+
 }
