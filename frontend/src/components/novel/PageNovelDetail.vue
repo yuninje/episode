@@ -27,7 +27,7 @@
                 <v-row>
                     <v-col cols="12">
                         <p class="write-info">작가 | {{data.novel.member.memNick}}</p>
-                        <p class="write-info">최근 업로드 날짜 | {{data.novel.novelUpdatedAt}}</p>
+                        <p class="write-info">최근 업로드 날짜 | {{data.novel.novelUpdatedAt.substr(0,10)}}</p>
                     </v-col>
                     <v-col cols="12">
                         <p class = "sub-title">작품 소개</p>
@@ -35,7 +35,14 @@
                     </v-col>
                     <v-col cols="12">
                         <br/>
-                        <p class="tags" v-show="data.novel.hashTags.length !== 0">{{data.novel.hashTags}}</p>
+                        <div 
+                            class="tags" 
+                            v-show="data.novel.hashTags.length !== 0" 
+                            v-for="hashTag in data.novel.hashTags"
+                            :key="hashTag.hashTagPk"
+                        >
+                            <span>#{{hashTag.hashTagName}}&nbsp;</span>
+                        </div>
                     </v-col>
                 </v-row>
             </v-col>
@@ -53,7 +60,7 @@
                         <tbody>
                             <tr v-for="(episode, index) in data.episodes.content" :key="index">
                                 <td>{{index+1}}화</td>
-                                <td>{{episode.episodeCreatedAt}}</td>
+                                <td>{{episode.episodeCreatedAt.substr(0,10)}}</td>
                                 <td>{{episode.episodeTitle}}</td>
                                 <td>
                                     <v-btn outlined color="rgba(192,0,0,1)" @click="gotoNovelViewer(episode.episodePk)">보기</v-btn>

@@ -2,7 +2,7 @@
     <v-container>
         <v-row>
             <v-col cols="12">
-                 <p class="search-result">현재 페이지는 작업중인 페이지입니다.</p>
+                 <p class="search-result">'{{searchKeyword}}'에 대한 검색결과 입니다.</p>
             </v-col>
             <v-col cols="12">
                 <p class="no-result">이런 소설은 어떤가요?</p>
@@ -13,24 +13,24 @@
                     width="75%"
                 >
                     <v-tabs
-                        v-model="tab"
+                        v-model="genrePk"
                         background-color="white"
                         color="rgba(255,83,83,1)"
                         class="tabs"
                     >
                         <v-tabs-slider color="transparent"></v-tabs-slider>
                         <v-tab
-                            v-for="item in items"
-                            :key="item.tab"
+                            v-for="genre in genres"
+                            :key="genre.genrePk"
                             class="tab"
                         >
-                            {{item.tab}}
+                            {{genre.genreName}}
                         </v-tab>
                     </v-tabs>
-                    <v-tabs-items v-model="tab">
+                    <v-tabs-items v-model="genrePk">
                         <v-tab-item
-                            v-for="item in items"
-                            :key="item.tab"
+                            v-for="genre in genres"
+                            :key="genre.genrePk"
                         >
                         <v-container>
                           <v-row>
@@ -86,7 +86,10 @@ import { mapActions, mapMutations, mapGetters } from "vuex";
 export default {
     data() {
         return {
+            genrePk: null,
             data:[],
+            genres:[],
+            searchKeyword:'',
             genrePk: 0,
             sort:'updated',
             type:'all',
@@ -98,22 +101,44 @@ export default {
         ...mapGetters(["getIsLogin"]),
         ...mapGetters(["getSession"])
     },
+    created() {
+        this.getGenres();
+    },
     mounted() {
         this.getSearchResult();
+        this.searchKeyword = this.$route.params.searchKeyword;
     },
     methods: {
         getSearchResult() {
             http
-                .get(`/search/all`, {
-                    genrePk: this.genrePk,
-                    memPk: this.getSession.memPk,
-                    sort: this.sort,
-                    type: this.type,
-                    word: this.$route.params.searchKeyword
+                .get(`/search/${this.type}`, {
+                    parmas:{
+                        genrePk: 0,
+                        memPk: 0,
+                        sort: this.sort,
+                        type: this.type,
+                        word: this.$route.params.searchKeyword
+                    }
                 })
                 .then(response => {
                     console.log(response.data.data);
                     this.data = response.data.data;
+                })
+                .catch((e) => {
+                    console.log(e);
+                    this.errored = true;
+                })
+                .finally(() => {
+                    this.loading = false;
+                })
+        },
+        getGenres() {
+            http
+                .get('/genrePks')
+                .then(response => {
+                    console.log(response.data.data);
+                    this.genres = response.data.data;
+                    console.log(this.genres);
                 })
                 .catch(() => {
                     this.errored = true;
