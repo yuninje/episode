@@ -16,7 +16,7 @@ export default new Vuex.Store({
     storeMywork: moduleMywork
   },
   state: {
-    server: "http://13.125.145.32:8080",
+    server: "http://k02a2061.p.ssafy.io:8080",
     isLogin: false,
     session: ""
   },

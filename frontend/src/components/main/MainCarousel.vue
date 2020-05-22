@@ -23,19 +23,23 @@ export default {
         return {
             items: [
                 {
-                    src: 'banner0.png',
+                    src: 'banner4.png',
                     link: 'https://www.naver.com',
                 },
                 {
-                    src: 'banner1.png',
+                    src: 'banner2.png',
                     link: 'https://vuetifyjs.com/ko/',
                 },
                 {
-                    src: 'banner2.png',
+                    src: 'banner3.png',
                     link: 'https://www.google.com',
                 },
                 {
-                    src: 'banner3.png',
+                    src: 'banner1.png',
+                    link: 'https://www.youtube.com',
+                },
+                {
+                    src: 'banner0.png',
                     link: 'https://www.youtube.com',
                 },
             ],
