@@ -269,7 +269,7 @@ public class NovelServiceImpl implements NovelService {
     	}
         
         PageRequest pageRequest
-            = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(),
+            = PageRequest.of(pageable.getPageNumber() == 0 ? 0 : pageable.getPageNumber() - 1, pageable.getPageSize(),
                 sort.equals("updated") ? Sort.by("novelUpdatedAt").descending() :
                     Sort.by(sort, "novelUpdatedAt").descending());
         
