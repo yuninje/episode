@@ -102,7 +102,7 @@ export default {
     },
     methods: {
         gotoSearch() {
-            this.$router.push(`/search/${this.searchKeyword}`)
+            this.$router.push(`/search/${this.searchText}`)
         },
         gotoMain() {
             console.log(this.getSession.memPk)
