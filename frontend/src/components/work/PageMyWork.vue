@@ -5,16 +5,17 @@
       <section class="work-section">
         <div class="card-grid">
           <router-link :to="`noveldetail/${ item.novelPk }`" v-for="item in allList" :key="item.novelPk" class="card">
-            <img class="card__background" v-bind:src="item.novelImage">
+            <img class="card__background" v-if="!item.novelImage" :src = "require(`@/assets/images/banner0.png`)">
+            <img class="card__background" v-if="item.novelImage"  :src="item.novelImage">
             <div class="card__content">
               <h3 class="card__heading">{{ item.novelName }}</h3>
             </div>
           </router-link>
 
-          <a class="card" href="#">
+          <router-link :to="`novel/generate`" class="card">
             <div class="card__background" style="border: solid 1px rgb(192, 0, 0)"></div>
             <div class="card__content">+</div>
-          </a>
+          </router-link>
         </div>
       </section>
     </div>
@@ -23,17 +24,18 @@
       <div class="work-category">연재 중 작품</div>
       <section class="work-section">
         <div class="card-grid">
-          <router-link :to="`noveldetail/${ item.novelPk }`" v-for="item in allList" :key="item.novelPk" class="card">
-            <img class="card__background" v-bind:src="item.novelImage">
+          <router-link :to="`noveldetail/${ item.novelPk }`" v-for="item in publishList" :key="item.novelPk" class="card">
+            <img class="card__background" v-if="!item.novelImage" :src = "require(`@/assets/images/banner0.png`)">
+            <img class="card__background" v-if="item.novelImage"  :src="item.novelImage">
             <div class="card__content">
               <h3 class="card__heading">{{ item.novelName }}</h3>
             </div>
           </router-link>
 
-          <a class="card" href="#">
+          <router-link :to="`novel/generate`" class="card">
             <div class="card__background" style="border: solid 1px rgb(192, 0, 0)"></div>
             <div class="card__content">+</div>
-          </a>
+          </router-link>
         </div>
       </section>
     </div>
@@ -42,17 +44,18 @@
       <div class="work-category">작성 중 작품</div>
       <section class="work-section">
         <div class="card-grid">
-          <router-link :to="`noveldetail/${ item.novelPk }`" v-for="item in allList" :key="item.novelPk" class="card">
-            <img class="card__background" v-bind:src="item.novelImage">
+          <router-link :to="`noveldetail/${ item.novelPk }`" v-for="item in writeList" :key="item.novelPk" class="card">
+            <img class="card__background" v-if="!item.novelImage" :src = "require(`@/assets/images/banner0.png`)">
+            <img class="card__background" v-if="item.novelImage"  :src="item.novelImage">
             <div class="card__content">
               <h3 class="card__heading">{{ item.novelName }}</h3>
             </div>
           </router-link>
 
-          <a class="card" href="#">
+          <router-link :to="`novel/generate`" class="card">
             <div class="card__background" style="border: solid 1px rgb(192, 0, 0)"></div>
             <div class="card__content">+</div>
-          </a>
+          </router-link>
         </div>
       </section>
     </div>

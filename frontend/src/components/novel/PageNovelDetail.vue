@@ -8,8 +8,15 @@
             >
                 <v-row>
                     <v-col cols="12">
-                        <v-img
+                        <v-img 
+                        v-if="data.novel.novelImage"
                             :src = "data.novel.novelImage"
+                            aspect-ratio=0.7
+                        >
+                        </v-img>
+                        <v-img
+                        v-else
+                            :src = "require(`@/assets/images/banner0.png`)"
                             aspect-ratio=0.7
                         >
                         </v-img>
