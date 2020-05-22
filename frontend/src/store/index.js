@@ -6,6 +6,7 @@ import router from "@/router/index";
 import moduleMember from "./modules/moduleMember"
 import moduleEditor from "./modules/moduleEditor"
 import moduleMywork from "./modules/moduleMywork"
+import moduleGenNov from "./modules/moduleGenNov"
 
 Vue.use(Vuex);
 
@@ -13,10 +14,11 @@ export default new Vuex.Store({
   modules: {
     storeMember: moduleMember,
     storeEditor: moduleEditor,
-    storeMywork: moduleMywork
+    storeMywork: moduleMywork,
+    storeGenNov: moduleGenNov,
   },
   state: {
-    server: "http://13.125.145.32:8080",
+    server: "http://k02a2061.p.ssafy.io:8080",
     isLogin: false,
     session: ""
   },
