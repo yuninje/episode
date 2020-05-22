@@ -105,18 +105,20 @@ export default {
         this.getGenres();
     },
     mounted() {
+        console.log("여긴 마운티드입니다!");
         this.getSearchResult();
         this.searchKeyword = this.$route.params.searchKeyword;
+        console.log("여기에서 마운티드가 끝납니다!");
     },
     methods: {
         getSearchResult() {
+            console.log("함수 실행");
             http
                 .get(`/search/${this.type}`, {
-                    parmas:{
+                    params:{
                         genrePk: 0,
                         memPk: 0,
                         sort: this.sort,
-                        type: this.type,
                         word: this.$route.params.searchKeyword
                     }
                 })
