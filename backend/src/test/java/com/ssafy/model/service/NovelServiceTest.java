@@ -292,18 +292,6 @@ public class NovelServiceTest {
     }
 
     @Test
-    public void 소설의_장르_업데이트(){
-        List<Integer> genrePks = new ArrayList<>();
-        genrePks.add(genrePk);
-        novelService.updateGenreOfNovel(novelPk, genrePks);
-
-        novel = dummy.novelFindById(novelPk);
-
-        assertThat(novel.getGenres().size()).isEqualTo(1);
-    }
-
-
-    @Test
     public void 소설_페이지_회원으로_가져오기_아직안함(){
         assertThat(true).isEqualTo(false);
     }

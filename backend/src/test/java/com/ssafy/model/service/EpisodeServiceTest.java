@@ -2,8 +2,10 @@ package com.ssafy.model.service;
 
 import com.ssafy.Dummy;
 import com.ssafy.model.dto.episode.EpisodeResponseDto;
+import com.ssafy.model.dto.episode.EpisodeResponseNoNovelDto;
 import com.ssafy.model.dto.episode.EpisodeSaveRequestDto;
 import com.ssafy.model.dto.episode.EpisodeUpdateRequestDto;
+import com.ssafy.model.dto.novel.NovelResponseDto;
 import com.ssafy.model.entity.*;
 import com.ssafy.model.repository.*;
 import org.junit.After;
@@ -15,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,6 +69,8 @@ public class EpisodeServiceTest {
     private Comment comment;
     private Genre genre;
     private HashTag hashTag;
+    private List<Episode> episodes;
+    private List<Comment> comments;
     private List<Genre> genres;
     private List<HashTag> hashTags;
 
@@ -81,7 +86,7 @@ public class EpisodeServiceTest {
     private final int COUNT = 10;
     private final int PAGE = 0;
     private final int PAGE_SIZE = 5;
-    private final Pageable page = PageRequest.of(PAGE, PAGE_SIZE);
+    private Pageable page;
 
     private final int MEMBER = 0;
     private final int NOVEL = 1;
@@ -120,9 +125,11 @@ public class EpisodeServiceTest {
         novel = (Novel) data.get("novel");
 
         episode = (Episode) data.get("episode");
+        episodes = (List) data.get("episodes");
         episodePk = (int) data.get("episodePk");
 
         comment = (Comment) data.get("comment");
+        comments = (List) data.get("comments");
         commentPk = (int) data.get("commentPk");
 
         genres = (ArrayList) data.get("genres");
@@ -166,11 +173,23 @@ public class EpisodeServiceTest {
     }
 
     @Test
-    public void 에피소드_페이지_가져오기(){
-        Page<EpisodeResponseDto> responseDtoPage = episodeService.getEpisodes(page);
+    public void 에피소드_페이지_가져오기_생성날짜_최신순(){
+        page = PageRequest.of(PAGE, PAGE_SIZE, Sort.by("episodeCreatedAt").descending());   // 가장 최신이 먼저
+        Page<EpisodeResponseDto> episodeResDtoPage = episodeService.getEpisodes(page);
+        List<EpisodeResponseDto> episodeResDtoList = episodeResDtoPage.getContent();
+        System.out.println(episodeResDtoList.get(0));
+        assertThat(episodeResDtoList.get(0).getEpisodeCreatedAt()).isAfterOrEqualTo(episodeResDtoList.get(1).getEpisodeCreatedAt());
+        assertThat(episodeResDtoList.size()).isEqualTo(PAGE_SIZE);
+    }
 
-        List<EpisodeResponseDto> responseDtoList = responseDtoPage.getContent();
-        assertThat(responseDtoList.size()).isEqualTo(PAGE_SIZE);
+    @Test
+    public void 에피소드_페이지_가져오기_생성날짜_오래된순(){
+        page = PageRequest.of(PAGE, PAGE_SIZE, Sort.by("episodeCreatedAt").ascending());   // 가장 최신이 먼저
+        Page<EpisodeResponseDto> episodeResDtoPage = episodeService.getEpisodes(page);
+        List<EpisodeResponseDto> episodeResDtoList = episodeResDtoPage.getContent();
+        System.out.println(episodeResDtoList.get(0));
+        assertThat(episodeResDtoList.get(0).getEpisodeCreatedAt()).isBeforeOrEqualTo(episodeResDtoList.get(1).getEpisodeCreatedAt());
+        assertThat(episodeResDtoList.size()).isEqualTo(PAGE_SIZE);
     }
 
     @Test
@@ -216,9 +235,6 @@ public class EpisodeServiceTest {
     
     @Test
     public void 에피소드_삭제(){
-        List<Comment> commentList = episode.getComments();
-        List<Member> likedMembers = episode.getLikedMembers();
-
         episodeService.deleteEpisode(episodePk);
         try {
             dummy.episodeFindById(episodePk);
@@ -229,8 +245,7 @@ public class EpisodeServiceTest {
         assertThat(catchFlag).isEqualTo(true);
 
         // 에피소드의 댓글들 삭제
-        for(Comment comment : commentList){
-            catchFlag = false;
+        for(Comment comment : comments){
             try{
                 dummy.commentFindById(comment.getCommentPk());
             }catch (CommentException e){
@@ -240,13 +255,27 @@ public class EpisodeServiceTest {
             assertThat(catchFlag).isEqualTo(true);
         }
 
+
         // 에피소드의 좋아요 데이터 삭제
         assertThat(member.getLikeEpisodes().contains(episode)).isEqualTo(false);
     }
 
     @Test
     public void 에피소드_소설로_가져오기_아직안함(){
-        assertThat(false).isEqualTo(true);
+        //
+
+        Map<String, Object> data = episodeService.getEpisodesByNovel(novelPk, page);
+
+        Page<EpisodeResponseNoNovelDto> episodeDtoPage = (Page) data.get("episodes");
+        NovelResponseDto novelDto = (NovelResponseDto) data.get("novel");
+
+        page = PageRequest.of(PAGE, PAGE_SIZE, Sort.by("episodeCreatedAt").ascending());   // 가장 최신이 먼저
+        Page<EpisodeResponseDto> episodeResDtoPage = episodeService.getEpisodes(page);
+        List<EpisodeResponseDto> episodeResDtoList = episodeResDtoPage.getContent();
+        System.out.println(episodeResDtoList.get(0));
+        assertThat(episodeResDtoList.get(0).getEpisodeCreatedAt()).isBeforeOrEqualTo(episodeResDtoList.get(1).getEpisodeCreatedAt());
+        assertThat(episodeResDtoList.size()).isEqualTo(PAGE_SIZE);
+
     }
 
 }

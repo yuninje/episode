@@ -147,7 +147,8 @@ public class NovelServiceImpl implements NovelService {
                 requestDto.getNovelStatus(),
                 requestDto.isNovelOnly()
         );
-        NovelResponseDto responseDto = new NovelResponseDto(nRepo.save(novel));
+        nRepo.save(novel);
+        NovelResponseDto responseDto = new NovelResponseDto(novel);
         return responseDto;
     }
 
@@ -169,39 +170,6 @@ public class NovelServiceImpl implements NovelService {
                         .collect(Collectors.toList());
 
         return novels;
-    }
-
-    @Override
-    public NovelResponseDto updateGenreOfNovel(int novelPk, List<Integer> genrePks) {
-        Novel novelEntity = nRepo.findById(novelPk)
-                .orElseThrow(() -> new NovelException(NovelException.NOT_EXIST));
-        List<Genre> oGenres = novelEntity.getGenres(); // 원래 장르들
-        // 새로운 장로들
-        List<Genre> uGenres = genrePks.stream().map(genrePk ->
-                gRepo.findById(genrePk).orElseThrow(() -> new GenreException(GenreException.NOT_EXIST)))
-                .collect(Collectors.toList());
-
-        // uGenres 중에서 oGenre에 없는것을 추가
-        for(Genre genreEntity : uGenres){
-            if(!oGenres.contains(genreEntity)){
-                novelEntity.belongGenre(genreEntity);
-            }
-        }
-
-        List<Genre> removeGenres = new ArrayList<>();
-        // oGenres 중에서 uGenre에 없는것을 삭제
-        for(Genre genreEntity : oGenres){
-            if(! uGenres.contains(genreEntity)){
-                removeGenres.add(genreEntity);
-            }
-        }
-
-        for(Genre genre : removeGenres){
-            novelEntity.notBelongGenre(genre);
-        }
-
-        NovelResponseDto novel = new NovelResponseDto(nRepo.save(novelEntity));
-        return novel;
     }
 
     @Override

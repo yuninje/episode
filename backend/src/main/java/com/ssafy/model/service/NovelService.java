@@ -19,7 +19,6 @@ public interface NovelService {
 	NovelResponseDto updateNovel(int novelPk, NovelUpdateRequestDto requestDto);
 	@Transactional
 	void deleteNovel(int novelPk);
-	NovelResponseDto updateGenreOfNovel(int novelPk, List<Integer> genrePks);
 	Page<NovelResponseDto> getNovelByMember(int memPk, Pageable pageable, String sort);
 	void deleteNovel(Novel novel);
 	void deleteAllNovel();

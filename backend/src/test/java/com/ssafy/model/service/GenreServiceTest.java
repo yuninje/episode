@@ -182,17 +182,8 @@ public class GenreServiceTest {
         }
         assertThat(catchFlag).isEqualTo(true);
 
-        // 장르에 속한 소설 데이터 삭제
-        for(Novel novel : novels){
-            catchFlag = false;
-            try{
-                dummy.novelFindById(novel.getNovelPk());
-            }catch (NovelException e){
-                assertThat(e.getMessage()).isEqualTo(NovelException.NOT_EXIST);
-                catchFlag = true;
-            }
-            assertThat(catchFlag).isEqualTo(true);
-        }
+        // 장르에 속한 소설_장르 데이터 삭제
+        assertThat(novel.getGenres().contains(genre)).isEqualTo(false);
     }
 
     @Test

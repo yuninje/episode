@@ -384,8 +384,6 @@ public class MemberServiceTest {
     @Test
     public void 좋아요_소설() {
         memberService.doLike(memPk, novelPk, NOVEL, true);
-        novel = dummy.novelFindById(novelPk);
-        member = dummy.memberFindById(memPk);
 
         assertThat(member.getLikeNovels()).contains(novel);
         assertThat(novel.getLikedMembers()).contains(member);
@@ -394,8 +392,6 @@ public class MemberServiceTest {
     @Test
     public void 좋아요_에피소드() {
         memberService.doLike(memPk, episodePk, EPISODE, true);
-        episode = dummy.episodeFindById(episodePk);
-        member = dummy.memberFindById(memPk);
 
         assertThat(member.getLikeEpisodes()).contains(episode);
         assertThat(episode.getLikedMembers()).contains(member);
@@ -403,8 +399,6 @@ public class MemberServiceTest {
     @Test
     public void 좋아요_댓글() {
         memberService.doLike(memPk, commentPk, COMMENT, true);
-        comment = dummy.commentFindById(commentPk);
-        member = dummy.memberFindById(memPk);
 
         assertThat(member.getLikeComments()).contains(comment);
         assertThat(comment.getLikedMembers()).contains(member);

@@ -175,6 +175,8 @@ public class CommentServiceTest {
     @Test
     public void 댓글_삭제(){
         commentService.deleteComment(commentPk);
+
+        // 삭제한 댓글 확인
         try {
             commentRepository.findById(commentPk).orElseThrow(() -> new CommentException(CommentException.NOT_EXIST));
         }catch (CommentException e){
