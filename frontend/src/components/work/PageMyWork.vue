@@ -128,8 +128,8 @@ export default {
 
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  grid-column-gap: var(--spacing-l);
+  grid-template-columns: repeat(3, 1fr);
+  grid-column-gap: var(--spacing-s);
   grid-row-gap: var(--spacing-l);
   max-width: var(--width-container);
   width: 100%;
@@ -145,13 +145,15 @@ export default {
 
 @media (min-width: 540px) {
   .card-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(6, 1fr);
+    grid-column-gap: var(--spacing-l);
   }
 }
 
 @media (min-width: 960px) {
   .card-grid {
     grid-template-columns: repeat(6, 1fr);
+    grid-column-gap: var(--spacing-l);
   }
 }
 

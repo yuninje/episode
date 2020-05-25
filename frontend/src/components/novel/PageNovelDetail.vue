@@ -146,16 +146,13 @@ export default {
             this.$router.push({name: 'Editor', params: { episodePk: episodePk, index: index }});
         },
         getNovel() {
-            console.log("들어옴")
             http
                 .get(`/episodes/novel-pk=${this.$route.params.novelPk}`)
                 .then(response => {
                     // console.log(response.data.data);
                     this.data = response.data.data;
-                    console.log(response.data.data)
                     let novelPk = response.data.data.novel.novelPk
                     let cntEpisode = response.data.data.episodes.content.length
-                    console.log(cntEpisode)
                     this.$store.commit("storeEditor/changeCntEpisode", cntEpisode) 
                     this.checkRight();
                 })
