@@ -1,31 +1,34 @@
 // Editor 페이지 정보와 관련된 Vuex Store Module
 import axios from "axios";
+import router from "@/router/index";
 
 export default {
   namespaced: true,
   state: {
-    episodepK:"",
+    episodePk:"",
     episodeInfo:"",
     importTitle:"",
     importContent:"",
 
     savingTime:null,
     savingTimeAuto:null,
-    savingContent: ""
+    savingContent: "",
+
+    cntEpisode:0,
   },
   getters: {
-    getEpisodepK: state => { return state.episodepK; },
+    getEpisodePk: state => { return state.episodePk; },
     getEpisodeInfo: state => { return state.episodeInfo; },
 
     getImportTitle: state => { return state.importTitle; },
     getImportContent: state => { return state.importContent; },
     getSavingTime: state => { return state.savingTime; },
     getSavingTimeAuto: state => { return state.savingTimeAuto; },
-    getSavingContent: state => { return state.savingContent; }
+    getSavingContent: state => { return state.savingContent; },
   },
   mutations: {
-    changeEpisodepK(state, payload, rootState) {
-      state.episodepK = payload;
+    changeEpisodePk(state, payload, rootState) {
+      state.episodePk = payload;
     },
     changeEpisodeInfo(state, payload, rootState) {
       state.episodeInfo = payload;
@@ -45,12 +48,16 @@ export default {
     },
     changeSavingContent(state, payload, rootState) {
       state.savingContent = payload;
-    }
+    },
+
+    changeCntEpisode(state, payload, rootState) {
+      state.cntEpisode = payload;
+    },
   },
   actions: {
     // 에피소드의 pk를 알아낸다
     EpisodePk({ state, dispatch, commit, getters, rootGetters }, data) {
-      commit("changeEpisodepK", data)
+      commit("changeEpisodePk", data)
       localStorage.setItem("episodePk", data);
 
     },
@@ -66,7 +73,7 @@ export default {
           commit("changeImportContent", res.data.data.episodeContent)
         })
         .catch(err => {
-          console.error("putEpisode()", err);
+          console.error("getEpisodeByPk()", err);
         });
     },
     // session 자동저장
@@ -78,7 +85,7 @@ export default {
     },
     // 서버에 저장 
     putEpisode({ state, dispatch, commit, getters, rootGetters }, data) {
-      let url = getters.getEpisodepK
+      let url = getters.getEpisodePk
       // console.log("putEpisode - data", data)
       // console.log("putEpisode - url", url)
       axios
@@ -93,7 +100,7 @@ export default {
         });
     },
     putEpisodeAuto({ state, dispatch, commit, getters, rootGetters }, data) {
-      let url = getters.getEpisodepK
+      let url = getters.getEpisodePk
       axios
         .put(`${rootGetters.getServer}/api/episodes/`+url, data)
         .then( res => {
@@ -105,6 +112,39 @@ export default {
           console.error("putEpisode()", err);
         });
     },
+
+    // 에피소드 생성
+    postEpisode({ state, dispatch, commit, getters, rootGetters }, data) {
+       axios
+        .post(`${rootGetters.getServer}/api/episodes/`, data)
+        .then( res => {
+          if(res.data.state =="ok") {
+            console.log(state.cntEpisode)
+            // 새로운 에피소드 생성 후 에디터 페이지로 이동한다.
+            let serial = state.cntEpisode;
+            let episodePk = res.data.data.episodePk
+            router.push({name: 'Editor', params: { episodePk: episodePk, index: serial+1 }});
+          }
+        })
+        .catch(err => {
+          console.error("postEpisode()", err);
+        });
+    },
+    // 하나의 소설의 에피소드 총 개수
+    getCntEpisode({ state, dispatch, commit, getters, rootGetters }, data) {
+      axios
+      .get(`${rootGetters.getServer}/api/episodes/${data}`)
+      .then( res => {
+        if(res.data.state =="ok") {
+          console.log(res.data.data)
+          let cntEpisode = res.data.dadta
+          commit("changeCntEpisode", cntEpisode) 
+        }
+      })
+      .catch(err => {
+        console.error("postEpisode()", err);
+      });
+   },
     
   } 
 };

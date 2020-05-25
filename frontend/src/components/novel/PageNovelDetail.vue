@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container v-if="data.novel">
         <v-row>
             <v-col 
                 cols="12"
@@ -9,17 +9,17 @@
                 <v-row>
                     <v-col cols="12">
                         <v-img 
-                        v-if="data.novel.novelImage"
+                        v-if="data.novel"
                             :src = "data.novel.novelImage"
                             aspect-ratio=0.7
                         >
                         </v-img>
-                        <v-img
-                        v-else
+                        <!-- <v-img
+                        v-if="!data.novel.novelImage"
                             :src = "require(`@/assets/images/banner0.png`)"
                             aspect-ratio=0.7
                         >
-                        </v-img>
+                        </v-img> -->
                     </v-col>
                     <v-col cols="12">
                         <p class="like"><v-icon color="rgba(192,0,0,1)">mdi mdi-heart-outline</v-icon>&nbsp;좋아요</p>
@@ -80,7 +80,7 @@
             </v-col>
             <v-col cols="12">
                 <div align="center">
-                    <v-btn text color="rgba(192,0,0,1)" @click="" v-show="checkRight()">
+                    <v-btn text color="rgba(192,0,0,1)" @click="createEpisode()" v-show="checkRight()">
                         <v-icon large>mdi mdi-plus</v-icon>
                     </v-btn>
                 </div>
@@ -96,7 +96,8 @@ import { mapActions, mapMutations, mapGetters } from "vuex";
 export default {
     data() {
         return {
-            data: {},
+            data: {
+            },
             item: {
                 src : "https://comicthumb-phinf.pstatic.net/20181101_25/pocket_1541053325022bMb9z_JPEG/cover.jpg?type=m260",
                 writer : "김소설",
@@ -127,7 +128,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(["getSession"])
+        ...mapGetters(["getSession"]),
     },
     created() {
         this.getNovel();
@@ -135,6 +136,9 @@ export default {
     mounted() {
     },
     methods: {
+        ...mapActions("storeEditor", {
+            postEpisode: "postEpisode",
+        }),
         gotoNovelViewer(episodePk) {
             this.$router.push(`/viewer/${episodePk}`);
         },
@@ -142,11 +146,17 @@ export default {
             this.$router.push({name: 'Editor', params: { episodePk: episodePk, index: index }});
         },
         getNovel() {
+            console.log("들어옴")
             http
                 .get(`/episodes/novel-pk=${this.$route.params.novelPk}`)
                 .then(response => {
                     // console.log(response.data.data);
                     this.data = response.data.data;
+                    console.log(response.data.data)
+                    let novelPk = response.data.data.novel.novelPk
+                    let cntEpisode = response.data.data.episodes.content.length
+                    console.log(cntEpisode)
+                    this.$store.commit("storeEditor/changeCntEpisode", cntEpisode) 
                     this.checkRight();
                 })
                 .catch(() => {
@@ -157,13 +167,26 @@ export default {
                 })
         },
         checkRight() {
-            // console.log(this.getSession);
             if(this.getSession.memPk === this.data.novel.member.memPk) {
                 return true;
             }else {
                 return false;
             }
-        }
+        },
+        createEpisode() {
+            if(this.checkRight()) {
+                let data = {
+                    novelPk         :this.data.novel.novelPk,
+                    episodeWriter   :this.getSession.memPk ,
+                    episodeTitle    :"",
+                    episodeContent  :""
+                };
+                this.postEpisode(data)
+            } else {
+                alert("이 소설의 에피소드를 작성할 수 있는 권한이 없습니다.")
+                return null;
+            }
+        },
     }
 }
 </script>
