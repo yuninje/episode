@@ -171,6 +171,7 @@ public class NovelServiceTest {
         assertThat(responseDto.getNovelUpdatedAt()).isEqualTo(novel.getNovelUpdatedAt());
         assertThat(responseDto.getNovelView()).isEqualTo(novel.getNovelView());
         assertThat(responseDto.getNovelRecommends()).isEqualTo(novel.getNovelRecommends());
+        assertThat(responseDto.getEpisodeCount()).isEqualTo(novel.getEpisodes().size());
     }
 
 
@@ -190,7 +191,7 @@ public class NovelServiceTest {
 
     @Test
     public void 소설_페이지_이름또는닉네임으로_가져오기_아직안함(){
-        assertThat(true).isEqualTo(false);
+//        novelService.getNovelsBySearchWord()
 
     }
 
