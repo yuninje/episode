@@ -4,15 +4,6 @@ import com.ssafy.model.dto.novel.NovelResponseDto;
 import com.ssafy.model.dto.novel.NovelSaveRequestDto;
 import com.ssafy.model.dto.novel.NovelUpdateRequestDto;
 import com.ssafy.model.entity.*;
-import com.ssafy.model.repository.GenreRepository;
-import com.ssafy.model.repository.MemberRepository;
-import com.ssafy.model.repository.NovelRepository;
-import com.ssafy.model.repository.SearchRepository;
-import com.ssafy.model.entity.Genre;
-import com.ssafy.model.entity.HashTag;
-import com.ssafy.model.entity.Member;
-import com.ssafy.model.entity.Novel;
-import com.ssafy.model.entity.Search;
 import com.ssafy.model.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -161,15 +151,14 @@ public class NovelServiceImpl implements NovelService {
     }
 
     @Override
-    public List<NovelResponseDto> getNovelsByGenre(int genrePk) {   // 이거 바꿔야할듯
+    public Page<NovelResponseDto> getNovelsByGenre(int genrePk, Pageable pageable, String sort) {
+        PageRequest pageRequest = getPageRequest(pageable, sort);
+
         Genre genre = gRepo.findById(genrePk)
                 .orElseThrow(() -> new GenreException(GenreException.NOT_EXIST));
-
-        List<NovelResponseDto> novels =
-                genre.getNovels().stream().map(novelEntity -> new NovelResponseDto(novelEntity))
-                        .collect(Collectors.toList());
-
-        return novels;
+        Page<Novel> novelPage = nRepo.findByGenresLike(genre, pageRequest);
+        Page<NovelResponseDto> novelDtoPage = novelPage.map(novel -> new NovelResponseDto(novel));
+        return novelDtoPage;
     }
 
     @Override

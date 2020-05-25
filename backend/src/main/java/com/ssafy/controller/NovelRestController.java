@@ -42,8 +42,12 @@ public class NovelRestController {
 	
 	@ApiOperation("해당 장르에 속한 소설들 조회")
 	@GetMapping("/genre-pk={genrePk}")
-	ResponseEntity<Map<String, Object>> getNovelsByGenre(@PathVariable int genrePk) {
-		return handleSuccess(nService.getNovelsByGenre(genrePk));
+	ResponseEntity<Map<String, Object>> getNovelsByGenre(@PathVariable int genrePk,
+														 @PageableDefault(page=0, size=10) Pageable pageable,
+														 @ApiParam(value="updated : 업데이트순\nlikes : 선호작순\nrecommends : 추천순\nview : 조회수순",
+																 allowableValues="updated, likes, recommends, view", required=true)
+														 @RequestParam String sort) {
+		return handleSuccess(nService.getNovelsByGenre(genrePk, pageable,sort));
 	}
 
 	@ApiOperation("소설 등록")

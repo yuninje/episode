@@ -121,25 +121,25 @@ public class EpisodeServiceTest {
         member = (Member) data.get("member");
         memPk = (int) data.get("memPk");
 
-        novelPk = (int) data.get("novelPk");
         novel = (Novel) data.get("novel");
+        novelPk = (int) data.get("novelPk");
 
         episode = (Episode) data.get("episode");
         episodes = (List) data.get("episodes");
         episodePk = (int) data.get("episodePk");
 
-        comment = (Comment) data.get("comment");
         comments = (List) data.get("comments");
+        comment = (Comment) data.get("comment");
         commentPk = (int) data.get("commentPk");
 
         genres = (ArrayList) data.get("genres");
-        genrePks = (ArrayList) data.get("genrePks");
         genre = (Genre) data.get("genre");
+        genrePks = (ArrayList) data.get("genrePks");
         genrePk = (int) data.get("genrePk");
 
+        hashTags = (ArrayList) data.get("hashTags");
         hashTag = (HashTag) data.get("hashTag");
         hashTagStrs = (ArrayList) data.get("hashTagStrs");
-        hashTags = (ArrayList) data.get("hashTags");
         hashTagPk = (int) data.get("hashTagPk");
 
         dummy.setRelation();
@@ -194,8 +194,6 @@ public class EpisodeServiceTest {
 
     @Test
     public void 에피소드_하나_가져오기(){
-        Long beforeNovelView = novel.getNovelView();
-        Long beforeEpisodeView = episode.getEpisodeView();
         EpisodeResponseDto responseDto = episodeService.getEpisode(episodePk);
 
         assertThat(episode.getEpisodeTitle()).isEqualTo(responseDto.getEpisodeTitle());
@@ -203,6 +201,14 @@ public class EpisodeServiceTest {
         assertThat(episode.getEpisodeCreatedAt()).isEqualTo(responseDto.getEpisodeCreatedAt());
         assertThat(episode.getEpisodeView()).isEqualTo(responseDto.getEpisodeView());
         assertThat(episode.getEpisodeWriter()).isEqualTo(responseDto.getEpisodeWriter());
+    }
+
+    @Test
+    public void 에피소드_조회수_업데이트(){
+        Long beforeNovelView = novel.getNovelView();
+        Long beforeEpisodeView = episode.getEpisodeView();
+
+        episodeService.updateViewEpisode(episodePk);
 
         Long afterNovelView = novel.getNovelView();
         Long afterEpisodeView = episode.getEpisodeView();
@@ -236,6 +242,8 @@ public class EpisodeServiceTest {
     @Test
     public void 에피소드_삭제(){
         episodeService.deleteEpisode(episodePk);
+
+        // 삭제한 에피소드가 존재하는지 확인
         try {
             dummy.episodeFindById(episodePk);
         }catch (EpisodeException e){
@@ -244,7 +252,7 @@ public class EpisodeServiceTest {
         }
         assertThat(catchFlag).isEqualTo(true);
 
-        // 에피소드의 댓글들 삭제
+        // 에피소드의 댓글들이 삭제가 잘 됬는지 확인
         for(Comment comment : comments){
             try{
                 dummy.commentFindById(comment.getCommentPk());
@@ -255,27 +263,22 @@ public class EpisodeServiceTest {
             assertThat(catchFlag).isEqualTo(true);
         }
 
-
         // 에피소드의 좋아요 데이터 삭제
         assertThat(member.getLikeEpisodes().contains(episode)).isEqualTo(false);
     }
 
     @Test
-    public void 에피소드_소설로_가져오기_아직안함(){
-        //
-
+    public void 에피소드_소설로_가져오기_최신순(){
+        page = PageRequest.of(PAGE, PAGE_SIZE, Sort.by("episodeCreatedAt").ascending());   // 가장 최신이 먼저
         Map<String, Object> data = episodeService.getEpisodesByNovel(novelPk, page);
 
         Page<EpisodeResponseNoNovelDto> episodeDtoPage = (Page) data.get("episodes");
+        List<EpisodeResponseNoNovelDto> episodeDtoList = episodeDtoPage.getContent();
         NovelResponseDto novelDto = (NovelResponseDto) data.get("novel");
 
-        page = PageRequest.of(PAGE, PAGE_SIZE, Sort.by("episodeCreatedAt").ascending());   // 가장 최신이 먼저
-        Page<EpisodeResponseDto> episodeResDtoPage = episodeService.getEpisodes(page);
-        List<EpisodeResponseDto> episodeResDtoList = episodeResDtoPage.getContent();
-        System.out.println(episodeResDtoList.get(0));
-        assertThat(episodeResDtoList.get(0).getEpisodeCreatedAt()).isBeforeOrEqualTo(episodeResDtoList.get(1).getEpisodeCreatedAt());
-        assertThat(episodeResDtoList.size()).isEqualTo(PAGE_SIZE);
-
+        assertThat(novelPk).isEqualTo(novelDto.getNovelPk());
+        assertThat(episodeDtoList.size()).isEqualTo(PAGE_SIZE);
+        assertThat(episodeDtoList.get(0).getEpisodeCreatedAt()).isBeforeOrEqualTo(episodeDtoList.get(1).getEpisodeCreatedAt());
     }
 
 }

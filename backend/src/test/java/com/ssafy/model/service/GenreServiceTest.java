@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,6 +64,8 @@ public class GenreServiceTest {
     private Comment comment;
     private Genre genre;
     private HashTag hashTag;
+    private List<Episode> episodes;
+    private List<Comment> comments;
     private List<Genre> genres;
     private List<HashTag> hashTags;
 
@@ -80,7 +81,7 @@ public class GenreServiceTest {
     private final int COUNT = 10;
     private final int PAGE = 0;
     private final int PAGE_SIZE = 5;
-    private final Pageable page = PageRequest.of(PAGE, PAGE_SIZE);
+    private Pageable page;
 
     private final int MEMBER = 0;
     private final int NOVEL = 1;
@@ -109,28 +110,31 @@ public class GenreServiceTest {
                 .hashTagService(hashTagService)
                 .searchService(searchService)
                 .build();
+
         Map<String, Object> data = dummy.getRet();
 
         member = (Member) data.get("member");
         memPk = (int) data.get("memPk");
 
-        novelPk = (int) data.get("novelPk");
         novel = (Novel) data.get("novel");
+        novelPk = (int) data.get("novelPk");
 
         episode = (Episode) data.get("episode");
+        episodes = (List) data.get("episodes");
         episodePk = (int) data.get("episodePk");
 
+        comments = (List) data.get("comments");
         comment = (Comment) data.get("comment");
         commentPk = (int) data.get("commentPk");
 
         genres = (ArrayList) data.get("genres");
-        genrePks = (ArrayList) data.get("genrePks");
         genre = (Genre) data.get("genre");
+        genrePks = (ArrayList) data.get("genrePks");
         genrePk = (int) data.get("genrePk");
 
+        hashTags = (ArrayList) data.get("hashTags");
         hashTag = (HashTag) data.get("hashTag");
         hashTagStrs = (ArrayList) data.get("hashTagStrs");
-        hashTags = (ArrayList) data.get("hashTags");
         hashTagPk = (int) data.get("hashTagPk");
 
         dummy.setRelation();

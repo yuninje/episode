@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -65,6 +66,8 @@ public class NovelServiceTest {
     private Comment comment;
     private Genre genre;
     private HashTag hashTag;
+    private List<Episode> episodes;
+    private List<Comment> comments;
     private List<Genre> genres;
     private List<HashTag> hashTags;
 
@@ -80,7 +83,7 @@ public class NovelServiceTest {
     private final int COUNT = 10;
     private final int PAGE = 0;
     private final int PAGE_SIZE = 5;
-    private final Pageable page = PageRequest.of(PAGE, PAGE_SIZE);
+    private Pageable page;
 
     private final int MEMBER = 0;
     private final int NOVEL = 1;
@@ -115,23 +118,25 @@ public class NovelServiceTest {
         member = (Member) data.get("member");
         memPk = (int) data.get("memPk");
 
-        novelPk = (int) data.get("novelPk");
         novel = (Novel) data.get("novel");
+        novelPk = (int) data.get("novelPk");
 
         episode = (Episode) data.get("episode");
+        episodes = (List) data.get("episodes");
         episodePk = (int) data.get("episodePk");
 
+        comments = (List) data.get("comments");
         comment = (Comment) data.get("comment");
         commentPk = (int) data.get("commentPk");
 
         genres = (ArrayList) data.get("genres");
-        genrePks = (ArrayList) data.get("genrePks");
         genre = (Genre) data.get("genre");
+        genrePks = (ArrayList) data.get("genrePks");
         genrePk = (int) data.get("genrePk");
 
+        hashTags = (ArrayList) data.get("hashTags");
         hashTag = (HashTag) data.get("hashTag");
         hashTagStrs = (ArrayList) data.get("hashTagStrs");
-        hashTags = (ArrayList) data.get("hashTags");
         hashTagPk = (int) data.get("hashTagPk");
 
         dummy.setRelation();
@@ -143,6 +148,7 @@ public class NovelServiceTest {
     
     @Test
     public void 소설_페이지_가져오기(){
+        page = PageRequest.of(PAGE, PAGE_SIZE);
         Page<NovelResponseDto> responseDtoPage = novelService.getNovels(page, null);
 
         List<NovelResponseDto> responseDtoList = responseDtoPage.getContent();
@@ -170,6 +176,7 @@ public class NovelServiceTest {
 
     @Test
     public void 소설_페이지_이름으로_가져오기_아직안함(){
+
         assertThat(true).isEqualTo(false);
     }
 
@@ -287,12 +294,39 @@ public class NovelServiceTest {
     }
 
     @Test
-    public void 소설_페이지_장르로_가져오기_아직안함(){
-        assertThat(true).isEqualTo(false);
+    public void 소설_페이지_장르로_가져오기_포함O장르(){
+        page = PageRequest.of(PAGE, COUNT);
+        Page<NovelResponseDto> novelResponseDtoPage = novelService.getNovelsByGenre(genrePks.get(0), page, "updated");
+        List<NovelResponseDto> novelResponseDtoList = novelResponseDtoPage.getContent();
+
+        for(NovelResponseDto novelResponseDto : novelResponseDtoList) System.out.println(novelResponseDto);
+        List<Novel> novelList = novelResponseDtoList.stream().map(novelResponseDto -> dummy.novelFindById(novelResponseDto.getNovelPk())).collect(Collectors.toList());
+
+        assertThat(novelList.size()).isEqualTo(1);
+        assertThat(novelList.contains(novel)).isEqualTo(true);
     }
 
     @Test
-    public void 소설_페이지_회원으로_가져오기_아직안함(){
-        assertThat(true).isEqualTo(false);
+    public void 소설_페이지_장르로_가져오기_포함X장르(){
+        page = PageRequest.of(PAGE, COUNT);
+        Page<NovelResponseDto> novelResponseDtoPage = novelService.getNovelsByGenre(genrePk, page, "updated");
+        List<NovelResponseDto> novelResponseDtoList = novelResponseDtoPage.getContent();
+
+        for(NovelResponseDto novelResponseDto : novelResponseDtoList) System.out.println(novelResponseDto);
+        List<Novel> novelList = novelResponseDtoList.stream().map(novelResponseDto -> dummy.novelFindById(novelResponseDto.getNovelPk())).collect(Collectors.toList());
+
+        assertThat(novelList.size()).isEqualTo(0);
+        assertThat(novelList.contains(novel)).isEqualTo(false);
+
+    }
+    @Test
+    public void 소설_페이지_회원으로_가져오기(){
+        page = PageRequest.of(PAGE, COUNT);
+        Page<NovelResponseDto> novelResponseDtoPage = novelService.getNovelByMember(memPk, page, "updated");
+        List<NovelResponseDto> novelResponseDtoList = novelResponseDtoPage.getContent();
+
+        for(NovelResponseDto novelResponseDto : novelResponseDtoList){
+            assertThat(novelResponseDto.getMember().getMemPk()).isEqualTo(memPk);
+        }
     }
 }

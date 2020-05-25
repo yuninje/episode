@@ -63,6 +63,8 @@ public class MemberServiceTest {
     private Comment comment;
     private Genre genre;
     private HashTag hashTag;
+    private List<Episode> episodes;
+    private List<Comment> comments;
     private List<Genre> genres;
     private List<HashTag> hashTags;
 
@@ -78,7 +80,7 @@ public class MemberServiceTest {
     private final int COUNT = 10;
     private final int PAGE = 0;
     private final int PAGE_SIZE = 5;
-    private final Pageable page = PageRequest.of(PAGE, PAGE_SIZE);
+    private Pageable page;
 
     private final int MEMBER = 0;
     private final int NOVEL = 1;
@@ -113,23 +115,25 @@ public class MemberServiceTest {
         member = (Member) data.get("member");
         memPk = (int) data.get("memPk");
 
-        novelPk = (int) data.get("novelPk");
         novel = (Novel) data.get("novel");
+        novelPk = (int) data.get("novelPk");
 
         episode = (Episode) data.get("episode");
+        episodes = (List) data.get("episodes");
         episodePk = (int) data.get("episodePk");
 
+        comments = (List) data.get("comments");
         comment = (Comment) data.get("comment");
         commentPk = (int) data.get("commentPk");
 
         genres = (ArrayList) data.get("genres");
-        genrePks = (ArrayList) data.get("genrePks");
         genre = (Genre) data.get("genre");
+        genrePks = (ArrayList) data.get("genrePks");
         genrePk = (int) data.get("genrePk");
 
+        hashTags = (ArrayList) data.get("hashTags");
         hashTag = (HashTag) data.get("hashTag");
         hashTagStrs = (ArrayList) data.get("hashTagStrs");
-        hashTags = (ArrayList) data.get("hashTags");
         hashTagPk = (int) data.get("hashTagPk");
 
         dummy.setRelation();
@@ -282,6 +286,7 @@ public class MemberServiceTest {
 
     @Test
     public void 회원_PAGE_가져오기() {
+        page = PageRequest.of(PAGE, PAGE_SIZE);
         Page<MemberResponseDto> responseDtoPage =
                 memberService.getMembers(page);
 

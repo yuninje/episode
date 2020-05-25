@@ -145,7 +145,7 @@ public class Dummy {
     }
 
     public void setNovel(){
-        List<Genre> novelGenres = genres.stream().map(gnere -> genre).collect(Collectors.toList());
+        List<Genre> novelGenres = genres.stream().map(genre -> genre).collect(Collectors.toList());
         List<HashTag> novelHashTags = hashTags.stream().map(hashTag -> hashTag).collect(Collectors.toList());
         novel = Novel.builder()
                 .member(member)
@@ -224,7 +224,7 @@ public class Dummy {
             genreRepository.save(genre);
             genrePk = genre.getGenrePk();
             genrePks.add(genrePk);
-            genres.add(genre);
+            if(i != COUNT-1) genres.add(genre);
             System.out.println(new GenreResponseDto(genre));
         }
 
