@@ -94,6 +94,19 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 		return new PageImpl<>(novels, pageable, query.fetchCount());
 	}
 	
+	@Override
+	public Page<Novel> findByFeelAndGenre(int type, Pageable pageable, int genrePk) {
+		JPAQuery<Novel> query = 
+				queryFactory.select(novel)
+				.from(novel);
+		
+		query.where(feel(type -1).and(novel.genres.any().genrePk.eq(genrePk)));
+		
+		List<Novel> novels = getQuerydsl().applyPagination(pageable, query).fetch();
+		
+		return new PageImpl<>(novels, pageable, query.fetchCount());
+	}
+	
 	private BooleanBuilder authorNameLike(String word) {
 		String[] wordArr = word.split(" ");
 		BooleanBuilder builder = new BooleanBuilder();

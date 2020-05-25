@@ -125,6 +125,7 @@ public class NovelServiceImpl implements NovelService {
         NovelResponseDto responseDto = new NovelResponseDto(novel);
         return responseDto;
     }
+    
     @Override
     public NovelResponseDto updateNovel(int novelPk, NovelUpdateRequestDto requestDto) {
         Novel novel = nRepo.findById(novelPk).orElseThrow(() ->
@@ -147,7 +148,9 @@ public class NovelServiceImpl implements NovelService {
                 requestDto.getNovelStatus(),
                 requestDto.isNovelOnly()
         );
+        
         NovelResponseDto responseDto = new NovelResponseDto(nRepo.save(novel));
+        
         return responseDto;
     }
 
@@ -235,10 +238,18 @@ public class NovelServiceImpl implements NovelService {
     	return novels;
     }
     
-    public Page<NovelResponseDto> getFeelNovels(int type, Pageable pageable, String sort) {
+    public Page<NovelResponseDto> getFeelNovels(int type, Pageable pageable, String sort, int genrePk) {
     	PageRequest pageRequest = getPageRequest(pageable, sort);
     	
-    	Page<Novel> novelEntityPage = nRepo.findByFeel(type, pageRequest);
+    	Page<Novel> novelEntityPage;
+    	if(genrePk != 0) {
+            Genre genre = gRepo.findById(genrePk).orElse(null);
+
+            if(genre == null) novelEntityPage = nRepo.findByFeel(type, pageRequest);
+            else novelEntityPage = nRepo.findByFeelAndGenre(type, pageRequest, genrePk);
+        }
+        else novelEntityPage = nRepo.findByFeel(type, pageRequest);
+    	
     	Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
         
     	return novels;

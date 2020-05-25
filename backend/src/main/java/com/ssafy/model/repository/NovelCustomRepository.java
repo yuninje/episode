@@ -8,4 +8,5 @@ public interface NovelCustomRepository {
 	Page<Novel> findBySearchWord(String type, String word, Pageable pageable);
 	Page<Novel> findBySearchWordAndGenre(String type, String word, Pageable pageable, int genrePk);
 	Page<Novel> findByFeel(int type, Pageable pageable);
+	Page<Novel> findByFeelAndGenre(int type, Pageable pageable, int genrePk);
 }

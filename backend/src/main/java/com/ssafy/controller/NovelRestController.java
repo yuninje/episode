@@ -102,8 +102,10 @@ public class NovelRestController {
 			@PageableDefault(page=0, size=10) Pageable pageable,
 			@ApiParam(value="updated : 업데이트순\nlikes : 선호작순\nrecommends : 추천순\nview : 조회수순",
 				allowableValues="updated, likes, recommends, view", required=true)
-			@RequestParam String sort) {
-		return handleSuccess(nService.getFeelNovels(type, pageable, sort));
+			@RequestParam String sort, 
+			@ApiParam("장르 pk")
+			@RequestParam(required=false, defaultValue="0") int genrePk) {
+		return handleSuccess(nService.getFeelNovels(type, pageable, sort, genrePk));
 	}
 	
 	public ResponseEntity<Map<String, Object>> handleSuccess(Object data) {
