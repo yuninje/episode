@@ -2,15 +2,20 @@ package com.ssafy.model.entity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -24,14 +29,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "character")
+@Table(name = "character_")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-//@TypeDef(
-//		name = "jsonb",
-//	    typeClass = JsonBinaryType.class)
 public class Character {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,9 +61,10 @@ public class Character {
 	@Column(name = "character_significant", length = 100, nullable = true)
 	private String characterSignificant;
 	
-//	@Type(type = "jsonb")
-//	@Column(name = "character_more", nullable = true, columnDefinition = "jsonb")
-//	private List<Additional> characterMore = new ArrayList<>();
+	// http://redutan.github.io/2018/05/29/ddd-values-on-jpa
+	@Convert(converter = CharacterAdditionalConverter.class)
+	@Column(name = "character_more", nullable = true, length = 4000)
+	private Set<Additional> characterMore = new HashSet<>();
 	
 	@Column(name = "character_image", length = 100, nullable = true)
 	private String characterImage;
@@ -70,4 +73,12 @@ public class Character {
 	@ManyToOne
 	@JoinColumn(name = "novel_pk", nullable = false)
 	private Novel novel;
+	
+	// character <-> who >> 1: N 관계
+	@OneToMany(mappedBy = "who", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+	private List<Relation> whos = new ArrayList<Relation>();
+	
+	// character <-> whom >> 1: N 관계
+	@OneToMany(mappedBy = "whom", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+	private List<Relation> whoms = new ArrayList<Relation>();
 }
