@@ -1,7 +1,6 @@
 package com.ssafy.model.entity;
 
 import lombok.*;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -36,9 +35,12 @@ public class HashTag {
 	public HashTag(String hashTagName) {
 		this.hashTagName = hashTagName;
 	}
-    @Transactional
-    void removeHashTagAtNovel(Novel novel){
-        this.novels.remove(novel);
-    }
+
+	public void beforeDelete(){
+		for(Novel novel : novels){
+			novel.getHashTags().remove(this);
+		}
+		novels = new ArrayList<>();
+	}
 
 }

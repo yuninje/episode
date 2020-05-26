@@ -3,7 +3,6 @@ package com.ssafy.model.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,17 +40,11 @@ public class Genre {
 		return this;
 	}
 
-	@Transactional
-	public void removeGenreAtNovel(Novel novel){
-		novels.remove(novel);
-//		novel.getGenrePks().remove(this);
-	}
-
-	@Transactional
 	public void beforeDelete(){
 		// 소설
-		for(Novel novel : this.novels){
-			novel.notBelongGenre(this);
+		for(Novel novel : novels){
+			novel.getGenres().remove(this);
 		}
+		novels = new ArrayList<>();
 	}
 }

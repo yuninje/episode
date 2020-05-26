@@ -4,7 +4,6 @@ import lombok.*;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -101,9 +100,35 @@ public class Novel {
 		this.novelOnly = novelOnly;
 	}
 
-	public Novel update(List<Genre> genres, List<HashTag> hashTags, String novelName, String novelIntro, String novelImage, Boolean novelLimit, Boolean novelOpen, Integer novelStatus, Boolean novelOnly){
-		this.genres = genres;
-		this.hashTags = hashTags;
+	public Novel update(List<Genre> uGenres, List<HashTag> uHashTags, String novelName, String novelIntro, String novelImage, Boolean novelLimit, Boolean novelOpen, Integer novelStatus, Boolean novelOnly){
+		List<Genre> oGenres = this.genres;
+		List<HashTag> oHashTags = this.hashTags;
+
+		oGenres.forEach(genre -> {
+			if(!uGenres.contains(genre)){	// 삭제
+				genre.getNovels().remove(this);
+			}
+		});
+		uGenres.forEach(genre -> {
+			if(!oGenres.contains(genre)){
+				genre.getNovels().add(this);
+			}
+		});
+
+
+		oHashTags.forEach(hashTag -> {
+			if(!uHashTags.contains(hashTag)){
+				hashTag.getNovels().remove(this);
+			}
+		});
+		uHashTags.forEach(hashTag -> {
+			if(!oHashTags.contains(hashTag)){
+				hashTag.getNovels().add(this);
+			}
+		});
+
+		this.genres = uGenres;
+		this.hashTags = uHashTags;
 		this.novelName = novelName;
 		this.novelIntro = novelIntro;
 		this.novelImage = novelImage;
@@ -114,32 +139,10 @@ public class Novel {
 		return this;
 	}
 
-	// 좋아요
-	@Transactional
-	public void likedMember(Member member){
-		likedMembers.add(member);
-	}
-	// 좋아요 취소
-	@Transactional
-	public void unLikedMember(Member member){
-		likedMembers.remove(member);
-	}
-	// 장르 취소
-	@Transactional
-	public void belongGenre(Genre genre){
-		genres.add(genre);
-	}
-	// 장르 추가
-	@Transactional
-	public void notBelongGenre(Genre genre){
-		genres.remove(genre);
-	}
-
 	public void updateUpdatedAt(){
 		this.novelUpdatedAt = LocalDateTime.now();
 	}
 	public void updateView(){ this.novelView += 1;}
-
 
 
 	public void beforeDelete(){
@@ -150,19 +153,19 @@ public class Novel {
 
 		// 장르
 		for (Genre genre : this.genres){
-			genre.removeGenreAtNovel(this);
+			genre.getNovels().remove(this);
 		}
 		genres = new ArrayList<>();
 
-		// 해쉬태그 | 추가 예정
+		// 해쉬태그
 		for (HashTag hashTag : this.hashTags){
-			hashTag.removeHashTagAtNovel(this);
+			hashTag.getNovels().remove(this);
 		}
 		// 연재요일 | 추가 예정
 
 		// 좋아요 데이터
 		for (Member member : this.likedMembers) {
-			member.unLikeNovel(this);
+			member.getLikeNovels().remove(this);
 		}
 		likedMembers = new ArrayList<>();
 	}

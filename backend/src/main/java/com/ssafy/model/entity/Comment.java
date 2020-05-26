@@ -4,7 +4,6 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,24 +61,10 @@ public class Comment {
 		return this;
 	}
 
-
-	// 좋아요
-	@Transactional
-	public void likedMember(Member member){
-		likedMembers.add(member);
-//		member.getLikeNovels().remove(this);
-	}
-	// 좋아요 취소
-	@Transactional
-	public void unLikedMember(Member member){
-		likedMembers.remove(member);
-//		member.getLikeNovels().remove(this);
-	}
-
 	public void beforeDelete(){
 		// 좋아요 데이터
 		for (Member member : this.likedMembers) {
-			member.unLikeComment(this);
+			member.getLikeComments().remove(this);
 		}
 		likedMembers = new ArrayList<>();
 	}

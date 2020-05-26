@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Transactional
 public class Dummy {
@@ -91,6 +92,8 @@ public class Dummy {
     private Comment comment;
     private Genre genre;
     private HashTag hashTag;
+    private List<Episode> episodes;
+    private List<Comment> comments;
     private List<Genre> genres;
     private List<HashTag> hashTags;
 
@@ -142,10 +145,12 @@ public class Dummy {
     }
 
     public void setNovel(){
+        List<Genre> novelGenres = genres.stream().map(genre -> genre).collect(Collectors.toList());
+        List<HashTag> novelHashTags = hashTags.stream().map(hashTag -> hashTag).collect(Collectors.toList());
         novel = Novel.builder()
                 .member(member)
-                .genres(genres)
-                .hashTags(hashTags)
+                .genres(novelGenres)
+                .hashTags(novelHashTags)
                 .novelName(STR)
                 .novelImage(STR)
                 .novelIntro(STR)
@@ -154,6 +159,8 @@ public class Dummy {
                 .novelOpen(true)
                 .novelStatus(0)
                 .build();
+        novelGenres.forEach(genre -> genre.getNovels().add(novel));
+        novelHashTags.forEach(hashTag -> hashTag.getNovels().add(novel));
         novelRepository.save(novel);
         novelPk = novel.getNovelPk();
         System.out.println(new NovelResponseDto(novel));
@@ -163,6 +170,7 @@ public class Dummy {
     }
 
     public void setEpisode(){
+        episodes = new ArrayList<>();
         for(int i = 0; i < COUNT; i++){
             String str = i > 0 ? STR+i : STR;
             episode = Episode.builder()
@@ -175,14 +183,17 @@ public class Dummy {
                     .build();
 
             episode = episodeRepository.save(episode);
+            episodes.add(episode);
             episodePk = episode.getEpisodePk();
             System.out.println(new EpisodeResponseDto(episode));
         }
         ret.put("episode", episode);
+        ret.put("episodes", episodes);
         ret.put("episodePk", episodePk);
     }
 
     public void setComment(){
+        comments = new ArrayList<>();
         for(int i = 0; i<COUNT; i++){
             comment = Comment.builder()
                     .member(member)
@@ -192,11 +203,13 @@ public class Dummy {
                     .build();
 
             commentRepository.save(comment);
+            comments.add(comment);
             commentPk = comment.getCommentPk();
             System.out.println(new CommentResponseDto(comment));
         }
 
         ret.put("comment", comment);
+        ret.put("comments", comments);
         ret.put("commentPk", commentPk);
     }
 
@@ -211,7 +224,7 @@ public class Dummy {
             genreRepository.save(genre);
             genrePk = genre.getGenrePk();
             genrePks.add(genrePk);
-            genres.add(genre);
+            if(i != COUNT-1) genres.add(genre);
             System.out.println(new GenreResponseDto(genre));
         }
 

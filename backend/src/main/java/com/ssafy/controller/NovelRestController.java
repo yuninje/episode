@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Api(tags = { "2. Novel" })
@@ -43,8 +42,12 @@ public class NovelRestController {
 	
 	@ApiOperation("해당 장르에 속한 소설들 조회")
 	@GetMapping("/genre-pk={genrePk}")
-	ResponseEntity<Map<String, Object>> getNovelsByGenre(@PathVariable int genrePk) {
-		return handleSuccess(nService.getNovelsByGenre(genrePk));
+	ResponseEntity<Map<String, Object>> getNovelsByGenre(@PathVariable int genrePk,
+														 @PageableDefault(page=0, size=10) Pageable pageable,
+														 @ApiParam(value="updated : 업데이트순\nlikes : 선호작순\nrecommends : 추천순\nview : 조회수순",
+																 allowableValues="updated, likes, recommends, view", required=true)
+														 @RequestParam String sort) {
+		return handleSuccess(nService.getNovelsByGenre(genrePk, pageable,sort));
 	}
 
 	@ApiOperation("소설 등록")
@@ -53,7 +56,7 @@ public class NovelRestController {
 		return handleSuccess(nService.registNovel(requestDto));
 	}
 	
-	@ApiOperation("소설 한 개의 정보를 수정 | 변경된 소설 객체 반환")
+	@ApiOperation("소설 한 개의 정보를 수정 | genrePks : 체크된 모든 장르의 PK 값을 리스트로 보내면 됨, hashTagStrs : 해시태그들의 String 값을 리스트로 보내면 됨")
 	@PutMapping("/{novelPk}")
 	ResponseEntity<Map<String, Object>> updateNovel(@PathVariable int novelPk, @RequestBody NovelUpdateRequestDto requestDto) {
 		return handleSuccess(nService.updateNovel(novelPk, requestDto));
@@ -64,14 +67,8 @@ public class NovelRestController {
 	ResponseEntity<Map<String, Object>> deleteNovel(@PathVariable int novelPk) {
 		nService.deleteNovel(novelPk);
 		return handleSuccess("소설 삭제 성공");
-	}	
-
-	@ApiOperation("소설의 장르 업데이트 | 체크된 모든 장르의 PK 값을 배열이나 리스트로 보내면 됨")
-	@PutMapping("/genre/{novelPk}") // url 바꿔야함
-	ResponseEntity<Map<String, Object>> updateGenreOfNovel(@PathVariable int novelPk, @RequestBody List<Integer> genrePks) {
-		return handleSuccess(nService.updateGenreOfNovel(novelPk, genrePks));
 	}
-	
+
 	@ApiOperation("해당 멤버의 소설 조회")
 	@GetMapping("/member-pk={memPk}") // url 바꿔야함
 	ResponseEntity<Map<String, Object>> getNovelByMember(@PathVariable int memPk, 
