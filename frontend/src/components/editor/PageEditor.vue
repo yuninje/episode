@@ -10,8 +10,11 @@
 
       <div class="middle-wrap">
         <div class="middle-top">
-          <div id="top-ep-title">Episode {{ index }}. <input type="text"  :value="title" ></div>
-          
+          <div id="top-ep-title">
+            <label for="id">제목: </label>
+            <input type="text" v-model="epiInfo.episodeTitle" placeholder="에피소드의 제목">
+          </div>
+
           <div id="top-timer">
             ⏰마감까지 남은시간
             <div id="top-timer-time">{{ minutes }}분 {{ seconds }}초</div>
@@ -31,7 +34,7 @@
           <quill-editor
             class="editor"
             ref="myTextEditor"
-            :value="content"
+            :value="epiInfo.episodeContent"
             :options="editorOption"
             @change="onEditorChange"
             @blur="onEditorBlur($event)"
@@ -43,10 +46,13 @@
 
         <div class="middle-btm">
           <!-- <div id="btm-hashtag">Episode 태그 | #사이다 #시작 #스승</div> -->
-          <span v-show="this.getSavingTimeAuto" id="btm-autosave">(자동 저장됨) 마지막 저장 시간: {{ getSavingTimeAuto }}</span>
-          <span v-show="this.getSavingTime" id="btm-autosave">마지막 저장 시간: {{ getSavingTime }}</span>
+          <span
+            v-show="this.getSaveTime.auto"
+            id="btm-autosave"
+          >(자동 저장됨) 마지막 저장 시간: {{ getSaveTime.auto }}</span>
+          <span v-show="this.getSaveTime.default" id="btm-autosave">마지막 저장 시간: {{ getSaveTime.default }}</span>
           <span class="div-save-wrap">
-            <button id="btn-save" v-on:click="save">저장하기</button>
+            <button id="btn-save" v-on:click="save()">저장하기</button>
           </span>
         </div>
       </div>
@@ -70,7 +76,7 @@ import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 
 import KProgress from "k-progress";
-
+import http from "../../http-common";
 import { mapActions, mapMutations, mapGetters, mapState } from "vuex";
 
 export default {
@@ -97,10 +103,12 @@ export default {
         placeholder: "여기에 입력하세요..."
       },
 
+      // 에피소드 정보
+      epiInfo:{},
+
       // 에디터 글자수 프로그레스바
       htmlContent: "",
       textContent: "",
-      // content: "",
       // content: dedent``,
       textLength: 0, // 입력중인 글자 포함
       textCount: 0, // 화면에 표시되는 글자 길이
@@ -114,16 +122,12 @@ export default {
       // 저장
       autoSave: null, // 자동 저장 함수
       episodeContent: "",
-      episodeTitle: "",
       episodeWriter: "",
-      setTitle:"",
-      setWriter:"",
     };
   },
   created() {
-    this.index = this.$route.params.index
-    this.episodePk = this.$route.params.episodePk
-    this.$store.dispatch("storeEditor/getEpisodeByPk", this.episodePk);
+    this.episodePk = this.getEpisodePk
+    this.getEpisode();
   },
   filters: {
     // 숫자 단위당 쉼표 필터
@@ -156,10 +160,24 @@ export default {
   },
   methods: {
     ...mapActions("storeEditor", {
-      fetchAutoSave: "fetchAutoSave",
       putEpisodeAuto: "putEpisodeAuto",
       putEpisode: "putEpisode",
+      resetSaveTime : "resetSaveTime"
     }),
+
+    // 해당하는 에피소드를 가져온다
+    getEpisode() {
+      http
+        .get(`episodes/${this.episodePk}`)
+        .then(response => {
+          this.epiInfo = response.data.data;
+          // console.log("epiInfo:",this.epiInfo);
+          // this.checkRight();
+          })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
 
     // 타이머
     resetTimer: function() {
@@ -190,21 +208,13 @@ export default {
     startAutoSave() {
       this.autoSave = setInterval(() => this.saveAuto(), 300000); // 1000 = 1초 -> (5분 * 60초 * 1000 = 300000)
     },
-    // 임시 저장
-    saveTmp() {
-      this.episodeContent = this.htmlContent;
-      localStorage.setItem("autoSaved", this.episodeContent);
-      // this.fetchAutoSave(this.episodeContent)
-      this.save();
-    },
     // 저장 : 자동 저장
     saveAuto() {
       // 데이터 처리
       this.episodeContent = this.htmlContent;
-      this.episodeTitle = this.title;
-      // this.episodeWriter = this.episode.episodeWriter
 
-      let { episodeContent, episodeTitle, episodeWriter } = this;
+      let { episodeTitle } = this.epiInfo;
+      let { episodeContent, episodeWriter } = this;
       let data = {
         episodeContent,
         episodeTitle,
@@ -216,18 +226,18 @@ export default {
     save() {
       // 데이터 처리
       this.episodeContent = this.htmlContent;
-      this.episodeTitle = this.title;
-      // this.episodeWriter = this.episode.episodeWritera
 
-      let { episodeContent, episodeTitle, episodeWriter } = this;
+      let { episodeTitle } = this.epiInfo;
+      let { episodeContent, episodeWriter } = this;
       let data = {
         episodeContent,
         episodeTitle,
         episodeWriter
       };
+      console.log("save() data: ",data)
       this.putEpisode(data);
     },
-    
+
     // 에디터
     onEditorChange(value) {
       // console.log(value);
@@ -255,15 +265,15 @@ export default {
     },
     onEditorReady(editor) {
       // console.log("editor ready!", editor);
-    }
+    },
+
   },
   computed: {
     ...mapGetters("storeEditor", {
-      title: "getImportTitle",
-      content: "getImportContent",
-      getSavingTime: "getSavingTime",
-      getSavingTimeAuto: "getSavingTimeAuto"
+      getSaveTime: "getSaveTime",
+      getEpisodePk: "getEpisodePk"
     }),
+
     // 타이머
     minutes: function() {
       const minutes = Math.floor(this.totalTime / 60);
@@ -285,8 +295,22 @@ export default {
   },
   mounted() {
     // console.log("this is Quill instance:", this.editor);
-  }
+  },
+  beforeDestroy() {
+    // var result = confirm("⚠️ 정말 이 페이지를 나가시겠습니까? \n 저장하지 않은 데이터가 손실됩니다.")
+    // if(result) {
+    //   console.log("확인")
+    //   return null;
+    // }else {
+    //   return
+    // }
+    
+  },
+  destroyed() {
+    this.resetSaveTime();
+  },
 };
+
 </script>
 
 <style lang="scss" scoped>
@@ -328,7 +352,32 @@ export default {
 
   #top-ep-title {
     float: left;
+    height: 59px;
+
+    label {
+      display: inline-block;
+      line-height: 49px;
+      max-width: 110%;
+    }
+    input,
+    span {
+      border: none;
+      border-right: 0px;
+      border-top: 0px;
+      width: 80%;
+      height: 49px;
+      line-height: 49px;
+      float: right;
+      background: 0 0;
+      box-sizing: border-box;
+      padding: 7px 0px 7px;
+      outline-style: none;
+    }
+    input::placeholder {
+      color: #424b536e;
+    }
   }
+
   #top-timer {
     text-align: right;
     font-size: 15px;
@@ -336,6 +385,8 @@ export default {
   #top-timer-time {
     font-weight: 500;
     font-size: 18px;
+    padding-bottom: 5px;
+    border-bottom: solid 1px #8590996e;
   }
 
   #pb {
