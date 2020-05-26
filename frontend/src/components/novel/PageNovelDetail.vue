@@ -72,6 +72,7 @@
                                 <td>
                                     <v-btn outlined color="rgba(192,0,0,1)" @click="gotoNovelViewer(episode.episodePk)">보기</v-btn>
                                     <v-btn outlined color="rgba(192,0,0,1)" @click="gotoNovelEditor(episode.episodePk, index+1)" v-show="checkRight()">수정</v-btn>
+                                    <v-btn outlined color="rgba(192,0,0,1)" @click="deleteEpisode(episode.episodePk)" v-show="checkRight()">삭제</v-btn>
                                 </td>                            
                             </tr>
                         </tbody>
@@ -137,13 +138,15 @@ export default {
     },
     methods: {
         ...mapActions("storeEditor", {
+            storeEpisodePkLoc:"storeEpisodePkLoc",
             postEpisode: "postEpisode",
         }),
         gotoNovelViewer(episodePk) {
             this.$router.push(`/viewer/${episodePk}`);
         },
         gotoNovelEditor(episodePk, index) {
-            this.$router.push({name: 'Editor', params: { episodePk: episodePk, index: index }});
+            this.storeEpisodePkLoc(episodePk)
+            this.$router.push({name: 'Editor', param:"check"});
         },
         getNovel() {
             http
@@ -151,9 +154,6 @@ export default {
                 .then(response => {
                     // console.log(response.data.data);
                     this.data = response.data.data;
-                    let novelPk = response.data.data.novel.novelPk
-                    let cntEpisode = response.data.data.episodes.content.length
-                    this.$store.commit("storeEditor/changeCntEpisode", cntEpisode) 
                     this.checkRight();
                 })
                 .catch(() => {
@@ -170,6 +170,24 @@ export default {
                 return false;
             }
         },
+        deleteEpisode(episodePk) {
+            var result = confirm("⚠️ 정말 에피소드를 삭제하시겠습니까? \n이 작업은 되돌릴 수 없습니다")
+            if(result) { // yes
+                http
+                    .delete(`/episodes/${episodePk}`)
+                    .then(response => {
+                        this.$router.go()
+                    })
+                    .catch(() => {
+                        this.errored = true;
+                    })
+                    .finally(() => {
+                        this.loading = false;
+                    })
+            }else { // no
+                return;
+            }
+        },
         createEpisode() {
             if(this.checkRight()) {
                 let data = {
@@ -184,7 +202,7 @@ export default {
                 return null;
             }
         },
-    }
+    },
 }
 </script>
 
