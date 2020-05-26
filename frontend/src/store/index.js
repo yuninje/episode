@@ -67,7 +67,7 @@ export default new Vuex.Store({
           dispatch("checkSession")
 
           if (res.data.state == "ok") {
-            router.push("/");
+            router.replace("/");
           } else {
             alert("아이디와 비밀번호가 일치하지 않습니다.");
           }
