@@ -20,23 +20,24 @@
                     >
                         <v-tabs-slider color="transparent"></v-tabs-slider>
                         <v-tab
-                            v-for="item in items"
-                            :key="item.tab"
+                            v-for="genre in genres"
+                            :key="genre.genrePk"
                             class="tab"
+                            @click="getNovels(genre.genrePk)"
                         >
-                            {{item.tab}}
+                            {{genre.genreName}}
                         </v-tab>
                     </v-tabs>
                     <v-tabs-items v-model="tab">
                         <v-tab-item
-                            v-for="item in items"
-                            :key="item.tab"
+                            v-for="genre in genres"
+                            :key="genre.genrePk"
                         >
                         <v-container>
                           <v-row>
                             <v-col
-                              v-for="i in 6"
-                              :key="i"
+                              v-for="(novel, index) in novels[genre.genrePk]"
+                              :key="index"
                               cols="6"
                               md="6"
                               >
@@ -51,12 +52,12 @@
   </svg>
   </div>
   <div class="card-text">
-    <img class="portada" src="https://comicthumb-phinf.pstatic.net/20190325_108/pocket_1553525187132gW0BF_JPEG/untitled.jpg">
+    <img class="portada" :src="novel.novelImage">
     <div class="title-total">   
       <div class="total">총 152화</div>
-      <h2>서울역 드루이드</h2>
+      <h2>{{novel.novelName}}</h2>
   
-  <div class="desc">숲의 수호자, 자연의 관찰자이자, 동물들의 왕. 드루이드가 되어 홀로 천 년의 시간을 보낸 후. 드디어 지구로 귀환했다. "응? 내가 알던 서울이 아..</div>
+  <div class="desc">{{novel.novelIntro}}</div>
   <div class="actions">
     <button><i class="far fa-heart"></i></button>
     <button><i class="far fa-envelope"></i></button>
@@ -88,9 +89,7 @@ export default {
             genres:[
                 {genrePk:0, genreName: "전체"},
             ],
-            novels: [
-                {genrePk: 0, content: []},
-            ],
+            novels:[],
             tab: null,
             items: [
                 { tab: '전체', content: 'Tab 1 Content' },
@@ -108,23 +107,28 @@ export default {
     },
     mounted() {
         this.getAllNovels(0, "updated");
+        // this.getNovels(1);
+        // this.getNovels(2);
+        // this.getNovels(3);
+        // this.getNovels(4);
     },
     methods: {
         getGenres() {
             http
                 .get('/genres')
                 .then(response => {
-                    console.log(response.data.data);
-                    console.log('장르 푸쉬 전');
-                    console.log(this.genres);
+                    // console.log(response.data.data);
+                    // console.log('장르 푸쉬 전');
+                    // console.log(this.genres);
                     if(this.genres.length === 1) {
                         for(var i in response.data.data) {
                             this.genres.push(response.data.data[i]);
                         }
+                        this.novels = new Array(this.genres.length);
                     }
                     // this.genres = response.data.data;
-                    console.log('장르 푸쉬 후');
-                    console.log(this.genres);
+                    // console.log('장르 푸쉬 후');
+                    // console.log(this.genres);
                 })
                 .catch(() => {
                     this.errored = true;
@@ -143,9 +147,34 @@ export default {
                     }
                 })
                 .then(response => {
-                    console.log(rersponse.data.data);
-                    
+                    // console.log(response.data.data);
+                    this.novels[0] = response.data.data.content;
+                    console.log(this.novels[0]);
+                    console.log(this.novels);
                 })
+                .catch(() => {
+                    this.errored = true;
+                })
+                .finally(() => {
+                    this.loading = false;
+                })
+        },
+        getNovels(genrePk) {
+            console.log("getNovels 진입")
+            if(genrePk !== 0){
+                http
+                    .get(`/novels/genre-pk=${genrePk}`)
+                    .then(response => {
+                        this.novels[genrePk] = response.data.data
+                        console.log(response.data.data);
+                    })
+                    .catch(() => {
+                        this.errored = true;
+                    })
+                    .finally(() => {
+                        this.loading = false;
+                    })
+            }
         }
     },
 }
