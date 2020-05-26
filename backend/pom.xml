@@ -135,6 +135,11 @@
 			<artifactId>hibernate-jpamodelgen</artifactId>
 		</dependency>
 		<dependency>
+		    <groupId>com.vladmihalcea</groupId>
+		    <artifactId>hibernate-types-52</artifactId>
+		    <version>2.9.10</version>
+		</dependency>
+		<dependency>
 		    <groupId>org.javassist</groupId>
 		    <artifactId>javassist</artifactId>
 		    <version>3.25.0-GA</version>

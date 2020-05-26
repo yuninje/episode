@@ -72,6 +72,10 @@ public class Novel {
 	// novel <-> hashtag >> N : M 관계
 	@ManyToMany(mappedBy = "novels", cascade = CascadeType.PERSIST)
 	private List<HashTag> hashTags = new ArrayList<>();
+	
+	// novel <-> character >> 1: N 관계
+	@OneToMany(mappedBy = "novel", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+	private List<Character> characters = new ArrayList<Character>();
 
 	// 이 소설을 좋아하는 사람들 | novel : member = N : M
 	@ManyToMany
