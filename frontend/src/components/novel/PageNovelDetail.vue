@@ -97,8 +97,7 @@ import { mapActions, mapMutations, mapGetters } from "vuex";
 export default {
     data() {
         return {
-            data: {
-            },
+            data: {},
             item: {
                 src : "https://comicthumb-phinf.pstatic.net/20181101_25/pocket_1541053325022bMb9z_JPEG/cover.jpg?type=m260",
                 writer : "김소설",

@@ -171,7 +171,6 @@ export default {
         .get(`episodes/${this.episodePk}`)
         .then(response => {
           this.epiInfo = response.data.data;
-          // console.log("epiInfo:",this.epiInfo);
           // this.checkRight();
           })
         .catch((err) => {

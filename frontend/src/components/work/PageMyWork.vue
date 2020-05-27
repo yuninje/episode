@@ -69,9 +69,9 @@ export default {
   data() {
     return {
       novelList: [
-        { title: "전체 소설 1" },
-        { title: "전체 소설 2" },
-        { title: "전체 소설 3" }
+        { title: "전체 소설 모음 1" },
+        { title: "전체 소설 모음 2" },
+        { title: "전체 소설 모음 3" }
       ],
     };
   },
