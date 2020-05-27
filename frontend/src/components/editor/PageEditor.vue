@@ -69,9 +69,10 @@ import dedent from "dedent";
 import hljs from "highlight.js";
 import debounce from "lodash/debounce";
 import { quillEditor } from "vue-quill-editor";
-// highlight.js style
+
+/* highlight.js style */
 import "highlight.js/styles/tomorrow.css";
-// import theme style
+/* import theme style */
 import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 
@@ -88,7 +89,7 @@ export default {
   },
   data() {
     return {
-      // 에디터 옵션
+      /* 에디터 옵션 */
       editorOption: {
         modules: {
           toolbar: [
@@ -103,24 +104,23 @@ export default {
         placeholder: "여기에 입력하세요..."
       },
 
-      // 에피소드 정보
+      /* 에피소드 정보 */
       epiInfo:{},
 
-      // 에디터 글자수 프로그레스바
-      htmlContent: "",
-      textContent: "",
+      /* 에디터 글자수 프로그레스바 */
       // content: dedent``,
-      textLength: 0, // 입력중인 글자 포함
-      textCount: 0, // 화면에 표시되는 글자 길이
-      percent: 0, // 프로그레스바의 퍼센트
+      htmlContent: "",
+      textLength: 0,  // 입력중인 글자 포함
+      textCount: 0,   //  표시되는 글자 길이
+      percent: 0,     // 프로그레스바 퍼센트
 
-      // 타이머
-      timer: null, // 타이머 함수
-      timerSetTime: 1800, // 타이머 시간 설정 : 30분 ( 30 * 60 = 1800 )
-      totalTime: 1800, // 남은 시간
+      /* 타이머 */
+      timer: null,        // 타이머 함수
+      timerSetTime: 1800, // 시간 설정 : 30분 ( 30 * 60 = 1800 )
+      totalTime: 1800,    // 남은 시간
 
-      // 저장
-      autoSave: null, // 자동 저장 함수
+      /* 저장 */
+      autoSave: null,     // 자동 저장 함수
       episodeContent: "",
       episodeWriter: "",
     };
@@ -130,33 +130,30 @@ export default {
     this.getEpisode();
   },
   filters: {
-    // 숫자 단위당 쉼표 필터
+    /* 숫자 단위당 쉼표 */
     comma(val) {
       return String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
   },
-  watch: {
-    // 데이터가 변경되어 API를 호출해야 할 때
+  watch: {  // 데이터가 변경되어 API를 호출해야 할 때
     textLength: function() {
-      // 글자수
+      /* 글자수 */
       this.textCount = this.textLength - 1;
 
-      // 프로그레스바
+      /* 프로그레스바 */
       this.percent = this.textCount / 50;
-      // 글자 수 제한
+
+      /* 글자 수 제한 */
       if (this.textCount > 5000) {
-        // const tt =this.model.getByte
         alert(
           "최대 5000자까지 입력 가능합니다. \n 5000자가 넘어가는 글은 저장되지 않습니다."
         );
-        // 입력 안되게 끊기
       }
+    },
+    /* html태그제거 */
+    model: function () {
+      console.log((this.model).replace(/(<([^>]+)>)/ig,""))
     }
-
-    // model: function () {
-    //   // html 태그 제거하기
-    //   console.log((this.model).replace(/(<([^>]+)>)/ig,""))
-    // }
   },
   methods: {
     ...mapActions("storeEditor", {
@@ -165,7 +162,7 @@ export default {
       resetSaveTime : "resetSaveTime"
     }),
 
-    // 해당하는 에피소드를 가져온다
+    /* 해당하는 에피소드를 가져온다 */
     getEpisode() {
       http
         .get(`episodes/${this.episodePk}`)
@@ -178,7 +175,7 @@ export default {
         })
     },
 
-    // 타이머
+    /* 타이머 */
     resetTimer: function() {
       this.totalTime = this.timerSetTime;
       clearInterval(this.timer);
@@ -197,7 +194,6 @@ export default {
         this.totalTime = 0;
         clearInterval(this.timer);
       }
-      // console.log(this.totalTime);
     },
     padTime: function(time) {
       return (time < 10 ? "0" : "") + time;
@@ -207,9 +203,8 @@ export default {
     startAutoSave() {
       this.autoSave = setInterval(() => this.saveAuto(), 300000); // 1000 = 1초 -> (5분 * 60초 * 1000 = 300000)
     },
-    // 저장 : 자동 저장
+    /* 저장 */
     saveAuto() {
-      // 데이터 처리
       this.episodeContent = this.htmlContent;
 
       let { episodeTitle } = this.epiInfo;
@@ -221,9 +216,7 @@ export default {
       };
       this.putEpisodeAuto(data);
     },
-    // 저장 : 버튼 이벤트
     save() {
-      // 데이터 처리
       this.episodeContent = this.htmlContent;
 
       let { episodeTitle } = this.epiInfo;
@@ -237,22 +230,19 @@ export default {
       this.putEpisode(data);
     },
 
-    // 에디터
+    /* 에디터 */
     onEditorChange(value) {
-      // console.log(value);
-      // this.textContent = value.text;
       this.textLength = value.text.length;
       this.htmlContent = value.html;
-
       // 자동
     },
-
     // onEditorChange: debounce(function(value) { // 시간을 두고 함수 실행
     //   this.content = value.html;
     // }, 300),
 
     onEditorFocus(editor) {
-      // console.log("editor focus!", editor);
+      // console.log("editor focus", editor);
+      
       // 타이머 시작, 0분 남으면 타이머 스탑
       if (!this.timer) {
         this.startTimer();
@@ -260,10 +250,10 @@ export default {
       }
     },
     onEditorBlur(editor) {
-      // console.log("editor blur!", editor);
+      // console.log("editor blur", editor);
     },
     onEditorReady(editor) {
-      // console.log("editor ready!", editor);
+      // console.log("editor ready", editor);
     },
 
   },
@@ -283,8 +273,6 @@ export default {
       return this.padTime(seconds);
     },
 
-    // 자동저장
-
     editor() {
       return this.$refs.myTextEditor.quill;
     },
@@ -296,13 +284,15 @@ export default {
     // console.log("this is Quill instance:", this.editor);
   },
   beforeDestroy() {
-    // var result = confirm("⚠️ 정말 이 페이지를 나가시겠습니까? \n 저장하지 않은 데이터가 손실됩니다.")
-    // if(result) {
-    //   console.log("확인")
-    //   return null;
-    // }else {
-    //   return
-    // }
+    /* 페이지 나가기 전 확인
+    var result = confirm("⚠️ 정말 이 페이지를 나가시겠습니까? \n 저장하지 않은 데이터가 손실됩니다.")
+    if(result) {
+      console.log("확인")
+      return null;
+    }else {
+      return
+    }
+    */
     
   },
   destroyed() {

@@ -48,13 +48,8 @@ export default {
     };
   },
   created() {
-    // 쿠키에 아이디 저장된 값이 있으면!
-    // savedId값을 보여준다.
-    // this.$session.set("savedId", "TESTSAVE")
+    // 쿠키에 아이디 저장된 값이 있으면
     savedId: this.$session.get("savedId");
-    // mem_id:"test3";
-
-    // mem_id=test3;
   },
   computed: {},
   methods: {

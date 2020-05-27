@@ -78,7 +78,6 @@ export default {
 
     // 에피소드 저장 (서버) 
     putEpisode({ state, dispatch, commit, getters, rootGetters }, data) {
-      // let epk = getters.fetchEpisodePk
       let epk = localStorage.getItem("episodePk");
       // console.log("putEpisode - data", data)
       // console.log("putEpisode - url", epk)
@@ -95,7 +94,6 @@ export default {
         });
     },
     putEpisodeAuto({ state, dispatch, commit, getters, rootGetters }, data) {
-      // let epk = getters.fetchEpisodePk
       let epk = localStorage.getItem("episodePk");
       axios
         .put(`${rootGetters.getServer}/api/episodes/`+epk, data)
@@ -114,7 +112,7 @@ export default {
         .post(`${rootGetters.getServer}/api/episodes/`, data)
         .then( res => {
           if(res.data.state =="ok") {
-            // 새로운 에피소드 생성 후 에디터 페이지로 이동한다.
+            // 새로운 에피소드 생성 후 에디터 페이지로 이동
             let episodePk = res.data.data.episodePk
             dispatch("storeEpisodePkLoc", episodePk)
             router.push({name: 'Editor'});
