@@ -24,6 +24,7 @@ import org.hibernate.annotations.TypeDef;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -81,4 +82,21 @@ public class Character {
 	// character <-> whom >> 1: N 관계
 	@OneToMany(mappedBy = "whom", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
 	private List<Relation> whoms = new ArrayList<Relation>();
+
+	@Builder
+	public Character(Integer characterPk, String characterName, String characterAge, Boolean characterGender,
+			String characterRole, String characterJob, String characterPersonallity, String characterSignificant,
+			Set<Additional> characterMore, String characterImage, Novel novel) {
+		this.characterPk = characterPk;
+		this.characterName = characterName;
+		this.characterAge = characterAge;
+		this.characterGender = characterGender;
+		this.characterRole = characterRole;
+		this.characterJob = characterJob;
+		this.characterPersonallity = characterPersonallity;
+		this.characterSignificant = characterSignificant;
+		this.characterMore = characterMore;
+		this.characterImage = characterImage;
+		this.novel = novel;
+	}
 }
