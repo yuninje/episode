@@ -46,6 +46,9 @@
           <span v-show="this.getSavingTimeAuto" id="btm-autosave">(자동 저장됨) 마지막 저장 시간: {{ getSavingTimeAuto }}</span>
           <span v-show="this.getSavingTime" id="btm-autosave">마지막 저장 시간: {{ getSavingTime }}</span>
           <span class="div-save-wrap">
+            <button id="btn-save" v-on:click="hans">맞춤법 검사</button>
+          </span>
+          <span class="div-save-wrap">
             <button id="btn-save" v-on:click="save">저장하기</button>
           </span>
         </div>
@@ -72,6 +75,8 @@ import "quill/dist/quill.snow.css";
 import KProgress from "k-progress";
 
 import { mapActions, mapMutations, mapGetters, mapState } from "vuex";
+
+const hanspell = require('./episode-spell');
 
 export default {
   name: "quill-example-snow",
@@ -118,6 +123,9 @@ export default {
       episodeWriter: "",
       setTitle:"",
       setWriter:"",
+
+      // 맞춤법 테스트
+      list: []
     };
   },
   created() {
@@ -231,7 +239,8 @@ export default {
     // 에디터
     onEditorChange(value) {
       // console.log(value);
-      // this.textContent = value.text;
+      this.textContent = value.text;
+      console.log(this.textContent)
       this.textLength = value.text.length;
       this.htmlContent = value.html;
 
@@ -255,6 +264,19 @@ export default {
     },
     onEditorReady(editor) {
       // console.log("editor ready!", editor);
+    },
+    hans: function(){
+      console.log("스펠 이벤트 발생")
+      console.log(this.textContent)
+      // console.log(this.list)
+      this.list = hanspell(this.spell, 6000, this.checker, function () {
+          console.log("// check ends");
+      }, function (err) {
+          console.error("HTTP status code: " + err);
+      });
+    },
+    checker: function(result){
+      this.list = result
     }
   },
   computed: {
