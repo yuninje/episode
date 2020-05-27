@@ -122,6 +122,7 @@ export default {
         },
         signout() {
             this.$store.dispatch("signout");
+            this.$router.push("/signin")
         },
         getDesktopSize() {
             if(window.innerWidth > 600) {

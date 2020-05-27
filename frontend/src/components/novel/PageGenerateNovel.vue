@@ -8,11 +8,39 @@
             >
                 <v-row>
                     <v-col cols="12">
-                        <v-img
+                        <div class="pic-uploader">    
+                            <picture-input 
+                                @change="onChange"
+                                ref="pictureInput"
+
+                                button-class="btn"
+                                buttonClass = "pic-ch-btn"
+                                removeButtonClass = "pic-rem-btn"
+                                width="700" 
+                                height="1000" 
+                                margin="16" 
+                                accept="image/jpeg,image/png" 
+                                size="10" 
+                                radius= "6"
+
+                                :crop= "true"
+                                :removable="true"
+                                :hideChangeButton="false"
+                                :custom-strings="{
+                                    upload: '소설 이미지를 등록하세요 +',
+                                    drag: '소설 이미지 등록 서비스 준비 중입니다 📕',
+                                    change: '이미지 수정  | ',
+                                    remove: '삭제'
+                                }"
+                            >
+                            </picture-input>
+                        </div>
+
+                        <!-- <v-img
                             :src = "require(`@/assets/images/banner0.png`)"
                             aspect-ratio=0.7
                         >
-                        </v-img>
+                        </v-img> -->
                     </v-col>
                 </v-row>
             </v-col>
@@ -29,7 +57,7 @@
                     <v-col cols="12" sm="5">
                         <p class = "sub-title">제목</p>
                             <v-text-field 
-                                v-model="novelName"
+                                v-model="novelInfo.novelName"
                                 placeholder="소설의 제목를 입력하세요."
                                 solo
                                 flat
@@ -42,12 +70,12 @@
                     <v-col cols="12" >
                         <p class = "sub-title">작품 소개</p>
                             <v-textarea 
-                                v-model="novelIntro"
+                                v-model="novelInfo.novelIntro"
                                 placeholder="작품소개를 입력하세요."
                                 solo
                                 flat
                                 clearable
-                                rows="5"
+                                rows="4"
                                 row-height="15"
                             ></v-textarea>
                         <p class="write-info"></p>
@@ -67,33 +95,29 @@
 <script>
 import http from "../../http-common";
 import { mapActions, mapMutations, mapGetters } from "vuex";
+import PictureInput from 'vue-picture-input'
 
 export default {
     data() {
         return {
-            data: {},
-            item: {
-                src : "https://comicthumb-phinf.pstatic.net/20181101_25/pocket_1541053325022bMb9z_JPEG/cover.jpg?type=m260",
-                writer : "김소설",
-                createdAt: "2020.05.01",
-                novelIntro: "어느 날 지구의 시간이 멈추었고, 이를 리셋이라고 부르기 시작했다.",
-                tags: "#리셋 #시스템 #헌터 #플레이어"
+            novelInfo:{
+                memberPk: "",       // o
+                novelName: "",      // o
+                novelImage: "",     // x    ==> url가져오기
+                novelIntro: "",     // o
+                novelStatus: 0,     // x
+                novelLimit: true,   // x
+                novelOnly: true,    // x
+                novelOpen: true,    // x
+                genrePks: [3],      // 
+                hashTagStrs: ["string"],    // 
             },
             today : new Date().toLocaleDateString(),
-            
-            "novelName": "",  // o
-            "novelImage": "", // x
-            "novelIntro": "", // o
-            "novelStatus": 0,
-            "novelLimit": true,
-            "novelOnly": true,
-            "novelOpen": true,
-            "genrePks": [3],    // 임의값
-            "hashTagStrs": ["string"],  // 임의값
-            
-            errored: false,
-            loading: true
+            pictureInput:','
         }
+    },
+    components: {
+        PictureInput
     },
     computed: {
         ...mapGetters(["getSession"]),
@@ -106,34 +130,23 @@ export default {
         ...mapActions("storeGenNov", {
             postNovel: "postNovel",
         }),
+        onChange (image) {
+            console.log('New picture selected!')
+            if (image) {
+                console.log('Picture loaded.')
+                this.image = image
+                // let url = URL.createObjectURL(image)
+                this.pictureInput = this.$refs.pictureInput.file
+                // console.log("onChange()",this.pictureInput)
+            } else {
+                console.log('Fail to load a picture💦')
+            } 
+        },
         genNovel() {
-            console.log("genNovel()에 들어왔습니다.")
-            let memberPk = this.getSession.memPk
-            let { 
-                novelName, 
-                novelImage, 
-                novelIntro, 
-                novelStatus, 
-                novelLimit , 
-                novelOnly, 
-                novelOpen,
-                genrePks,
-                hashTagStrs } = this;
-            if (this.check(novelName)) {
-                let data = {
-                memberPk,
-                novelName, 
-                novelImage, 
-                novelIntro, 
-                novelStatus, 
-                novelLimit , 
-                novelOnly, 
-                novelOpen,
-                genrePks,
-                hashTagStrs
-            }
-
-            this.postNovel(data);
+            if(this.check(this.novelInfo.novelName)) {
+                this.novelInfo.memberPk = this.getSession.memPk
+                let data = this.novelInfo
+                this.postNovel(data)
             }
         },
         check(novelName) {
@@ -166,4 +179,5 @@ export default {
     font-size : 1.2rem;
     font-weight: 500;
 }
+
 </style>
