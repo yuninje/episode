@@ -27,7 +27,8 @@
                                 :removable="true"
                                 :hideChangeButton="false"
                                 :custom-strings="{
-                                    drag: '소설 이미지를 등록하세요 +',
+                                    upload: '소설 이미지를 등록하세요 +',
+                                    drag: '소설 이미지 등록 서비스 준비 중입니다 📕',
                                     change: '이미지 수정  | ',
                                     remove: '삭제'
                                 }"
@@ -100,15 +101,16 @@ export default {
     data() {
         return {
             novelInfo:{
+                memberPk: "",       // o
                 novelName: "",      // o
-                novelImage: "",     // x
+                novelImage: "",     // x    ==> url가져오기
                 novelIntro: "",     // o
                 novelStatus: 0,     // x
                 novelLimit: true,   // x
                 novelOnly: true,    // x
                 novelOpen: true,    // x
-                genrePks: [3],      // 임의값
-                hashTagStrs: ["string"],    // 임의값
+                genrePks: [3],      // 
+                hashTagStrs: ["string"],    // 
             },
             today : new Date().toLocaleDateString(),
             pictureInput:','
@@ -135,38 +137,16 @@ export default {
                 this.image = image
                 // let url = URL.createObjectURL(image)
                 this.pictureInput = this.$refs.pictureInput.file
-                console.log("onChange()",this.pictureInput)
+                // console.log("onChange()",this.pictureInput)
             } else {
                 console.log('Fail to load a picture💦')
             } 
         },
         genNovel() {
-            let memberPk = this.getSession.memPk
-            let { 
-                novelName, 
-                novelImage, 
-                novelIntro, 
-                novelStatus, 
-                novelLimit , 
-                novelOnly, 
-                novelOpen,
-                genrePks,
-                hashTagStrs } = this.novelInfo;
-            if (this.check(novelName)) {
-                let data = {
-                memberPk,
-                novelName, 
-                novelImage, 
-                novelIntro, 
-                novelStatus, 
-                novelLimit , 
-                novelOnly, 
-                novelOpen,
-                genrePks,
-                hashTagStrs
-            }
-
-            this.postNovel(data);
+            if(this.check(this.novelInfo.novelName)) {
+                this.novelInfo.memberPk = this.getSession.memPk
+                let data = this.novelInfo
+                this.postNovel(data)
             }
         },
         check(novelName) {
