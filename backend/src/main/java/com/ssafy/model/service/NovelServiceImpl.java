@@ -34,6 +34,8 @@ public class NovelServiceImpl implements NovelService {
 	SearchRepository sRepo;
     @Autowired
     HashTagRepository hRepo;
+    @Autowired
+    NovelSettingRepository nsRepo;
 
     @Autowired
 	ModelMapper modelMapper;
@@ -111,6 +113,11 @@ public class NovelServiceImpl implements NovelService {
         for(HashTag hashTag : hashTags){
             hashTag.getNovels().add(novel);
         }
+
+        // 기본 소설설정 추가
+        novel.getNovelSettings().add(nsRepo.save(NovelSetting.builder().novel(novel).novelSettingName("세계관").novelSettingText("").build()));
+        novel.getNovelSettings().add(nsRepo.save(NovelSetting.builder().novel(novel).novelSettingName("사건").novelSettingText("").build()));
+        novel.getNovelSettings().add(nsRepo.save(NovelSetting.builder().novel(novel).novelSettingName("배경지식").novelSettingText("").build()));
 
         NovelResponseDto responseDto = new NovelResponseDto(novel);
         return responseDto;

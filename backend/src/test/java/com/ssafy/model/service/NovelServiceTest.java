@@ -221,8 +221,10 @@ public class NovelServiceTest {
         assertThat(responseDto.getNovelUpdatedAt()).isEqualTo(novel.getNovelUpdatedAt());
         assertThat(responseDto.getNovelView()).isEqualTo(novel.getNovelView());
         assertThat(responseDto.getNovelRecommends()).isEqualTo(novel.getNovelRecommends());
-    }
 
+        // 소설설정 테스트
+        assertThat(novel.getNovelSettings().size()).isEqualTo(3);
+    }
 
     @Test
     public void 소설_수정(){

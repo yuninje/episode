@@ -63,7 +63,11 @@ public class Novel {
 	// novel <-> episode >> 1: N 관계
 	@OneToMany(mappedBy = "novel", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
 	private List<Episode> episodes = new ArrayList<Episode>();
-	
+
+	// novel <-> novelSetting >> 1: N 관계
+	@OneToMany(mappedBy = "novel", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+	private List<NovelSetting> novelSettings = new ArrayList<NovelSetting>();
+
 	// novel <-> genre >> N : M 관계
 	@ManyToMany(mappedBy = "novels", cascade = CascadeType.PERSIST)
 	private List<Genre> genres = new ArrayList<>();
@@ -111,7 +115,6 @@ public class Novel {
 			}
 		});
 
-
 		oHashTags.forEach(hashTag -> {
 			if(!uHashTags.contains(hashTag)){
 				hashTag.getNovels().remove(this);
@@ -147,6 +150,11 @@ public class Novel {
 			episode.beforeDelete();
 		}
 
+		// 소설설정
+		for(NovelSetting novelSetting : this.novelSettings){
+			novelSetting.beforeDelete();
+		}
+
 		// 장르
 		for (Genre genre : this.genres){
 			genre.getNovels().remove(this);
@@ -157,6 +165,8 @@ public class Novel {
 		for (HashTag hashTag : this.hashTags){
 			hashTag.getNovels().remove(this);
 		}
+		hashTags = new ArrayList<>();
+
 		// 연재요일 | 추가 예정
 
 		// 좋아요 데이터
