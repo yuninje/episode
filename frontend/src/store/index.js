@@ -67,7 +67,7 @@ export default new Vuex.Store({
           dispatch("checkSession")
 
           if (res.data.state == "ok") {
-            router.push("/");
+            router.replace("/");
           } else {
             alert("아이디와 비밀번호가 일치하지 않습니다.");
           }
@@ -84,7 +84,6 @@ export default new Vuex.Store({
       }else {
         dispatch('signout')
       }
-
       // // 세션 값이 있을 경우
       // if(this._vm.$session.exists()) {
       //   // 세션이 유효한지 체크

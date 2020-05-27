@@ -39,7 +39,8 @@ const routes = [
   {
     path: '/novel/edit',
     name: 'Editor',
-    component: Editor
+    component: Editor,
+    beforeEnter: rejectUnAuthUser
   },
   {
     path: '/mywork',

@@ -1,5 +1,6 @@
 // 소설 생성 정보와 관련된 Vuex Store Module
 import axios from "axios";
+import router from "@/router/index";
 
 export default {
   namespaced: true,
@@ -13,7 +14,9 @@ export default {
       axios
         .post(`${rootGetters.getServer}/api/novels`, data)
         .then(res => {
-            console.log(res.data)
+            if(res.data.state=="ok") {
+              router.push("/mywork");
+            }
         })
         .catch(err => {
           console.error("postNovel()", err);

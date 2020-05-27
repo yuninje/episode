@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container v-if="data.novel">
         <v-row>
             <v-col 
                 cols="12"
@@ -9,17 +9,17 @@
                 <v-row>
                     <v-col cols="12">
                         <v-img 
-                        v-if="data.novel.novelImage"
+                        v-if="data.novel"
                             :src = "data.novel.novelImage"
                             aspect-ratio=0.7
                         >
                         </v-img>
-                        <v-img
-                        v-else
+                        <!-- <v-img
+                        v-if="!data.novel.novelImage"
                             :src = "require(`@/assets/images/banner0.png`)"
                             aspect-ratio=0.7
                         >
-                        </v-img>
+                        </v-img> -->
                     </v-col>
                     <v-col cols="12">
                         <p class="like"><v-icon color="rgba(192,0,0,1)">mdi mdi-heart-outline</v-icon>&nbsp;좋아요</p>
@@ -72,6 +72,7 @@
                                 <td>
                                     <v-btn outlined color="rgba(192,0,0,1)" @click="gotoNovelViewer(episode.episodePk)">보기</v-btn>
                                     <v-btn outlined color="rgba(192,0,0,1)" @click="gotoNovelEditor(episode.episodePk, index+1)" v-show="checkRight()">수정</v-btn>
+                                    <v-btn outlined color="rgba(192,0,0,1)" @click="deleteEpisode(episode.episodePk)" v-show="checkRight()">삭제</v-btn>
                                 </td>                            
                             </tr>
                         </tbody>
@@ -80,7 +81,7 @@
             </v-col>
             <v-col cols="12">
                 <div align="center">
-                    <v-btn text color="rgba(192,0,0,1)" @click="" v-show="checkRight()">
+                    <v-btn text color="rgba(192,0,0,1)" @click="createEpisode()" v-show="checkRight()">
                         <v-icon large>mdi mdi-plus</v-icon>
                     </v-btn>
                 </div>
@@ -127,7 +128,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(["getSession"])
+        ...mapGetters(["getSession"]),
     },
     created() {
         this.getNovel();
@@ -135,11 +136,16 @@ export default {
     mounted() {
     },
     methods: {
+        ...mapActions("storeEditor", {
+            storeEpisodePkLoc:"storeEpisodePkLoc",
+            postEpisode: "postEpisode",
+        }),
         gotoNovelViewer(episodePk) {
             this.$router.push(`/viewer/${episodePk}`);
         },
         gotoNovelEditor(episodePk, index) {
-            this.$router.push({name: 'Editor', params: { episodePk: episodePk, index: index }});
+            this.storeEpisodePkLoc(episodePk)
+            this.$router.push({name: 'Editor', param:"check"});
         },
         getNovel() {
             http
@@ -157,14 +163,45 @@ export default {
                 })
         },
         checkRight() {
-            // console.log(this.getSession);
             if(this.getSession.memPk === this.data.novel.member.memPk) {
                 return true;
             }else {
                 return false;
             }
-        }
-    }
+        },
+        deleteEpisode(episodePk) {
+            var result = confirm("⚠️ 정말 에피소드를 삭제하시겠습니까? \n이 작업은 되돌릴 수 없습니다")
+            if(result) { // yes
+                http
+                    .delete(`/episodes/${episodePk}`)
+                    .then(response => {
+                        this.$router.go()
+                    })
+                    .catch(() => {
+                        this.errored = true;
+                    })
+                    .finally(() => {
+                        this.loading = false;
+                    })
+            }else { // no
+                return;
+            }
+        },
+        createEpisode() {
+            if(this.checkRight()) {
+                let data = {
+                    novelPk         :this.data.novel.novelPk,
+                    episodeWriter   :this.getSession.memPk ,
+                    episodeTitle    :"",
+                    episodeContent  :""
+                };
+                this.postEpisode(data)
+            } else {
+                alert("이 소설의 에피소드를 작성할 수 있는 권한이 없습니다.")
+                return null;
+            }
+        },
+    },
 }
 </script>
 
