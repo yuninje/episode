@@ -14,6 +14,7 @@ import com.ssafy.model.dto.genre.GenreResponseDto;
 import com.ssafy.model.entity.Character;
 import com.ssafy.model.entity.CharacterException;
 import com.ssafy.model.entity.Novel;
+import com.ssafy.model.entity.NovelException;
 import com.ssafy.model.entity.Relation;
 import com.ssafy.model.repository.CharacterRepository;
 import com.ssafy.model.repository.NovelRepository;
@@ -50,7 +51,7 @@ public class CharacterServiceImpl implements CharacterService {
 	@Override
 	public CharacterResponseNoNovelDto registCharacter(CharacterSaveRequestDto requestDto) {
 		Novel novel = nRepo.findById(requestDto.getNovelPk())
-				.orElseThrow(() -> new CharacterException(CharacterException.NOT_EXIST));
+				.orElseThrow(() -> new NovelException(NovelException.NOT_EXIST));
 		
 		Character characterEntity = requestDto.toEntity(novel);
 		characterEntity = cRepo.save(characterEntity);
