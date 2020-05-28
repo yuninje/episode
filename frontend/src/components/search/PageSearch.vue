@@ -117,7 +117,7 @@ export default {
                 .get(`/search/${this.type}`, {
                     params:{
                         genrePk: 0,
-                        memPk: 0,
+                        memPk: this.getSession.memPk,
                         sort: this.sort,
                         word: this.$route.params.searchKeyword
                     }
