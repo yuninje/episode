@@ -13,9 +13,10 @@
 
 ### Development environment
 - Front-end : Vue, Nginx
-- Back-end : Spring Boot (Maven), Lombok, JPA, STS 3.9.7
+- Back-end : Spring Boot (Maven), Lombok, JPA
 - DB : mysql - Docker
 - ERD : ERD Cloud
+- IDE : STS 3.9.7, VS code
 
 ## Folder organization
 ```
