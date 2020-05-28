@@ -61,6 +61,12 @@ public class NovelRestController {
 	ResponseEntity<Map<String, Object>> updateNovel(@PathVariable int novelPk, @RequestBody NovelUpdateRequestDto requestDto) {
 		return handleSuccess(nService.updateNovel(novelPk, requestDto));
 	}
+
+	@ApiOperation("소설 이미지 정보 수정 | genrePks : 체크된 모든 장르의 PK 값을 리스트로 보내면 됨, hashTagStrs : 해시태그들의 String 값을 리스트로 보내면 됨")
+	@PutMapping("/{novelPk}/image")
+	ResponseEntity<Map<String, Object>> updateNovel(@PathVariable int novelPk, @RequestBody String imageUrl) {
+		return handleSuccess(nService.updateNovelImage(novelPk, imageUrl));
+	}
 	
 	@ApiOperation("소설 삭제 | 성공하면 String 문자열 반환")
 	@DeleteMapping("/{novelPk}")
