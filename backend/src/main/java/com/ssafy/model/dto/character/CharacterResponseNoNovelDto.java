@@ -1,8 +1,12 @@
 package com.ssafy.model.dto.character;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
+import com.ssafy.model.dto.relation.RelationResponseDto;
+import com.ssafy.model.dto.relation.RelationResponseDtoNoCharacter;
 import com.ssafy.model.entity.Additional;
 import com.ssafy.model.entity.Character;
 
@@ -25,8 +29,9 @@ public class CharacterResponseNoNovelDto {
 	private String characterJob;
 	private String characterPersonallity;
 	private String characterSignificant;
-	private Set<Additional> characterMore = new HashSet<>();
+	private Set<Additional> characterMore = new LinkedHashSet<>();
 	private String characterImage;
+	private Set<RelationResponseDto> relations = new LinkedHashSet<>();
 	
 	public CharacterResponseNoNovelDto(Character character) {
 		this.characterPk = character.getCharacterPk();
@@ -39,6 +44,8 @@ public class CharacterResponseNoNovelDto {
 		this.characterSignificant = character.getCharacterSignificant();
 		this.characterMore = character.getCharacterMore();
 		this.characterImage = character.getCharacterImage();
+		this.relations = character.getWhos().stream().map(
+				r -> new RelationResponseDto(r)).collect(Collectors.toSet());
 	}
 	
 	@Builder

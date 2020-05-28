@@ -2,6 +2,7 @@ package com.ssafy.model.entity;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -59,7 +60,7 @@ public class Character {
 	// http://redutan.github.io/2018/05/29/ddd-values-on-jpa
 	@Convert(converter = CharacterAdditionalConverter.class)
 	@Column(name = "character_more", nullable = true, length = 4000)
-	private Set<Additional> characterMore = new HashSet<>();
+	private Set<Additional> characterMore = new LinkedHashSet<>();
 	
 	@Column(name = "character_image", length = 100, nullable = true)
 	private String characterImage;
@@ -71,11 +72,11 @@ public class Character {
 	
 	// character <-> who >> 1: N 관계
 	@OneToMany(mappedBy = "who", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
-	private List<Relation> whos = new ArrayList<Relation>();
+	private Set<Relation> whos = new LinkedHashSet<>();
 	
 	// character <-> whom >> 1: N 관계
 	@OneToMany(mappedBy = "whom", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
-	private List<Relation> whoms = new ArrayList<Relation>();
+	private Set<Relation> whoms = new LinkedHashSet<>();
 
 	@Builder
 	public Character(Integer characterPk, String characterName, String characterAge, Boolean characterGender,
@@ -92,5 +93,21 @@ public class Character {
 		this.characterMore = characterMore;
 		this.characterImage = characterImage;
 		this.novel = novel;
+	}
+
+	public Character update(String characterName, String characterAge, Boolean characterGender, String characterRole,
+			String characterJob, String characterPersonallity, String characterSignificant,
+			Set<Additional> characterMore, String characterImage) {
+		this.characterName = characterName;
+		this.characterAge = characterAge;
+		this.characterGender = characterGender;
+		this.characterRole = characterRole;
+		this.characterJob = characterJob;
+		this.characterPersonallity = characterPersonallity;
+		this.characterSignificant = characterSignificant;
+		this.characterMore = characterMore;
+		this.characterImage = characterImage;
+		
+		return this;
 	}
 }

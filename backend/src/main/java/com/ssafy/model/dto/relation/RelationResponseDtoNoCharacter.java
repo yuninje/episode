@@ -1,6 +1,5 @@
 package com.ssafy.model.dto.relation;
 
-import com.ssafy.model.dto.character.CharacterResponseNoNovelDto;
 import com.ssafy.model.entity.Relation;
 
 import lombok.Builder;
