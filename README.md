@@ -26,23 +26,23 @@ frontend : 프론트엔드 관련 코드
 ## Getting Started
 
 ```
-> Front-end
+Front-end
 
-git clone https://lab.ssafy.com/s02-final/s02p31a206.git
+> git clone https://lab.ssafy.com/s02-final/s02p31a206.git
 
-cd frontend
+> cd frontend
 
-npm install
+> npm install
 
-npm run serve
+> npm run serve
 
-> Back-end
+Back-end
 
 # Create maven jar file with the following command & Run.
 
-"c:\gitlab\project3\s02p31a206\backend\mvnw.cmd" install -f "c:\gitlab\project3\s02p31a206\backend\pom.xml"
+> "c:\gitlab\project3\s02p31a206\backend\mvnw.cmd" install -f "c:\gitlab\project3\s02p31a206\backend\pom.xml"
 
-sudo java -jar "builded file name" &
+> sudo java -jar "builded file name" &
 
 ```
 
