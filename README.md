@@ -18,6 +18,7 @@
 - ERD : ERD Cloud
 - IDE : STS 3.9.7, VS code
 
+
 ## Folder organization
 ```
 backend : 백엔드 관련 코드
