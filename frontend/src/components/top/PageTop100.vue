@@ -24,6 +24,8 @@
                             <v-img
                                 :src="novel.novelImage"
                                 aspect-ratio=0.7
+                                @click="gotoNovelDetail(novel.novelPk)"
+                                class="clickable"
                             >
                             </v-img>
                         </v-col>
@@ -142,6 +144,9 @@ export default {
             for(var i = 0; i<3; i++) {
                 console.log(perNovels[i]);
             }
+        },
+        gotoNovelDetail(novelPk) {
+            this.$router.push(`/noveldetail/${novelPk}`);
         }
     },
 }
@@ -177,5 +182,8 @@ export default {
 }
 .novel-content:nth-child(odd) {
     /* background-color: rgba(200,200,200,1); */
+}
+.clickable {
+    cursor: pointer;
 }
 </style>

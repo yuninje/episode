@@ -34,6 +34,8 @@
 </template>
 
 <script>
+import http from '../../http-common'
+
 export default {
     data() {
         return {
@@ -48,9 +50,29 @@ export default {
                 '식당 밑에 던전',
                 '재혼 황후',
                 '100년 묶은 탑셰프'
-            ]
+            ],
+            loading: true,
+            errored: false
         }
-    }
+    },
+    mounted() {
+        // this.getKeywords();
+    },
+    methods: {
+        getKeywords() {
+            http
+                .get('/search/real-time-search')
+                .then(response => {
+                    this.keywords = response.data.data;
+                })
+                .catch(() => {
+                    this.errored = true;
+                })
+                .finally(() => {
+                    this.loading = false;
+                })
+        }
+    },
 }
 </script>
 
