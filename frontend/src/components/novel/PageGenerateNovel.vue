@@ -216,4 +216,20 @@ export default {
   font-size: 1.2rem;
   font-weight: 500;
 }
+.gennovel-btn {
+  float: right;
+  margin-right:12px;
+  -webkit-transition: all 0.1s;
+  -moz-transition: all 0.1s;
+  -o-transition: all 0.1s;
+  transition: all 0.1s;
+  transition: all 0.1s;
+  &:hover {
+      color: #fff;
+      box-shadow: 300px 0 0 0 rgb(192, 0, 0) inset;
+      border: 0;
+      outline: 0;
+      font-weight: bold;
+    }
+}
 </style>

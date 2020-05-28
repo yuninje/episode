@@ -14,7 +14,9 @@
 
           <router-link :to="`novel/generate`" class="card">
             <div class="card__background" style="border: solid 1px rgb(192, 0, 0)"></div>
-            <div class="card__content">+</div>
+            <div class="card__content__center">
+              <v-icon medium color="rgb(192, 0, 0)">mdi-plus</v-icon>
+            </div>
           </router-link>
         </div>
       </section>
@@ -34,7 +36,9 @@
 
           <router-link :to="`novel/generate`" class="card">
             <div class="card__background" style="border: solid 1px rgb(192, 0, 0)"></div>
-            <div class="card__content">+</div>
+            <div class="card__content__center">
+              <v-icon medium color="rgb(192, 0, 0)">mdi-plus</v-icon>
+            </div>
           </router-link>
         </div>
       </section>
@@ -54,7 +58,9 @@
 
           <router-link :to="`novel/generate`" class="card">
             <div class="card__background" style="border: solid 1px rgb(192, 0, 0)"></div>
-            <div class="card__content">+</div>
+            <div class="card__content__center">
+              <v-icon medium color="rgb(192, 0, 0)">mdi-plus</v-icon>
+            </div>
           </router-link>
         </div>
       </section>
@@ -111,7 +117,6 @@ export default {
   margin-left: auto;
   margin-right: auto;
 }
-
 .work-category {
   padding: 0 var(--spacing-s);
   font-weight: 700;
@@ -197,6 +202,13 @@ export default {
   padding: var(--spacing-m);
   position: absolute;
   top: 0;
+}
+
+.card__content__center{
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%)
 }
 
 .card__category {
