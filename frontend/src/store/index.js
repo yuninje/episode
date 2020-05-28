@@ -6,7 +6,7 @@ import router from "@/router/index";
 import moduleMember from "./modules/moduleMember"
 import moduleEditor from "./modules/moduleEditor"
 import moduleMywork from "./modules/moduleMywork"
-import moduleGenNov from "./modules/moduleGenNov"
+import moduleNovGen from "./modules/moduleNovGen"
 import moduleNovSet from "./modules/moduleNovSet"
 
 Vue.use(Vuex);
@@ -16,7 +16,7 @@ export default new Vuex.Store({
     storeMember: moduleMember,
     storeEditor: moduleEditor,
     storeMywork: moduleMywork,
-    storeGenNov: moduleGenNov,
+    storeNovGen: moduleNovGen,
     storeNovSet: moduleNovSet,
   },
   state: {
