@@ -7,7 +7,7 @@
             <div class="pic-uploader">
               <picture-input
                 @change="onChange"
-                ref="pictureInput"
+                ref="inputFile"
                 button-class="btn"
                 buttonClass="pic-ch-btn"
                 removeButtonClass="pic-rem-btn"
@@ -31,7 +31,7 @@
             <!-- <v-img
               :src = "require(`@/assets/images/banner0.png`)"
               aspect-ratio=0.7
-            ></v-img> -->
+            ></v-img>-->
           </v-col>
         </v-row>
       </v-col>
@@ -80,8 +80,9 @@
 
 <script>
 import http from "../../http-common";
-import { mapActions, mapMutations, mapGetters } from "vuex";
 import PictureInput from "vue-picture-input";
+import AWS from "aws-sdk";
+import { mapActions, mapMutations, mapGetters } from "vuex";
 
 export default {
   data() {
@@ -89,47 +90,100 @@ export default {
       novelInfo: {
         memberPk: "", // o
         novelName: "", // o
-        novelImage: "", // x  ==> url가져오기
+        novelImage: "", // o
         novelIntro: "", // o
         novelStatus: 0, // x
         novelLimit: true, // x
         novelOnly: true, // x
         novelOpen: true, // x
         genrePks: [3], //
-        hashTagStrs: ["string"] //
+        hashTagStrs: [] //
+      },
+      bucketInfo: {
+        albumBucketName: "episode-image",
+        bucketRegion: "ap-northeast-2",
+        IdentityPoolId: "ap-northeast-2:591d201c-0c7d-45ce-a2cf-987fcb38f9e2"
       },
       today: new Date().toLocaleDateString(),
-      pictureInput: ","
+      inputFile: null
     };
   },
   components: {
     PictureInput
   },
   computed: {
-    ...mapGetters(["getSession"])
+    ...mapGetters(["getSession"]),
+    ...mapGetters("storeGenNov", {
+      getNovelPk: "getNovelPk",
+    })
   },
   created() {},
   mounted() {},
   methods: {
     ...mapActions("storeGenNov", {
-      postNovel: "postNovel"
+      postNovel: "postNovel",
+      FETCH_FILE: "FETCH_FILE"
     }),
-    onChange(image) {
-      console.log("New picture selected!");
-      if (image) {
-        console.log("Picture loaded.");
+    onChange(image) { //이미지가 선택됨
+      if (image) {  // 이미지가 로드됨
         this.image = image;
-        this.pictureInput = this.$refs.pictureInput.file;
-        // console.log("onChange()",this.pictureInput)
+        this.inputFile = this.$refs.inputFile.file;
+        this.FETCH_FILE(this.inputFile)
       } else {
-        console.log("Fail to load a picture💦");
+        console.log("Fail to load picture💦");
       }
+    },
+
+    /* AWS서버 업로드 */
+    uploadNovelImage(photoKey) {
+      AWS.config.update({
+        region: this.bucketInfo.bucketRegion,
+        credentials: new AWS.CognitoIdentityCredentials({
+          IdentityPoolId: this.bucketInfo.IdentityPoolId
+        })
+      });
+
+      const s3 = new AWS.S3({
+        apiVersion: "2006-03-01",
+        params: { Bucket: this.bucketInfo.albumBucketName }
+      });
+
+      
+
+      let path = 'novel/'
+      let file = this.inputFile
+      // let photoKey = memPk+'_'+time
+
+      s3.upload(
+        {
+          Key: path + photoKey, // 파일경로와 파일명 지정
+          Body: file,           // 업로드할 파일
+          ACL: "public-read"
+        },(err, data) => {
+          if (err) {
+            console.log(err)
+            return;
+          }
+          // console.log("사진 업로드 성공", data)
+        }
+      );
     },
     genNovel() {
       if (this.check(this.novelInfo.novelName)) {
-        this.novelInfo.memberPk = this.getSession.memPk;
+        let memPk = this.getSession.memPk
+        this.novelInfo.memberPk = memPk
+        
+        if(this.inputFile==null) {
+          this.novelInfo.novelImage = 'https://i.imgur.com/37mPPf6.png'
+        }else {
+          let time = new Date()
+          let photoKey = memPk+'_'+time.getTime()
+          this.uploadNovelImage(photoKey)
+          this.novelInfo.novelImage = 'https://episode-image.s3.ap-northeast-2.amazonaws.com/novel/' + photoKey 
+        }
+        
         let data = this.novelInfo;
-        this.postNovel(data);
+        this.postNovel(data)
       }
     },
     check(novelName) {
@@ -138,7 +192,8 @@ export default {
         alert("소설 제목을 입력해주세요");
         return;
       }
-    }
+    },
+
   }
 };
 </script>
