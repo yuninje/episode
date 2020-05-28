@@ -53,4 +53,12 @@ public class Relation {
 		this.who = who;
 		this.whom = whom;
 	}
+	
+	public Relation update(String relationrName, String relationrColor, String relationArrowKinds) {
+		this.relationrName = relationrName;
+		this.relationrColor = relationrColor;
+		this.relationArrowKinds = relationArrowKinds;
+		
+		return this;
+	}
 }
