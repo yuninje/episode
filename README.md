@@ -1,9 +1,9 @@
 # [Project3] Episode
 > 웹 에디터 기반 소설 작성 플랫폼 :: 에피소드
 
-<center> <img src="https://i.imgur.com/CmGVVR8.png"> </center>
+<p align="center"><img src="https://i.imgur.com/CmGVVR8.png"> </p>
 
-<a href="http:k02a2061.p.ssafy.io"> Demo link </a>
+<a href="http:k02a2061.p.ssafy.io" target="_blank"> Demo link </a>
 
 ## Project Info
 ### R&R
