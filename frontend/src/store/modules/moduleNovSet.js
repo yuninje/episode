@@ -1,5 +1,6 @@
 // NovelSetting 정보와 관련된 Vuex Store Module
 import axios from "axios";
+import router from "@/router/index";
 
 export default {
   namespaced: true,
@@ -17,7 +18,7 @@ export default {
       },
   },
   actions: {
-    /** 소설 업로드 */
+    /** 소설 한 개의 정보를 조회 */
     getNovelInfo({ state, dispatch, commit, getters, rootGetters }, novelPk) {
       axios
         .get(`${rootGetters.getServer}/api/novels/${novelPk}`)
@@ -30,6 +31,35 @@ export default {
         .catch(err => {
           console.error("getNovelInfo()", err);
         });
-    }
+    },
+
+    /** 소설 정보 업데이트 */
+    putNovel({ state, dispatch, commit, getters, rootGetters }, data) {
+      let novelPk = state.novelInfo.novelPk
+      axios
+        .put(`${rootGetters.getServer}/api/novels/${novelPk}`, data)
+        .then(res => {
+            if(res.data.state=="ok") {
+              router.push({ name: "Mywork"})
+            }
+        })
+        .catch(err => {
+          console.error("postNovel()", err);
+        });
+    },
+
+    /** 소설 삭제 */
+    deleteNovel({ state, dispatch, commit, getters, rootGetters }, novelPk) {
+      axios
+        .delete(`${rootGetters.getServer}/api/novels/${novelPk}`)
+        .then(res => {
+            if(res.data.state=="ok") {
+              router.replace({ name: "Mywork"})
+            }
+        })
+        .catch(err => {
+          console.error("postNovel()", err);
+        });
+    },
   }
 };
