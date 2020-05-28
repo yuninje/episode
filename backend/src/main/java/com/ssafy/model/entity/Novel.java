@@ -146,6 +146,7 @@ public class Novel {
 		this.novelUpdatedAt = LocalDateTime.now();
 	}
 	public void updateView(){ this.novelView += 1;}
+	public void updateImage(String imageUrl){ this.novelImage = imageUrl;}
 
 
 	public void beforeDelete(){
