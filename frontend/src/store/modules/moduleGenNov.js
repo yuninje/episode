@@ -37,7 +37,7 @@ export default {
             if(res.data.state=="ok") {
               let novelPk = res.data.data.novelPk
               // dispatch("uploadNovelImage", novelPk)
-              router.push("/mywork");
+              router.replace({path:`/novel/setting/${novelPk}`,param: novelPk });
             }
         })
         .catch(err => {

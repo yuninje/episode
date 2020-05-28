@@ -7,6 +7,7 @@ import moduleMember from "./modules/moduleMember"
 import moduleEditor from "./modules/moduleEditor"
 import moduleMywork from "./modules/moduleMywork"
 import moduleGenNov from "./modules/moduleGenNov"
+import moduleNovSet from "./modules/moduleNovSet"
 
 Vue.use(Vuex);
 
@@ -16,6 +17,7 @@ export default new Vuex.Store({
     storeEditor: moduleEditor,
     storeMywork: moduleMywork,
     storeGenNov: moduleGenNov,
+    storeNovSet: moduleNovSet,
   },
   state: {
     server: "http://k02a2061.p.ssafy.io:8080",
