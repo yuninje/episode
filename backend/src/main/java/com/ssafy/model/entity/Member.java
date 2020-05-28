@@ -100,34 +100,6 @@ public class Member {
         return this;
     }
 
-
-
-	public void likeNovel(Novel novel){
-		likeNovels.add(novel);
-//		novel.getLikedMembers().add(this);
-	}
-	public void unLikeNovel(Novel novel){
-		likeNovels.remove(novel);
-//		novel.getLikedMembers().remove(this);
-	}
-
-	public void likeEpisode(Episode episode){
-		likeEpisodes.add(episode);
-//		episode.getLikedMembers().add(this);
-	}
-	public void unLikeEpisode(Episode episode){
-		likeEpisodes.remove(episode);
-//		episode.getLikedMembers().remove(this);
-	}
-	public void likeComment(Comment comment){
-		likeComments.add(comment);
-//		comment.getLikedMembers().add(this);
-	}
-	public void unLikeComment(Comment comment){
-		likeComments.remove(comment);
-//		comment.getLikedMembers().remove(this);
-	}
-
 	public void beforeDelete(){
 		// 소설
 		for(Novel novel : this.novels){
@@ -144,17 +116,17 @@ public class Member {
 
 		// 좋아요 데이터
 		for(Novel novel : this.likeNovels){
-			novel.unLikedMember(this);
+			novel.getLikedMembers().remove(this);
 		}
 		likeNovels = new ArrayList<>();
 
 		for(Episode episode : this.likeEpisodes){
-			episode.unLikedMember(this);
+			episode.getLikedMembers().remove(this);
 		}
 		likeEpisodes = new ArrayList<>();
 
 		for(Comment comment : this.likeComments){
-			comment.unLikedMember(this);
+			comment.getLikedMembers().remove(this);
 		}
 		likeComments = new ArrayList<>();
 	}

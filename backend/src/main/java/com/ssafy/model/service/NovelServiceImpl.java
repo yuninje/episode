@@ -4,15 +4,6 @@ import com.ssafy.model.dto.novel.NovelResponseDto;
 import com.ssafy.model.dto.novel.NovelSaveRequestDto;
 import com.ssafy.model.dto.novel.NovelUpdateRequestDto;
 import com.ssafy.model.entity.*;
-import com.ssafy.model.repository.GenreRepository;
-import com.ssafy.model.repository.MemberRepository;
-import com.ssafy.model.repository.NovelRepository;
-import com.ssafy.model.repository.SearchRepository;
-import com.ssafy.model.entity.Genre;
-import com.ssafy.model.entity.HashTag;
-import com.ssafy.model.entity.Member;
-import com.ssafy.model.entity.Novel;
-import com.ssafy.model.entity.Search;
 import com.ssafy.model.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,6 +34,8 @@ public class NovelServiceImpl implements NovelService {
 	SearchRepository sRepo;
     @Autowired
     HashTagRepository hRepo;
+    @Autowired
+    NovelSettingRepository nsRepo;
 
     @Autowired
 	ModelMapper modelMapper;
@@ -122,9 +114,15 @@ public class NovelServiceImpl implements NovelService {
             hashTag.getNovels().add(novel);
         }
 
+        // 기본 소설설정 추가
+        novel.getNovelSettings().add(nsRepo.save(NovelSetting.builder().novel(novel).novelSettingName("세계관").novelSettingText("").build()));
+        novel.getNovelSettings().add(nsRepo.save(NovelSetting.builder().novel(novel).novelSettingName("사건").novelSettingText("").build()));
+        novel.getNovelSettings().add(nsRepo.save(NovelSetting.builder().novel(novel).novelSettingName("배경지식").novelSettingText("").build()));
+
         NovelResponseDto responseDto = new NovelResponseDto(novel);
         return responseDto;
     }
+    
     @Override
     public NovelResponseDto updateNovel(int novelPk, NovelUpdateRequestDto requestDto) {
         Novel novel = nRepo.findById(novelPk).orElseThrow(() ->
@@ -147,7 +145,10 @@ public class NovelServiceImpl implements NovelService {
                 requestDto.getNovelStatus(),
                 requestDto.isNovelOnly()
         );
-        NovelResponseDto responseDto = new NovelResponseDto(nRepo.save(novel));
+        
+        nRepo.save(novel);
+        NovelResponseDto responseDto = new NovelResponseDto(novel);
+        
         return responseDto;
     }
 
@@ -160,48 +161,14 @@ public class NovelServiceImpl implements NovelService {
     }
 
     @Override
-    public List<NovelResponseDto> getNovelsByGenre(int genrePk) {   // 이거 바꿔야할듯
+    public Page<NovelResponseDto> getNovelsByGenre(int genrePk, Pageable pageable, String sort) {
+        PageRequest pageRequest = getPageRequest(pageable, sort);
+
         Genre genre = gRepo.findById(genrePk)
                 .orElseThrow(() -> new GenreException(GenreException.NOT_EXIST));
-
-        List<NovelResponseDto> novels =
-                genre.getNovels().stream().map(novelEntity -> new NovelResponseDto(novelEntity))
-                        .collect(Collectors.toList());
-
-        return novels;
-    }
-
-    @Override
-    public NovelResponseDto updateGenreOfNovel(int novelPk, List<Integer> genrePks) {
-        Novel novelEntity = nRepo.findById(novelPk)
-                .orElseThrow(() -> new NovelException(NovelException.NOT_EXIST));
-        List<Genre> oGenres = novelEntity.getGenres(); // 원래 장르들
-        // 새로운 장로들
-        List<Genre> uGenres = genrePks.stream().map(genrePk ->
-                gRepo.findById(genrePk).orElseThrow(() -> new GenreException(GenreException.NOT_EXIST)))
-                .collect(Collectors.toList());
-
-        // uGenres 중에서 oGenre에 없는것을 추가
-        for(Genre genreEntity : uGenres){
-            if(!oGenres.contains(genreEntity)){
-                novelEntity.belongGenre(genreEntity);
-            }
-        }
-
-        List<Genre> removeGenres = new ArrayList<>();
-        // oGenres 중에서 uGenre에 없는것을 삭제
-        for(Genre genreEntity : oGenres){
-            if(! uGenres.contains(genreEntity)){
-                removeGenres.add(genreEntity);
-            }
-        }
-
-        for(Genre genre : removeGenres){
-            novelEntity.notBelongGenre(genre);
-        }
-
-        NovelResponseDto novel = new NovelResponseDto(nRepo.save(novelEntity));
-        return novel;
+        Page<Novel> novelPage = nRepo.findByGenresLike(genre, pageRequest);
+        Page<NovelResponseDto> novelDtoPage = novelPage.map(novel -> new NovelResponseDto(novel));
+        return novelDtoPage;
     }
 
     @Override
@@ -235,10 +202,18 @@ public class NovelServiceImpl implements NovelService {
     	return novels;
     }
     
-    public Page<NovelResponseDto> getFeelNovels(int type, Pageable pageable, String sort) {
+    public Page<NovelResponseDto> getFeelNovels(int type, Pageable pageable, String sort, int genrePk) {
     	PageRequest pageRequest = getPageRequest(pageable, sort);
     	
-    	Page<Novel> novelEntityPage = nRepo.findByFeel(type, pageRequest);
+    	Page<Novel> novelEntityPage;
+    	if(genrePk != 0) {
+            Genre genre = gRepo.findById(genrePk).orElse(null);
+
+            if(genre == null) novelEntityPage = nRepo.findByFeel(type, pageRequest);
+            else novelEntityPage = nRepo.findByFeelAndGenre(type, pageRequest, genrePk);
+        }
+        else novelEntityPage = nRepo.findByFeel(type, pageRequest);
+    	
     	Page<NovelResponseDto> novels = novelEntityPage.map(novelEntity -> new NovelResponseDto(novelEntity));
         
     	return novels;

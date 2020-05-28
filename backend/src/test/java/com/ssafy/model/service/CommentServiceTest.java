@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -65,6 +66,8 @@ public class CommentServiceTest {
     private Comment comment;
     private Genre genre;
     private HashTag hashTag;
+    private List<Episode> episodes;
+    private List<Comment> comments;
     private List<Genre> genres;
     private List<HashTag> hashTags;
 
@@ -80,7 +83,7 @@ public class CommentServiceTest {
     private final int COUNT = 10;
     private final int PAGE = 0;
     private final int PAGE_SIZE = 5;
-    private final Pageable page = PageRequest.of(PAGE, PAGE_SIZE);
+    private Pageable page;
 
     private final int MEMBER = 0;
     private final int NOVEL = 1;
@@ -115,23 +118,25 @@ public class CommentServiceTest {
         member = (Member) data.get("member");
         memPk = (int) data.get("memPk");
 
-        novelPk = (int) data.get("novelPk");
         novel = (Novel) data.get("novel");
+        novelPk = (int) data.get("novelPk");
 
         episode = (Episode) data.get("episode");
+        episodes = (List) data.get("episodes");
         episodePk = (int) data.get("episodePk");
 
+        comments = (List) data.get("comments");
         comment = (Comment) data.get("comment");
         commentPk = (int) data.get("commentPk");
 
         genres = (ArrayList) data.get("genres");
-        genrePks = (ArrayList) data.get("genrePks");
         genre = (Genre) data.get("genre");
+        genrePks = (ArrayList) data.get("genrePks");
         genrePk = (int) data.get("genrePk");
 
+        hashTags = (ArrayList) data.get("hashTags");
         hashTag = (HashTag) data.get("hashTag");
         hashTagStrs = (ArrayList) data.get("hashTagStrs");
-        hashTags = (ArrayList) data.get("hashTags");
         hashTagPk = (int) data.get("hashTagPk");
 
         dummy.setRelation();
@@ -143,10 +148,12 @@ public class CommentServiceTest {
 
     @Test
     public void 댓글_페이지로_가져오기(){
+        page = PageRequest.of(PAGE, PAGE_SIZE, Sort.by("commentCreatedAt").descending());   // 가장 최신이 먼저
         Page<CommentResponseDto> responseDtoPage = commentService.getComments(page);
         List<CommentResponseDto> responseDtoList = responseDtoPage.getContent();
 
         assertThat(responseDtoList.size()).isEqualTo(PAGE_SIZE);
+        assertThat(responseDtoList.get(0).getCommentCreatedAt()).isAfterOrEqualTo(responseDtoList.get(1).getCommentCreatedAt());
     }
 
     @Test
@@ -175,6 +182,8 @@ public class CommentServiceTest {
     @Test
     public void 댓글_삭제(){
         commentService.deleteComment(commentPk);
+
+        // 삭제한 댓글 확인
         try {
             commentRepository.findById(commentPk).orElseThrow(() -> new CommentException(CommentException.NOT_EXIST));
         }catch (CommentException e){
@@ -201,10 +210,12 @@ public class CommentServiceTest {
     }
 
     @Test
-    public void 페이지로_에피소드의_댓글_가져오기(){
+    public void 페이지로_에피소드의_댓글_가져오기_최신순(){
+        page = PageRequest.of(PAGE, PAGE_SIZE, Sort.by("commentCreatedAt").descending());   // 가장 최신이 먼저
         Page<CommentResponseDto> responseDtoPage = commentService.getCommentByEpisode(episodePk, page);
         List<CommentResponseDto> responseDtoList = responseDtoPage.getContent();
 
         assertThat(responseDtoList.size()).isEqualTo(PAGE_SIZE);
+        assertThat(responseDtoList.get(0).getCommentCreatedAt()).isAfterOrEqualTo(responseDtoList.get(1).getCommentCreatedAt());
     }
 }

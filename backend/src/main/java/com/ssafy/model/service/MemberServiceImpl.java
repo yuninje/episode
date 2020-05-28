@@ -136,14 +136,14 @@ public class MemberServiceImpl implements MemberService {
                 if (flag) { // 좋아요
                     if (!member.getLikeNovels().contains(novel)) {
                         // 이미 있으면 넘어가고
-                        member.likeNovel(novel);
-                        novel.likedMember(member);
+                        member.getLikeNovels().add(novel);
+                        novel.getLikedMembers().add(member);
                     }
                 } else { // 좋아요 취소
                     if (member.getLikeNovels().contains(novel)) {
                         // 이미 있으면 넘어가고
-                        member.unLikeNovel(novel);
-                        novel.unLikedMember(member);
+                        member.getLikeNovels().remove(novel);
+                        novel.getLikedMembers().remove(member);
                     }
                 }
                 mRepo.save(member);
@@ -156,14 +156,14 @@ public class MemberServiceImpl implements MemberService {
                 if (flag) { // 좋아요
                     if (!member.getLikeEpisodes().contains(episode)) {
                         // 이미 있으면 넘어가고
-                        member.likeEpisode(episode);
-                        episode.likedMember(member);
+                        member.getLikeEpisodes().add(episode);
+                        episode.getLikedMembers().add(member);
                     }
                 } else { // 좋아요 취소
                     if (member.getLikeEpisodes().contains(episode)) {
                         // 이미 있으면 넘어가고
-                        member.unLikeEpisode(episode);
-                        episode.unLikedMember(member);
+                        member.getLikeEpisodes().remove(episode);
+                        episode.getLikedMembers().remove(member);
                     }
                 }
                 mRepo.save(member);
@@ -176,14 +176,14 @@ public class MemberServiceImpl implements MemberService {
                 if (flag) { // 좋아요
                     if (!member.getLikeComments().contains(comment)) {
                         // 이미 있으면 넘어가고
-                        member.likeComment(comment);
-                        comment.likedMember(member);
+                        member.getLikeComments().add(comment);
+                        comment.getLikedMembers().add(member);
                     }
                 } else { // 좋아요 취소
                     if (member.getLikeComments().contains(comment)) {
                         // 이미 있으면 넘어가고
-                        member.unLikeComment(comment);
-                        comment.unLikedMember(member);
+                        member.getLikeComments().remove(comment);
+                        comment.getLikedMembers().remove(member);
                     }
                 }
                 mRepo.save(member);
