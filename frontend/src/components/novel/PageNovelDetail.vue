@@ -66,7 +66,7 @@
                         </thead>
                         <tbody>
                             <tr v-for="(episode, index) in data.episodes.content" :key="index">
-                                <td>{{index+1}}화</td>
+                                <td>{{(page-1)*10+index+1}}화</td>
                                 <td>{{episode.episodeCreatedAt.substr(0,10)}}</td>
                                 <td>{{episode.episodeTitle}}</td>
                                 <td>
@@ -78,6 +78,14 @@
                         </tbody>
                     </template>
                 </v-simple-table>
+            </v-col>
+            <v-col cols="12">
+                <v-pagination
+                    v-model="page"
+                    :length="pageLength"
+                    color="rgba(255,83,83,1)"
+                    @input="getNovel()"
+                ></v-pagination>
             </v-col>
             <v-col cols="12">
                 <div align="center">
@@ -98,33 +106,10 @@ export default {
     data() {
         return {
             data: {},
-            item: {
-                src : "https://comicthumb-phinf.pstatic.net/20181101_25/pocket_1541053325022bMb9z_JPEG/cover.jpg?type=m260",
-                writer : "김소설",
-                createdAt: "2020.05.01",
-                novelIntro: "어느 날 지구의 시간이 멈추었고, 이를 리셋이라고 부르기 시작했다.",
-                tags: "#리셋 #시스템 #헌터 #플레이어"
-            },
-            episodes: [
-                {
-                    createdAt: "2020.05.01",
-                    title: "빌어먹을 스승(1)"
-                },
-                {
-                    createdAt: "2020.05.02",
-                    title: "빌어먹을 스승(2)"
-                },
-                {
-                    createdAt: "2020.05.03",
-                    title: "빌어먹을 스승(3)"
-                },
-                {
-                    createdAt: "2020.05.04",
-                    title: "빌어먹을 스승(4)"
-                },
-            ],
             errored: false,
-            loading: true
+            loading: true,
+            page:1,
+            pageLength: 0
         }
     },
     computed: {
@@ -134,6 +119,7 @@ export default {
         this.getNovel();
     },
     mounted() {
+        this.page = 1;
     },
     methods: {
         ...mapActions("storeEditor", {
@@ -149,10 +135,18 @@ export default {
         },
         getNovel() {
             http
-                .get(`/episodes/novel-pk=${this.$route.params.novelPk}`)
+                .get(`/episodes/novel-pk=${this.$route.params.novelPk}`, {
+                    params:{
+                        page: this.page-1,
+                        size: 10
+                    }
+                })
                 .then(response => {
-                    // console.log(response.data.data);
+                    console.log(response.data.data);
                     this.data = response.data.data;
+                    if(this.pageLength === 0){
+                        this.pageLength = this.data.episodes.totalPages;
+                    }
                     this.checkRight();
                 })
                 .catch(() => {

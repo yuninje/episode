@@ -1,11 +1,11 @@
 <template>
     <v-container>
         <v-row>
-            <v-col cols="12">
-                 <p class="search-result">'{{searchKeyword}}'에 대한 검색결과 입니다.</p>
+            <v-col cols="12" v-show="false">
+                 <p class="search-result">소설 전체보기 페이지입니다.</p>
             </v-col>
             <v-col cols="12">
-                <p class="no-result">이런 소설은 어떤가요?</p>
+                <p class="no-result">소설 전체보기</p>
             </v-col>
             <v-col cols="12" class="d-flex justify-center">
                 <v-card
@@ -13,7 +13,7 @@
                     width="75%"
                 >
                     <v-tabs
-                        v-model="genrePk"
+                        v-model="tab"
                         background-color="white"
                         color="rgba(255,83,83,1)"
                         class="tabs"
@@ -23,11 +23,12 @@
                             v-for="genre in genres"
                             :key="genre.genrePk"
                             class="tab"
+                            @click="getNovels(genre.genrePk)"
                         >
                             {{genre.genreName}}
                         </v-tab>
                     </v-tabs>
-                    <v-tabs-items v-model="genrePk">
+                    <v-tabs-items v-model="tab">
                         <v-tab-item
                             v-for="genre in genres"
                             :key="genre.genrePk"
@@ -35,7 +36,7 @@
                         <v-container>
                           <v-row>
                             <v-col
-                              v-for="(novel, index) in data.content"
+                              v-for="(novel, index) in novels[genre.genrePk]"
                               :key="index"
                               cols="6"
                               md="6"
@@ -80,67 +81,54 @@
 </template>
 
 <script>
-import http from "../../http-common"
-import { mapActions, mapMutations, mapGetters } from "vuex";
+import http from '../../http-common'
 
 export default {
     data() {
         return {
-            genrePk: null,
-            data:[],
-            genres:[],
-            searchKeyword:'',
-            genrePk: 0,
-            sort:'updated',
-            type:'all',
+            genres:[
+                {genrePk:0, genreName: "전체"},
+            ],
+            novels:[],
+            tab: null,
+            items: [
+                { tab: '전체', content: 'Tab 1 Content' },
+                { tab: '판타지', content: 'Tab 2 Content' },
+                { tab: '무협', content: 'Tab 3 Content' },
+                { tab: '로맨스', content: 'Tab 4 Content' },
+                { tab: '현판', content: 'Tab 5 Content' },
+            ],
             errored: false,
             loading: true
         }
-    },
-    computed: {
-        ...mapGetters(["getIsLogin"]),
-        ...mapGetters(["getSession"])
     },
     created() {
         this.getGenres();
     },
     mounted() {
-        console.log("여긴 마운티드입니다!");
-        this.getSearchResult();
-        this.searchKeyword = this.$route.params.searchKeyword;
-        console.log("여기에서 마운티드가 끝납니다!");
+        this.getAllNovels(0, "updated");
+        // this.getNovels(1);
+        // this.getNovels(2);
+        // this.getNovels(3);
+        // this.getNovels(4);
     },
     methods: {
-        getSearchResult() {
-            console.log("함수 실행");
-            http
-                .get(`/search/${this.type}`, {
-                    params:{
-                        genrePk: 0,
-                        memPk: this.getSession.memPk,
-                        sort: this.sort,
-                        word: this.$route.params.searchKeyword
-                    }
-                })
-                .then(response => {
-                    console.log(response.data.data);
-                    this.data = response.data.data;
-                })
-                .catch((e) => {
-                    console.log(e);
-                    this.errored = true;
-                })
-                .finally(() => {
-                    this.loading = false;
-                })
-        },
         getGenres() {
             http
                 .get('/genres')
                 .then(response => {
-                    console.log(response.data.data);
-                    this.genres = response.data.data;
-                    console.log(this.genres);
+                    // console.log(response.data.data);
+                    // console.log('장르 푸쉬 전');
+                    // console.log(this.genres);
+                    if(this.genres.length === 1) {
+                        for(var i in response.data.data) {
+                            this.genres.push(response.data.data[i]);
+                        }
+                        this.novels = new Array(this.genres.length);
+                    }
+                    // this.genres = response.data.data;
+                    // console.log('장르 푸쉬 후');
+                    // console.log(this.genres);
                 })
                 .catch(() => {
                     this.errored = true;
@@ -148,6 +136,45 @@ export default {
                 .finally(() => {
                     this.loading = false;
                 })
+        },
+        getAllNovels(pageNum, sortOpt) {    //  소설 전체 조회
+            http
+                .get('/novels', {
+                    params: {
+                        page: pageNum,
+                        size: 10,
+                        sort: sortOpt
+                    }
+                })
+                .then(response => {
+                    // console.log(response.data.data);
+                    this.novels[0] = response.data.data.content;
+                    console.log(this.novels[0]);
+                    console.log(this.novels);
+                })
+                .catch(() => {
+                    this.errored = true;
+                })
+                .finally(() => {
+                    this.loading = false;
+                })
+        },
+        getNovels(genrePk) {
+            console.log("getNovels 진입")
+            if(genrePk !== 0){
+                http
+                    .get(`/novels/genre-pk=${genrePk}`)
+                    .then(response => {
+                        this.novels[genrePk] = response.data.data
+                        console.log(response.data.data);
+                    })
+                    .catch(() => {
+                        this.errored = true;
+                    })
+                    .finally(() => {
+                        this.loading = false;
+                    })
+            }
         }
     },
 }

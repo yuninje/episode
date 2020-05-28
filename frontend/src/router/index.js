@@ -12,6 +12,7 @@ import Top100 from '../components/top/PageTop100'  //  여긴 나중에 바뀔 �
 import NovelDetail from '../components/novel/PageNovelDetail'
 import GenNovel from '../components/novel/PageGenerateNovel'
 import Search from '../components/search/PageSearch'
+import All from '../components/all/PageAll'
 
 import Viewer from '../components/viewer/PageViewer'
 
@@ -77,6 +78,11 @@ const routes = [
     path: '/search/:searchKeyword',
     name: 'Search',
     component: Search
+  },
+  {
+    path: '/all',
+    name: 'All',
+    component: All
   }
 ]
 

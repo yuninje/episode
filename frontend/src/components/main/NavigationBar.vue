@@ -18,7 +18,7 @@
         <v-spacer></v-spacer>
         <template v-if="getDesktopSize()">
             <v-flex>
-                <v-btn color="black" text>소설 전체보기</v-btn>
+                <v-btn color="black" text @click="gotoAll()">소설 전체보기</v-btn>
                 <v-btn color="black" text @click="gotoMywork()">작품쓰기</v-btn>
             </v-flex>
             <v-spacer></v-spacer>
@@ -101,6 +101,9 @@ export default {
         ...mapGetters(["getSession"])
     },
     methods: {
+        gotoAll() {
+            this.$router.push('/all');
+        },
         gotoSearch() {
             this.$router.push(`/search/${this.searchText}`)
         },
