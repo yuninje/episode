@@ -96,7 +96,7 @@
               outlined
               @click="selectButtons(i)"
             >
-              <p class="sub-title">{{button}}</p>
+              <p class="sub-title-white">{{button}}</p>
             </v-card>
           </v-col>
         </v-row>
@@ -542,6 +542,11 @@ export default {
 }
 .sub-title {
   font-size: 1.5rem;
+  font-weight: bold;
+}
+.sub-title-white {
+  font-size: 1.5rem;
+  color:white;
   font-weight: bold;
 }
 .like {
