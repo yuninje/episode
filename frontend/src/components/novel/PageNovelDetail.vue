@@ -35,12 +35,12 @@
                     <v-col cols="12">
                         <p class="write-info">작가 | {{data.novel.member.memNick}}</p>
                         <p class="write-info">최근 업로드 날짜 | {{data.novel.novelUpdatedAt.substr(0,10)}}</p>
-                        <v-btn 
+                        <!-- <v-btn 
                             outlined color="rgba(192,0,0,1)" 
                             @click="gotoNovelSetting()" 
                             v-show="checkRight()">
                             수정하기
-                        </v-btn>
+                        </v-btn> -->
                     </v-col>
                     <v-col cols="12">
                         <p class = "sub-title">작품 소개</p>
