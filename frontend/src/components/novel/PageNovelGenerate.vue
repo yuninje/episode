@@ -7,6 +7,7 @@
             <div class="pic-uploader">
               <picture-input
                 @change="onChange"
+                @remove="onRemove"
                 ref="inputFile"
                 button-class="btn"
                 buttonClass="pic-ch-btn"
@@ -22,7 +23,7 @@
                 :hideChangeButton="false"
                 :custom-strings="{
                   upload: '소설 이미지를 등록하세요 +',
-                  drag: '소설 이미지 등록 서비스 준비 중입니다 📕',
+                  drag: '소설 이미지를 추가하세요! 📕',
                   change: '이미지 수정  | ',
                   remove: '삭제'
                 }"
@@ -113,14 +114,14 @@ export default {
   },
   computed: {
     ...mapGetters(["getSession"]),
-    ...mapGetters("storeGenNov", {
+    ...mapGetters("storeNovGen", {
       getNovelPk: "getNovelPk",
     })
   },
   created() {},
   mounted() {},
   methods: {
-    ...mapActions("storeGenNov", {
+    ...mapActions("storeNovGen", {
       postNovel: "postNovel",
       FETCH_FILE: "FETCH_FILE"
     }),
@@ -133,8 +134,10 @@ export default {
         console.log("Fail to load picture💦");
       }
     },
-
-    /* AWS서버 업로드 */
+    onRemove() {
+      this.image = ''
+    },
+    /** S3 이미지 업로드 */
     uploadNovelImage(photoKey) {
       AWS.config.update({
         region: this.bucketInfo.bucketRegion,
@@ -148,15 +151,14 @@ export default {
         params: { Bucket: this.bucketInfo.albumBucketName }
       });
 
-      
-
       let path = 'novel/'
+      let ext='.jpg'
       let file = this.inputFile
       // let photoKey = memPk+'_'+time
 
       s3.upload(
         {
-          Key: path + photoKey, // 파일경로와 파일명 지정
+          Key: path + photoKey + ext, // 파일경로와 파일명 지정
           Body: file,           // 업로드할 파일
           ACL: "public-read"
         },(err, data) => {
@@ -168,18 +170,24 @@ export default {
         }
       );
     },
+    /** 소설 생성 */
     genNovel() {
       if (this.check(this.novelInfo.novelName)) {
         let memPk = this.getSession.memPk
         this.novelInfo.memberPk = memPk
         
         if(this.inputFile==null) {
-          this.novelInfo.novelImage = 'https://i.imgur.com/37mPPf6.png'
+          const result = confirm("⚠️소설 이미지를 추가하지 않으면 기본 이미지로 저장됩니다📕")
+          if(result) {
+            this.novelInfo.novelImage = 'https://i.imgur.com/37mPPf6.png'
+          }else {
+            return;
+          }
         }else {
           let time = new Date()
           let photoKey = memPk+'_'+time.getTime()
           this.uploadNovelImage(photoKey)
-          this.novelInfo.novelImage = 'https://episode-image.s3.ap-northeast-2.amazonaws.com/novel/' + photoKey 
+          this.novelInfo.novelImage = 'https://episode-image.s3.ap-northeast-2.amazonaws.com/novel/' + photoKey + '.jpg'
         }
         
         let data = this.novelInfo;
@@ -189,7 +197,7 @@ export default {
     check(novelName) {
       if (novelName != "") return true;
       if (novelName == "") {
-        alert("소설 제목을 입력해주세요");
+        alert("소설 제목을 입력해주세요!");
         return;
       }
     },

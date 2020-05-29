@@ -35,6 +35,12 @@
                     <v-col cols="12">
                         <p class="write-info">작가 | {{data.novel.member.memNick}}</p>
                         <p class="write-info">최근 업로드 날짜 | {{data.novel.novelUpdatedAt.substr(0,10)}}</p>
+                        <v-btn 
+                            outlined color="rgba(192,0,0,1)" 
+                            @click="gotoNovelSetting()" 
+                            v-show="checkRight()">
+                            수정하기
+                        </v-btn>
                     </v-col>
                     <v-col cols="12">
                         <p class = "sub-title">작품 소개</p>
@@ -126,6 +132,11 @@ export default {
             storeEpisodePkLoc:"storeEpisodePkLoc",
             postEpisode: "postEpisode",
         }),
+        gotoNovelSetting() {
+            let novelPk = this.data.novel.novelPk
+            let path = `/novel/setting/${novelPk}`
+            this.$router.push({ path:path, param: novelPk })
+        },
         gotoNovelViewer(episodePk) {
             this.$router.push(`/viewer/${episodePk}`);
         },
@@ -142,7 +153,6 @@ export default {
                     }
                 })
                 .then(response => {
-                    console.log(response.data.data);
                     this.data = response.data.data;
                     if(this.pageLength === 0){
                         this.pageLength = this.data.episodes.totalPages;
@@ -164,7 +174,7 @@ export default {
             }
         },
         deleteEpisode(episodePk) {
-            var result = confirm("⚠️ 정말 에피소드를 삭제하시겠습니까? \n이 작업은 되돌릴 수 없습니다")
+            var result = confirm("⚠️ 정말 에피소드를 삭제하시겠습니까? \n이 작업은 되돌릴 수 없습니다.")
             if(result) { // yes
                 http
                     .delete(`/episodes/${episodePk}`)
@@ -195,6 +205,7 @@ export default {
                 return null;
             }
         },
+
     },
 }
 </script>
