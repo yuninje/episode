@@ -80,7 +80,7 @@
         </v-row>
       </v-col>
       <v-col cols="12">
-        <span>소설 설정</span>
+        <span>소설 설정 (아직 준비중인 페이지입니다.)</span>
         <hr/>
       </v-col>
       <v-col cols="12">
@@ -102,7 +102,7 @@
         </v-row>
       </v-col>
       <v-col cols="12">
-        <v-row class="rectangle-outlined">
+        <v-row class="rectangle-outlined" v-show="checkButtons(0)">
           <!-- 기존 등록된 캐릭터 카드 -->
           <v-col 
             cols="3" 
@@ -149,6 +149,42 @@
             </v-card>
           </v-col>
         </v-row>
+        <v-row class="rectangle-outlined" v-show="checkButtons(1)">
+          <v-col cols="12">
+            <v-textarea
+              auto-grow
+              flat
+              solo
+            ></v-textarea>
+          </v-col>
+        </v-row>
+        <v-row class="rectangle-outlined" v-show="checkButtons(2)">
+          <v-col cols="12">
+            <v-textarea
+              auto-grow
+              flat
+              solo
+            ></v-textarea>
+          </v-col>
+        </v-row>
+        <v-row class="rectangle-outlined" v-show="checkButtons(3)">
+          <v-col cols="12">
+            <v-textarea
+              auto-grow
+              flat
+              solo
+            ></v-textarea>
+          </v-col>
+        </v-row>
+        <v-row class="rectangle-outlined" v-show="checkButtons(4)">
+          <v-col cols="12">
+            <v-textarea
+              auto-grow
+              flat
+              solo
+            ></v-textarea>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
 
@@ -165,8 +201,8 @@
             <v-row>
               <v-col cols="12">
                 <v-img 
-                  height="200" 
-                  src="@/assets/images/upload.png"
+                  height="200"
+                  alt="이미지를 등록해주세요."
                   @click=""
                 ></v-img>
               </v-col>
@@ -280,7 +316,8 @@ export default {
           color:"blue"
         },
       ],
-      selectedButton: '0',
+      newCharacterImage:'',
+      selectedButton: 0,
       inputStatus:0,  // -1: 삭제, 1: 새로운 사진, 0 변화 없음
     };
   },
@@ -484,6 +521,13 @@ export default {
       }else {
         this.$router.replace("/")
         alert("접근 권한이 없습니다.")
+        return false;
+      }
+    },
+    checkButtons(index) {
+      if(this.selectedButton === index) {
+        return true;
+      } else {
         return false;
       }
     }
