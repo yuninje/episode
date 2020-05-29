@@ -26,7 +26,7 @@ export default {
   },
   actions: { 
     /** 업로드할 파일 fetch */
-    FETCH_FILE({ commit },data) {
+    FETCH_FILE({ commit }, data) {
       commit('changeNovelImgFile', data)
     },
     /** 소설 생성 */

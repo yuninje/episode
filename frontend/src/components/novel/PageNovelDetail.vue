@@ -135,7 +135,7 @@ export default {
         gotoNovelSetting() {
             let novelPk = this.data.novel.novelPk
             let path = `/novel/setting/${novelPk}`
-            this.$router.push({path:path, param: novelPk})
+            this.$router.push({ path:path, param: novelPk })
         },
         gotoNovelViewer(episodePk) {
             this.$router.push(`/viewer/${episodePk}`);

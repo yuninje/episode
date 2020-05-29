@@ -1,6 +1,6 @@
 <template>
-  <v-container>
-    <v-row v-if="novelInfo"> 
+  <v-container v-if="novelInfo" >
+    <v-row v-if="checkAuth(this.novelInfo.member.memPk)"> 
       <v-col cols="12" md="4" lg="3"> 
         <!-- {{novelInfo.member}} -->
         <!-- {{getNovelInfo}} {{getNovelInfo.novelPk}} -->
@@ -70,7 +70,7 @@
               row-height="15"
             ></v-textarea>
             <p class="write-info"></p>
-            <v-btn rounded @click="clickUpdateNovel()" class="set-save-btn">저장</v-btn>
+            <v-btn  rounded @click="clickUpdateNovel()" class="set-save-btn">저장</v-btn>
             <v-btn rounded @click="clickDeleteNovel()" class="set-save-btn">이 소설을 삭제하겠습니다.</v-btn>
           </v-col>
           <v-col cols="12">
@@ -224,6 +224,10 @@ export default {
 
     /** 소설 정보 업데이트 */
     clickUpdateNovel() {
+      // 권한 확인
+      const author = this.novelInfo.member.memPk;
+      if (!this.checkAuth(author)) return;
+
       if (this.check(this.novelInfo.novelName)) {
         this.imagehandler(this.inputStatus)
         let novelImage = this.updateInfo.novelImage
@@ -253,6 +257,10 @@ export default {
     },
     /** 소설 삭제 */
     clickDeleteNovel() {
+      // 권한 확인
+      const author = this.novelInfo.member.memPk;
+      if (!this.checkAuth(author)) return;
+
       const result = confirm("⚠️ 정말 이 소설을 삭제하시겠습니까? \n이 작업은 되돌릴 수 없습니다.")
       if(result) {
         const novelPk = this.novelInfo.novelPk
@@ -275,7 +283,7 @@ export default {
           // 새로운 이미지 저장
           let path = 'novel/'
           let time = new Date()
-          let memPk = this.getSession.memPk
+          let memPk = this.novelInfo.member.memPk
           let photoKey = memPk+'_'+time.getTime()
           let ext='.jpg'
 
@@ -292,6 +300,16 @@ export default {
         return;
       }
     },
+    /** 소설 수정 및 삭제 권한 확인 */
+    checkAuth(author) {
+      if(author == this.getSession.memPk) {
+        return true;
+      }else {
+        this.$router.replace("/")
+        alert("접근 권한이 없습니다.")
+        return false;
+      }
+    }
 
   }
 };

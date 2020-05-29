@@ -24,7 +24,6 @@ export default {
         .get(`${rootGetters.getServer}/api/novels/${novelPk}`)
         .then(res => {
           if (res.data.state == "ok") {
-            console.log(res.data.data);
             commit('changeNovelInfo', res.data.data);
           }
         })
@@ -55,6 +54,7 @@ export default {
         .then(res => {
             if(res.data.state=="ok") {
               router.replace({ name: "Mywork"})
+              alert("삭제가 완료되었습니다!")
             }
         })
         .catch(err => {
