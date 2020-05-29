@@ -70,8 +70,8 @@
               row-height="15"
             ></v-textarea>
             <p class="write-info"></p>
-            <v-btn  rounded @click="clickUpdateNovel()" class="set-save-btn">저장</v-btn>
-            <v-btn rounded @click="clickDeleteNovel()" class="set-save-btn">이 소설을 삭제하겠습니다.</v-btn>
+            <!-- <v-btn  rounded @click="clickUpdateNovel()" class="set-save-btn">저장</v-btn> -->
+            <!-- <v-btn rounded @click="clickDeleteNovel()" class="set-save-btn">이 소설을 삭제하겠습니다.</v-btn> -->
           </v-col>
           <v-col cols="12">
             <br>
@@ -185,6 +185,10 @@
             ></v-textarea>
           </v-col>
         </v-row>
+      </v-col>
+      <v-col style="margin-top: 30px; margin-bottom: 10px">
+        <v-btn style="float:left" rounded @click="clickDeleteNovel()" class="set-save-btn">이 소설을 삭제하겠습니다.</v-btn>
+        <v-btn rounded @click="clickUpdateNovel()" class="set-save-btn">저장</v-btn>
       </v-col>
     </v-row>
 
