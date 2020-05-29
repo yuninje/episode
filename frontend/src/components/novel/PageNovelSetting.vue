@@ -65,7 +65,6 @@
               placeholder="작품소개를 입력하세요."
               solo
               flat
-              clearable
               rows="4"
               row-height="15"
             ></v-textarea>
