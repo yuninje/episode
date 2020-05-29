@@ -205,7 +205,7 @@
               <v-col cols="12">
                 <v-img 
                   height="200"
-                  alt="이미지를 등록해주세요."
+                  src="@/assets/images/upload.png"
                   @click=""
                 ></v-img>
               </v-col>
