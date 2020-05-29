@@ -96,7 +96,7 @@ export default {
     putEpisodeAuto({ state, dispatch, commit, getters, rootGetters }, data) {
       let epk = localStorage.getItem("episodePk");
       axios
-        .put(`${rootGetters.getServer}/api/episodes/`+epk, data)
+        .put(`${rootGetters.getServer}/api/episodes/`+ epk, data)
         .then( res => {
           let time = new Date().toLocaleString()
           commit("changeSaveTime", { auto: time, default: null })

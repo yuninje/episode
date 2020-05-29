@@ -26,10 +26,10 @@ export default {
   },
   actions: { 
     /** 업로드할 파일 fetch */
-    FETCH_FILE({ commit },data) {
+    FETCH_FILE({ commit }, data) {
       commit('changeNovelImgFile', data)
     },
-    /** 소설 업로드 */
+    /** 소설 생성 */
     postNovel({ state, dispatch, commit, getters, rootGetters }, data) {
       axios
         .post(`${rootGetters.getServer}/api/novels`, data)
@@ -44,7 +44,7 @@ export default {
           console.error("postNovel()", err);
         });
     },
-    /** 이미지업로드(by novelPk) */
+    /** 이미지 업로드(by novelPk) */
     uploadNovelImage({ state, dispatch, commit, getters, rootGetters }, novelPk) {
       let bucketInfo= {
         albumBucketName: "episode-image",
