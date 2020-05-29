@@ -14,6 +14,7 @@ public interface NovelService {
 	NovelResponseDto getNovel(int novelPk);
 	NovelResponseDto registNovel(NovelSaveRequestDto requestDto);
 	NovelResponseDto updateNovel(int novelPk, NovelUpdateRequestDto requestDto);
+	NovelResponseDto updateNovelImage(int novelPk, String imageUrl);
 	void deleteNovel(int novelPk);
 	void deleteNovel(Novel novel);
 	void deleteAllNovel();

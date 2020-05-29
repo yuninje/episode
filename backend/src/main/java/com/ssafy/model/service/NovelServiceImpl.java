@@ -153,6 +153,14 @@ public class NovelServiceImpl implements NovelService {
     }
 
     @Override
+    public NovelResponseDto updateNovelImage(int novelPk, String imageUrl) {
+        Novel novel = nRepo.findById(novelPk).orElseThrow(() -> new NovelException(NovelException.NOT_EXIST));
+        novel.updateImage(imageUrl);
+        nRepo.save(novel);
+        return new NovelResponseDto(novel);
+    }
+
+    @Override
     public void deleteNovel(int novelPk) {
         Novel novel = nRepo.findById(novelPk)
                 .orElseThrow(() -> new NovelException(NovelException.NOT_EXIST));
