@@ -53,6 +53,13 @@
                     </v-col>
                 </v-row>
             </v-col>
+            <v-col cols="12" v-show="checkRight()">
+                <div align="right">
+                <v-btn outlined color="rgba(255,83,83,1)" @click="gotoNovelSet()"><v-icon color="rgba(255,83,83,1)">mdi mdi-settings</v-icon> 소설 설정</v-btn>
+                &nbsp;
+                <v-btn outlined color="rgba(255,83,83,1)" @click="createEpisode()"><v-icon color="rgba(255,83,83,1)">mdi mdi-pencil</v-icon> 글쓰기</v-btn>
+                </div>
+            </v-col>
             <v-col cols="12">
                 <v-simple-table>
                     <template v-slot:default>
@@ -87,13 +94,13 @@
                     @input="getNovel()"
                 ></v-pagination>
             </v-col>
-            <v-col cols="12">
+            <!-- <v-col cols="12">
                 <div align="center">
                     <v-btn text color="rgba(192,0,0,1)" @click="createEpisode()" v-show="checkRight()">
                         <v-icon large>mdi mdi-plus</v-icon>
                     </v-btn>
                 </div>
-            </v-col>
+            </v-col> -->
         </v-row>
     </v-container>
 </template>
@@ -195,6 +202,9 @@ export default {
                 return null;
             }
         },
+        gotoNovelSet() {
+            this.$router.push(`/novel/setting/${this.data.novel.novelPk}`)
+        }
     },
 }
 </script>

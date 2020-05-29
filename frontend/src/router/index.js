@@ -60,7 +60,7 @@ const routes = [
     component: Top100
   },
   {
-    path: '/noveldetail/:novelPk',
+    path: '/novel/detail/:novelPk',
     name: 'NovelDetail',
     component: NovelDetail
   },

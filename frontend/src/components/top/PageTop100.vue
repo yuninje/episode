@@ -146,7 +146,7 @@ export default {
             }
         },
         gotoNovelDetail(novelPk) {
-            this.$router.push(`/noveldetail/${novelPk}`);
+            this.$router.push(`/novel/detail/${novelPk}`);
         }
     },
 }
