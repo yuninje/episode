@@ -193,43 +193,94 @@
 
     <!-- 캐릭터 등록 페이지 -->
     <v-dialog v-model="dialog" persistent max-width="400px">
-      <v-card>
-        <v-card-title class="text-center">
-          <v-spacer></v-spacer>
-          캐릭터 등록
-          <v-spacer></v-spacer>
-        </v-card-title>
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col cols="12">
-                <v-img 
-                  height="200"
-                  src="@/assets/images/upload.png"
-                  @click=""
-                ></v-img>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field label="이름" required></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field label="직업" required></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field label="역할" required></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field label="특이사항" required></v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="rgba(192,0,0,1)" text @click="dialog=false">create</v-btn>
-          <v-btn color="rgba(192,0,0,1)" text @click="dialog=false">close</v-btn>
-        </v-card-actions>
-      </v-card>
+      <v-form action="" method="post" id="_createCharacterForm" name="createCharacterForm" @submit.prevent="createNewCharacter">
+        <v-card>
+          <v-card-title class="text-center">
+            <v-spacer></v-spacer>
+            캐릭터 등록
+            <v-spacer></v-spacer>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col cols="12">
+                  <v-img 
+                    height="200"
+                    src="@/assets/images/upload.png"
+                    @click=""
+                  ></v-img>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field 
+                    label="이름" 
+                    required
+                    v-model="newCharacter.name"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field 
+                    label="나이" 
+                    required
+                    v-model="newCharacter.age"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" justify="center">
+                  <!-- <v-text-field 
+                    label="성별" 
+                    required
+                    v-model="newCharacter.gender"
+                  ></v-text-field> -->
+                  <v-radio-group v-model="newCharacter.gender" row>
+                    <v-radio
+                      label="남"
+                      color="rgba(192,0,0,1)"
+                      value="male"
+                    ></v-radio>
+                    <v-radio
+                      label="여"
+                      color="rgba(192,0,0,1)"
+                      value="female"
+                    ></v-radio>
+                  </v-radio-group>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field 
+                    label="역할" 
+                    required
+                    v-model="newCharacter.role"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field 
+                    label="직업" 
+                    required
+                    v-model="newCharacter.job"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field 
+                    label="성격" 
+                    required
+                    v-model="newCharacter.personallity"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field 
+                    label="특이사항" 
+                    required
+                    v-model="newCharacter.significant"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="rgba(192,0,0,1)" text @click="createNewCharacter(), dialog=false">create</v-btn>
+            <v-btn color="rgba(192,0,0,1)" text @click="clearNewCharacter(), dialog=false">close</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-form>
     </v-dialog>
 
   </v-container>
@@ -240,6 +291,18 @@ import http from "../../http-common";
 import PictureInput from "vue-picture-input";
 import AWS from "aws-sdk";
 import { mapActions, mapMutations, mapGetters } from "vuex";
+import {ValidationProvider, extend} from 'vee-validate';
+import {required, numeric} from 'vee-validate/dist/rules';
+
+extend('numeric', {
+  ...numeric,
+  message:"숫자만 입력해야합니다."
+});
+
+extend('required', {
+  ...required,
+  message: (field, value) => "필수 입력 항목입니다."
+})
 
 export default {
   data() {
@@ -255,7 +318,7 @@ export default {
         genrePks: [3], //
         hashTagStrs: [] //
       },
-
+      
       bucketInfo: {
         albumBucketName: "episode-image",
         bucketRegion: "ap-northeast-2",
@@ -319,9 +382,22 @@ export default {
           color:"blue"
         },
       ],
+      newCharacter: {
+        image:'',
+        name:'',
+        age:'',
+        gender:'',
+        role:'',
+        job:'',
+        personallity:'',
+        significant:''
+        // 일단 more는 안함
+      },
       newCharacterImage:'',
       selectedButton: 0,
       inputStatus:0,  // -1: 삭제, 1: 새로운 사진, 0 변화 없음
+      errored: false,
+      loading: true
     };
   },
   components: {
@@ -533,6 +609,53 @@ export default {
       } else {
         return false;
       }
+    },
+    createNewCharacter() {
+      if(newCharacter.gender === '' || newCharacter.gender === null) {
+        alert('성별을 선택하지 않았습니다!');
+      }
+      else{ //  성별 선택 완료
+        let gender;
+        if(newCharacter.gender === "male") {
+          gender = true;
+        } else if(newCharacter.gender === "female") {
+          gender = false;
+        }
+        http
+          .post('/characters', {
+            characterImage : "https://www.mstoday.co.kr/news/photo/202004/_3_1018454_448598_1539.jpg",
+            characterName : this.newCharacter.name,
+            characterAge : this.newCharacter.age,
+            characterGender : gender,
+            characterRole : this.newCharacter.role,
+            characterJob : this.newCharacter.job,
+            characterPersonallity : this.newCharacter.personallity,
+            characterSignificant : this.newCharacter.significant,
+            novelPk: this.$route.params.novelPk
+          })
+          .then(response => {
+            if(response.data.state === "ok") {
+              alert(`새로운 캐릭터가 등록되었습니다.`);
+            }
+            this.clearNewCharacter();
+          })
+          .catch(() => {
+            this.errored = true;
+          })
+          .finally(() => {
+            this.loading = false;
+          })
+      }
+    },
+    clearNewCharacter() {
+      this.newCharacter.image='';
+      this.newCharacter.name='';
+      this.newCharacter.age='';
+      this.newCharacter.gender='';
+      this.newCharacter.role='';
+      this.newCharacter.job='';
+      this.newCharacter.personallity='';
+      this.newCharacter.significant='';
     }
 
   }
