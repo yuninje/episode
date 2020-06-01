@@ -218,13 +218,16 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12">
+                  <ValidationProvider rules="required|numeric|checkAge" v-slot="{errors}">
                   <v-text-field 
+                    v-model="newCharacter.age"
                     label="나이" 
                     required
-                    v-model="newCharacter.age"
                   ></v-text-field>
+                  <span class="error-message">{{errors[0]}}</span>
+                  </ValidationProvider>
                 </v-col>
-                <v-col cols="12" justify="center">
+                <v-col cols="12" class="d-flex justify-center">
                   <!-- <v-text-field 
                     label="성별" 
                     required
@@ -291,8 +294,8 @@ import http from "../../http-common";
 import PictureInput from "vue-picture-input";
 import AWS from "aws-sdk";
 import { mapActions, mapMutations, mapGetters } from "vuex";
-import {ValidationProvider, extend} from 'vee-validate';
-import {required, numeric} from 'vee-validate/dist/rules';
+import { ValidationProvider, extend } from 'vee-validate';
+import { required, numeric } from 'vee-validate/dist/rules';
 
 extend('numeric', {
   ...numeric,
@@ -302,7 +305,15 @@ extend('numeric', {
 extend('required', {
   ...required,
   message: (field, value) => "필수 입력 항목입니다."
-})
+});
+
+extend('checkAge', (value) => {
+  if(parseInt(value).toString() === value) {
+    return true;
+  } else{
+    return '올바르지 않은 형식입니다. 0 이상의 정수를 입력해주세요.'
+  }
+});
 
 export default {
   data() {
@@ -401,7 +412,8 @@ export default {
     };
   },
   components: {
-    PictureInput
+    PictureInput,
+    ValidationProvider
   },
   beforeCreate() {
     this.novelPk = this.$route.params.novelPk
@@ -611,40 +623,45 @@ export default {
       }
     },
     createNewCharacter() {
-      if(newCharacter.gender === '' || newCharacter.gender === null) {
+      if(this.newCharacter.gender === '' || this.newCharacter.gender === null) {
         alert('성별을 선택하지 않았습니다!');
       }
       else{ //  성별 선택 완료
         let gender;
-        if(newCharacter.gender === "male") {
+        if(this.newCharacter.gender === "male") {
           gender = true;
-        } else if(newCharacter.gender === "female") {
+        } else if(this.newCharacter.gender === "female") {
           gender = false;
         }
-        http
-          .post('/characters', {
-            characterImage : "https://www.mstoday.co.kr/news/photo/202004/_3_1018454_448598_1539.jpg",
-            characterName : this.newCharacter.name,
-            characterAge : this.newCharacter.age,
-            characterGender : gender,
-            characterRole : this.newCharacter.role,
-            characterJob : this.newCharacter.job,
-            characterPersonallity : this.newCharacter.personallity,
-            characterSignificant : this.newCharacter.significant,
-            novelPk: this.$route.params.novelPk
-          })
-          .then(response => {
-            if(response.data.state === "ok") {
-              alert(`새로운 캐릭터가 등록되었습니다.`);
-            }
-            this.clearNewCharacter();
-          })
-          .catch(() => {
-            this.errored = true;
-          })
-          .finally(() => {
-            this.loading = false;
-          })
+
+        if(this.isNum(this.newCharacter.age) && this.newCharacter.age !== '') {
+          http
+            .post('/characters', {
+              characterImage : "https://www.mstoday.co.kr/news/photo/202004/_3_1018454_448598_1539.jpg",
+              characterName : this.newCharacter.name,
+              characterAge : this.newCharacter.age,
+              characterGender : gender,
+              characterRole : this.newCharacter.role,
+              characterJob : this.newCharacter.job,
+              characterPersonallity : this.newCharacter.personallity,
+              characterSignificant : this.newCharacter.significant,
+              novelPk: this.$route.params.novelPk
+            })
+            .then(response => {
+              if(response.data.state === "ok") {
+                alert(`새로운 캐릭터가 등록되었습니다.`);
+              }
+              this.clearNewCharacter();
+            })
+            .catch(() => {
+              this.errored = true;
+            })
+            .finally(() => {
+              this.loading = false;
+            })
+        } else {  //  나이 형식 에러
+          alert('올바르지 않은 형식입니다. 나이는 0 이상의 정수를 입력해주세요.');
+        }
       }
     },
     clearNewCharacter() {
@@ -656,6 +673,15 @@ export default {
       this.newCharacter.job='';
       this.newCharacter.personallity='';
       this.newCharacter.significant='';
+    },
+    isNum(str) {
+      if(parseInt(str).toString() === str) {
+        return true;
+      } else {
+        console.log(parseInt(str).toString());
+        console.log(str)
+        return false;
+      }
     }
 
   }
@@ -704,5 +730,8 @@ export default {
 .rectangle-outlined {
   border: 1px solid;
   border-color: rgba(255,83,83,1);
+}
+.error-message {
+    color: rgb(192, 0, 0);
 }
 </style>
