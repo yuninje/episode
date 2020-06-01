@@ -10,8 +10,10 @@ import Mywork from '../components/work/PageMyWork'
 import Feel from '../components/feel/PageFeel'  //  여긴 나중에 바뀔 예정
 import Top100 from '../components/top/PageTop100'  //  여긴 나중에 바뀔 예정
 import NovelDetail from '../components/novel/PageNovelDetail'
-import GenNovel from '../components/novel/PageGenerateNovel'
+import NovelGen from '../components/novel/PageNovelGenerate'
+import NovelSet from '../components/novel/PageNovelSetting'
 import Search from '../components/search/PageSearch'
+import All from '../components/all/PageAll'
 
 import Viewer from '../components/viewer/PageViewer'
 
@@ -38,7 +40,8 @@ const routes = [
   {
     path: '/novel/edit',
     name: 'Editor',
-    component: Editor
+    component: Editor,
+    beforeEnter: rejectUnAuthUser
   },
   {
     path: '/mywork',
@@ -47,7 +50,7 @@ const routes = [
     beforeEnter: rejectUnAuthUser
   },
   {
-    path: '/feel',
+    path: '/feel/:feelPk',
     name: 'Feel',
     component: Feel
   },
@@ -57,7 +60,7 @@ const routes = [
     component: Top100
   },
   {
-    path: '/noveldetail/:novelPk',
+    path: '/novel/detail/:novelPk',
     name: 'NovelDetail',
     component: NovelDetail
   },
@@ -68,15 +71,26 @@ const routes = [
   },
   {
     path: '/novel/generate',
-    name: 'GenNovel',
-    component: GenNovel,
+    name: 'NovelGen',
+    component: NovelGen,
     beforeEnter: rejectUnAuthUser
   },
   { 
     path: '/search/:searchKeyword',
     name: 'Search',
     component: Search
-  }
+  },
+  {
+    path: '/all',
+    name: 'All',
+    component: All
+  },
+  {
+    path: '/novel/setting/:novelPk',
+    name: 'NovelSet',
+    component: NovelSet,
+    beforeEnter: rejectUnAuthUser
+  },
 ]
 
 function rejectUnAuthUser (to, from, next) {

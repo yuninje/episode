@@ -1,5 +1,5 @@
 <template>
-    <div class="viewer-container">
+    <div class="viewer-container" v-if="data.novel">
 
         <!-- 소설 커버 이미지 -->
         <img class="novel-cover" :src="data.novel.novelImage"/>

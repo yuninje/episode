@@ -4,7 +4,7 @@
       <div class="work-category">전체작품</div>
       <section class="work-section">
         <div class="card-grid">
-          <router-link :to="`noveldetail/${ item.novelPk }`" v-for="item in allList" :key="item.novelPk" class="card">
+          <router-link :to="`novel/detail/${ item.novelPk }`" v-for="item in allList" :key="item.novelPk" class="card">
             <img class="card__background" v-if="!item.novelImage" :src = "require(`@/assets/images/banner0.png`)">
             <img class="card__background" v-if="item.novelImage"  :src="item.novelImage">
             <div class="card__content">
@@ -14,7 +14,9 @@
 
           <router-link :to="`novel/generate`" class="card">
             <div class="card__background" style="border: solid 1px rgb(192, 0, 0)"></div>
-            <div class="card__content">+</div>
+            <div class="card__content__center">
+              <v-icon medium color="rgb(192, 0, 0)">mdi-plus</v-icon>
+            </div>
           </router-link>
         </div>
       </section>
@@ -24,7 +26,7 @@
       <div class="work-category">연재 중 작품</div>
       <section class="work-section">
         <div class="card-grid">
-          <router-link :to="`noveldetail/${ item.novelPk }`" v-for="item in publishList" :key="item.novelPk" class="card">
+          <router-link :to="`novel/detail/${ item.novelPk }`" v-for="item in publishList" :key="item.novelPk" class="card">
             <img class="card__background" v-if="!item.novelImage" :src = "require(`@/assets/images/banner0.png`)">
             <img class="card__background" v-if="item.novelImage"  :src="item.novelImage">
             <div class="card__content">
@@ -34,7 +36,9 @@
 
           <router-link :to="`novel/generate`" class="card">
             <div class="card__background" style="border: solid 1px rgb(192, 0, 0)"></div>
-            <div class="card__content">+</div>
+            <div class="card__content__center">
+              <v-icon medium color="rgb(192, 0, 0)">mdi-plus</v-icon>
+            </div>
           </router-link>
         </div>
       </section>
@@ -44,7 +48,7 @@
       <div class="work-category">작성 중 작품</div>
       <section class="work-section">
         <div class="card-grid">
-          <router-link :to="`noveldetail/${ item.novelPk }`" v-for="item in writeList" :key="item.novelPk" class="card">
+          <router-link :to="`novel/detail/${ item.novelPk }`" v-for="item in writeList" :key="item.novelPk" class="card">
             <img class="card__background" v-if="!item.novelImage" :src = "require(`@/assets/images/banner0.png`)">
             <img class="card__background" v-if="item.novelImage"  :src="item.novelImage">
             <div class="card__content">
@@ -54,7 +58,9 @@
 
           <router-link :to="`novel/generate`" class="card">
             <div class="card__background" style="border: solid 1px rgb(192, 0, 0)"></div>
-            <div class="card__content">+</div>
+            <div class="card__content__center">
+              <v-icon medium color="rgb(192, 0, 0)">mdi-plus</v-icon>
+            </div>
           </router-link>
         </div>
       </section>
@@ -69,9 +75,9 @@ export default {
   data() {
     return {
       novelList: [
-        { title: "전체 소설 1" },
-        { title: "전체 소설 2" },
-        { title: "전체 소설 3" }
+        { title: "전체 소설 모음 1" },
+        { title: "전체 소설 모음 2" },
+        { title: "전체 소설 모음 3" }
       ],
     };
   },
@@ -111,7 +117,6 @@ export default {
   margin-left: auto;
   margin-right: auto;
 }
-
 .work-category {
   padding: 0 var(--spacing-s);
   font-weight: 700;
@@ -128,8 +133,8 @@ export default {
 
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  grid-column-gap: var(--spacing-l);
+  grid-template-columns: repeat(3, 1fr);
+  grid-column-gap: var(--spacing-s);
   grid-row-gap: var(--spacing-l);
   max-width: var(--width-container);
   width: 100%;
@@ -145,13 +150,15 @@ export default {
 
 @media (min-width: 540px) {
   .card-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(6, 1fr);
+    grid-column-gap: var(--spacing-l);
   }
 }
 
 @media (min-width: 960px) {
   .card-grid {
     grid-template-columns: repeat(6, 1fr);
+    grid-column-gap: var(--spacing-l);
   }
 }
 
@@ -195,6 +202,13 @@ export default {
   padding: var(--spacing-m);
   position: absolute;
   top: 0;
+}
+
+.card__content__center{
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%)
 }
 
 .card__category {

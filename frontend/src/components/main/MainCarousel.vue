@@ -32,7 +32,7 @@ export default {
                 },
                 {
                     src: 'banner3.png',
-                    link: 'https://www.google.com',
+                    link: '/novel/detail/11',
                 },
                 {
                     src: 'banner1.png',
