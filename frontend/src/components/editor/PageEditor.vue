@@ -46,7 +46,7 @@
 
           <!-- 맞춤법 검사 시작 -->
           <button class="right-menu" v-on:click="hans">맞춤법 검사</button>
-          <div class="spell-box">
+          <div class="spell-box" v-show="spellOpen">
             <!-- <ol>
               <li v-for="(item, idx) in list" v-bind:key="idx"> {{item}} </li>
             </ol> -->
@@ -163,6 +163,9 @@ export default {
 
       // 맞춤법 테스트
       list: [],
+
+      // 맞춤법 창 오픈 여부
+      spellOpen: false
     };
   },
   created() {
@@ -299,6 +302,7 @@ export default {
       // console.log("editor ready!", editor);
     },
     hans: function(){
+      this.openSpellBox(); //  spell-box 오픈
       console.log("스펠 이벤트 발생")
       console.log(this.textContent)
       // console.log(this.list)
@@ -310,6 +314,13 @@ export default {
     },
     checker: function(result){
       this.list = result
+    },
+    openSpellBox() {
+      if(this.spellOpen === false) {
+        this.spellOpen = true;
+      } else {
+        this.spellOpen = false;
+      }
     }
   },
   computed: {
