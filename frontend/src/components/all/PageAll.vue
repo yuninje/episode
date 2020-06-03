@@ -330,4 +330,11 @@ button {
     background-color: rgba(255,83,83,1) !important;
     color: white !important;
 }
+
+.overflow-text {
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space: pre-line;
+  max-height: 60px;
+}
 </style>
