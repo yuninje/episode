@@ -8,8 +8,8 @@
           <v-col cols="12">
             <div class="pic-uploader">
               <picture-input
-                @change="onChange"
-                @remove="onRemove"
+                @change="onChangeCharacter"
+                @remove="onRemoveCharacter"
                 ref="inputFile"
                 button-class="btn"
                 buttonClass="pic-ch-btn"
@@ -203,11 +203,33 @@
           <v-container>
             <v-row>
               <v-col cols="12">
-                <v-img 
+                <!-- <v-img 
                   height="200"
                   src="@/assets/images/upload.png"
                   @click=""
-                ></v-img>
+                ></v-img> -->
+                <picture-input
+                  @change="onChange"
+                  @remove="onRemove"
+                  ref="inputFile"
+                  button-class="btn"
+                  buttonClass="pic-ch-btn"
+                  removeButtonClass="pic-rem-btn"
+                  accept="image/jpeg, image/png"
+                  width="500"
+                  height="500"
+                  size="10"
+                  radius="0"
+                  :crop="true"
+                  :removable="true"
+                  :hideChangeButton="false"
+                  :custom-strings="{
+                    upload: '소설 이미지를 등록하세요 +',
+                    drag: '캐릭터 이미지를 등록하세요 😺',
+                    change: '이미지 수정  | ',
+                    remove: '삭제'
+                  }"
+                  ></picture-input>
               </v-col>
               <v-col cols="12">
                 <v-text-field label="이름" required></v-text-field>
@@ -263,6 +285,7 @@ export default {
       },
       today: new Date().toLocaleDateString(),
       inputFile: null,
+      inputFileCha:null,
       buttons: [
         "캐릭터",
         "세계관",
@@ -362,6 +385,17 @@ export default {
       this.image = ''
       this.inputStatus = -1
     },
+    onChangeCharacter(image) { //이미지가 선택됨
+      if (image) {  // 이미지가 로드됨
+        this.image = image;
+        this.inputFileCha = this.$refs.inputFile.file;
+      }else {
+        console.log("캐릭터 이미지를 로드하는데 실패했습니다.");
+      }
+    },
+    onRemoveCharacter() {
+      this.image = ''
+    },
     onPrefill() {
       if(this.novelInfo.novelImage) {
         return this.novelInfo.novelImage
@@ -369,7 +403,7 @@ export default {
     },
 
     /** S3 이미지 업로드 */
-    uploadNovelImage(path, photoKey, ext) {
+    uploadNovelImage(path, photoKey, ext, file) {
       AWS.config.update({
         region: this.bucketInfo.bucketRegion,
         credentials: new AWS.CognitoIdentityCredentials({
@@ -381,8 +415,6 @@ export default {
         apiVersion: "2006-03-01",
         params: { Bucket: this.bucketInfo.albumBucketName }
       });
-
-      let file = this.inputFile
 
       s3.upload(
         {
@@ -496,8 +528,9 @@ export default {
           let memPk = this.novelInfo.member.memPk
           let photoKey = memPk+'_'+time.getTime()
           let ext='.jpg'
+          let file = this.inputFile
 
-          this.uploadNovelImage(path, photoKey, ext)
+          this.uploadNovelImage(path, photoKey, ext, file)
           this.updateInfo.novelImage = 'https://episode-image.s3.ap-northeast-2.amazonaws.com/' + path + photoKey + ext
         }
         this.inputStatus=0;
