@@ -105,11 +105,11 @@
           <!-- 기존 등록된 캐릭터 카드 -->
           <v-col 
             cols="3" 
-            v-for="(card, i) in cards"
+            v-for="(character, i) in characters"
             :key=i
           >
             <v-card
-              :color="card.color"
+              color="blue"
             >
               <v-row>
                 <v-col cols="8">
@@ -118,18 +118,18 @@
                     dark
                   >
                     <v-list-item-content>
-                      <v-list-item-title class="title">{{card.name}}</v-list-item-title>
-                      <v-list-item-subtitle>나이 : {{card.age}}세</v-list-item-subtitle>
-                      <v-list-item-subtitle>직업 : {{card.job}}</v-list-item-subtitle>
-                      <v-list-item-subtitle>역할 : {{card.role}}</v-list-item-subtitle>
-                      <v-list-item-subtitle>특이사항 : {{card.special}}</v-list-item-subtitle>
+                      <v-list-item-title class="title">{{character.characterName}}</v-list-item-title>
+                      <v-list-item-subtitle>나이 : {{character.characterAge}}세</v-list-item-subtitle>
+                      <v-list-item-subtitle>직업 : {{character.characterJob}}</v-list-item-subtitle>
+                      <v-list-item-subtitle>역할 : {{character.characterRole}}</v-list-item-subtitle>
+                      <v-list-item-subtitle>특이사항 : {{character.characterSignificant}}</v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
                 </v-col>
                 <v-col cols="4">
                   <v-avatar tile size="100%" class="px-2">
                     <v-img
-                      :src="card.img"
+                      :src="character.characterImage"
                     ></v-img>
                   </v-avatar>
                 </v-col>
@@ -346,53 +346,54 @@ export default {
         "+"
       ],
       dialog: false,
-      cards: [
-        {
-          img: "https://img1.daumcdn.net/thumb/R800x0/?scode=mtistory2&fname=https%3A%2F%2Ft1.daumcdn.net%2Fcfile%2Ftistory%2F2345743655F2DD2A08",
-          name:"치즈",
-          age:1,
-          job:"주인",
-          role:"놀고 먹는 것",
-          special: "잠이 많음",
-          color:"pink"
-        },
-        {
-          img:"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRvXvViz3ZxXneCFTsSC6bnkIgu-ZT29fIGl1C-nqx07E14SPZk&usqp=CAU",
-          name:"비글",
-          age:1,
-          job:"경비",
-          role:"집 지키는 것",
-          special: "3대 악마견",
-          color:"green"
-        },
-        {
-          img:"https://img1.daumcdn.net/thumb/R800x0/?scode=mtistory2&fname=https%3A%2F%2Ft1.daumcdn.net%2Fcfile%2Ftistory%2F27683E3B526DDFD620",
-          name:"리트리버",
-          age:2,
-          job:"경비",
-          role:"집 지키는 것",
-          special: "사람 친화적",
-          color:"grey"
-        },
-        {
-          img:"https://i.pinimg.com/736x/67/7e/db/677edbdb9e16f4f95adb302fa508fa3b.jpg",
-          name:"고등어",
-          age:2,
-          job:"주인",
-          role:"뛰어 다니는 것",
-          special: "말 안들음",
-          color:"indigo"
-        },
-        {
-          img:"https://scontent-gmp1-1.cdninstagram.com/v/t51.2885-15/e35/16584031_1846523242287591_6149872609245790208_n.jpg?_nc_ht=scontent-gmp1-1.cdninstagram.com&_nc_cat=103&_nc_ohc=JuXCIvXTWVsAX-iNib7&oh=96aaa7045ddb7a650773af098133def5&oe=5EF81923",
-          name:"순무",
-          age:4,
-          job:"분노고양이",
-          role:"화내는 것",
-          special: "순무처럼 생김",
-          color:"blue"
-        },
-      ],
+      characters:[],
+      // cards: [
+      //   {
+      //     img: "https://img1.daumcdn.net/thumb/R800x0/?scode=mtistory2&fname=https%3A%2F%2Ft1.daumcdn.net%2Fcfile%2Ftistory%2F2345743655F2DD2A08",
+      //     name:"치즈",
+      //     age:1,
+      //     job:"주인",
+      //     role:"놀고 먹는 것",
+      //     special: "잠이 많음",
+      //     color:"pink"
+      //   },
+      //   {
+      //     img:"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRvXvViz3ZxXneCFTsSC6bnkIgu-ZT29fIGl1C-nqx07E14SPZk&usqp=CAU",
+      //     name:"비글",
+      //     age:1,
+      //     job:"경비",
+      //     role:"집 지키는 것",
+      //     special: "3대 악마견",
+      //     color:"green"
+      //   },
+      //   {
+      //     img:"https://img1.daumcdn.net/thumb/R800x0/?scode=mtistory2&fname=https%3A%2F%2Ft1.daumcdn.net%2Fcfile%2Ftistory%2F27683E3B526DDFD620",
+      //     name:"리트리버",
+      //     age:2,
+      //     job:"경비",
+      //     role:"집 지키는 것",
+      //     special: "사람 친화적",
+      //     color:"grey"
+      //   },
+      //   {
+      //     img:"https://i.pinimg.com/736x/67/7e/db/677edbdb9e16f4f95adb302fa508fa3b.jpg",
+      //     name:"고등어",
+      //     age:2,
+      //     job:"주인",
+      //     role:"뛰어 다니는 것",
+      //     special: "말 안들음",
+      //     color:"indigo"
+      //   },
+      //   {
+      //     img:"https://scontent-gmp1-1.cdninstagram.com/v/t51.2885-15/e35/16584031_1846523242287591_6149872609245790208_n.jpg?_nc_ht=scontent-gmp1-1.cdninstagram.com&_nc_cat=103&_nc_ohc=JuXCIvXTWVsAX-iNib7&oh=96aaa7045ddb7a650773af098133def5&oe=5EF81923",
+      //     name:"순무",
+      //     age:4,
+      //     job:"분노고양이",
+      //     role:"화내는 것",
+      //     special: "순무처럼 생김",
+      //     color:"blue"
+      //   },
+      // ],
       newCharacter: {
         image:'',
         name:'',
@@ -428,7 +429,9 @@ export default {
       novelInfo: "getNovelInfo",
     }),
   },
-  mounted() {},
+  mounted() {
+    this.getCharacters();
+  },
   methods: {
     ...mapActions("storeGenNov", {
       postNovel: "postNovel",
@@ -621,6 +624,20 @@ export default {
       } else {
         return false;
       }
+    },
+    getCharacters() {
+      http
+        .get(`/characters/novelPk=${this.$route.params.novelPk}`)
+        .then(response => {
+          console.log(response.data.data);
+          this.characters = response.data.data;
+        })
+        .catch(() => {
+          this.errored = true;
+        })
+        .finally(() => {
+          this.loading = false;
+        })
     },
     createNewCharacter() {
       if(this.newCharacter.gender === '' || this.newCharacter.gender === null) {
