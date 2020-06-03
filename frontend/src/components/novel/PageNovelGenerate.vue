@@ -136,6 +136,7 @@ export default {
     },
     onRemove() {
       this.image = ''
+      this.inputFile=null
     },
     /** S3 이미지 업로드 */
     uploadNovelImage(photoKey) {
