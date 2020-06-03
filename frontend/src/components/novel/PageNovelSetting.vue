@@ -8,8 +8,8 @@
           <v-col cols="12">
             <div class="pic-uploader">
               <picture-input
-                @change="onChangeCharacter"
-                @remove="onRemoveCharacter"
+                @change="onChange"
+                @remove="onRemove"
                 ref="inputFile"
                 button-class="btn"
                 buttonClass="pic-ch-btn"
@@ -210,9 +210,9 @@
                     @click=""
                   ></v-img> -->
                   <picture-input
-                    @change="onChange"
-                    @remove="onRemove"
-                    ref="inputFile"
+                    @change="onChangeCharacter"
+                    @remove="onRemoveCharacter"
+                    ref="inputFileCha"
                     button-class="btn"
                     buttonClass="pic-ch-btn"
                     removeButtonClass="pic-rem-btn"
@@ -225,7 +225,7 @@
                     :removable="true"
                     :hideChangeButton="false"
                     :custom-strings="{
-                      upload: '소설 이미지를 등록하세요 +',
+                      upload: '캐릭터이미지를 등록하세요 +',
                       drag: '캐릭터 이미지를 등록하세요 😺',
                       change: '이미지 수정  | ',
                       remove: '삭제'
@@ -471,18 +471,23 @@ export default {
     },
     onRemove() {
       this.image = ''
+      this.inputFile=null
       this.inputStatus = -1
     },
     onChangeCharacter(image) { //이미지가 선택됨
       if (image) {  // 이미지가 로드됨
         this.image = image;
-        this.inputFileCha = this.$refs.inputFile.file;
+        this.inputFileCha = this.$refs.inputFileCha.file;
       }else {
         console.log("캐릭터 이미지를 로드하는데 실패했습니다.");
       }
     },
     onRemoveCharacter() {
       this.image = ''
+      this.$refs.inputFileCha.file=null
+      this.$refs.inputFileCha.image=""
+      this.$refs.inputFileCha.imageObject=null
+      this.inputFileCha = null
     },
     onPrefill() {
       if(this.novelInfo.novelImage) {
@@ -668,9 +673,22 @@ export default {
         }
 
         if(this.isNum(this.newCharacter.age) && this.newCharacter.age !== '') {
+          if(this.inputFileCha!=null) {
+            let path = 'character/' + this.novelPk + '/'
+            let time = new Date()
+            let photoKey = this.novelPk+'_'+time.getTime()
+            let ext='.jpg'
+            const file = this.inputFileCha
+            this.uploadNovelImage(path, photoKey, ext, file)
+            this.newCharacter.image = 'https://episode-image.s3.ap-northeast-2.amazonaws.com/' + path + photoKey + ext
+          }else {
+            // 기본 이미지로 저장
+            this.newCharacter.image = "https://www.mstoday.co.kr/news/photo/202004/_3_1018454_448598_1539.jpg"
+          }
+          
           http
             .post('/characters', {
-              characterImage : "https://www.mstoday.co.kr/news/photo/202004/_3_1018454_448598_1539.jpg",
+              characterImage : this.newCharacter.image,
               characterName : this.newCharacter.name,
               characterAge : this.newCharacter.age,
               characterGender : gender,
@@ -685,6 +703,7 @@ export default {
                 alert(`새로운 캐릭터가 등록되었습니다.`);
               }
               this.clearNewCharacter();
+              this.$refs.inputFileCha.removeImage()
             })
             .catch(() => {
               this.errored = true;
