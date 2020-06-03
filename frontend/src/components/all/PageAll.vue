@@ -23,7 +23,7 @@
                             v-for="genre in genres"
                             :key="genre.genrePk"
                             class="tab"
-                            @click="getNovels(genre.genrePk)"
+                            f="getNovels(genre.genrePk)"
                         >
                             {{genre.genreName}}
                         </v-tab>
@@ -41,7 +41,14 @@
                               cols="6"
                               md="6"
                               >
-                        <div class="card">
+                                <NovelCard
+                                  :novelImage = "novel.novelImage"
+                                  :novelName = "novel.novelName"
+                                  :novelIntro = "novel.novelIntro"
+                                  :novelPk = "novel.novelPk"
+                                  :episodeCount = "novel.episodeCount"
+                                ></NovelCard>
+                        <!-- <div class="card">
   <div class="img-avatar">
     <svg viewBox="0 0 100 100">
     <path 
@@ -72,7 +79,7 @@
   
  
   
-</div>
+</div> -->
                             </v-col>
                             </v-row>
                           </v-container>
@@ -86,6 +93,7 @@
 
 <script>
 import http from '../../http-common'
+import NovelCard from '../card/NovelCard'
 
 export default {
     data() {
@@ -181,6 +189,9 @@ export default {
             }
         }
     },
+    components: {
+      NovelCard
+    }
 }
 </script>
 
