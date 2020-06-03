@@ -50,7 +50,7 @@ const routes = [
     beforeEnter: rejectUnAuthUser
   },
   {
-    path: '/feel',
+    path: '/feel/:feelPk',
     name: 'Feel',
     component: Feel
   },

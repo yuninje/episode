@@ -14,7 +14,7 @@
             <v-img
               :src="require(`@/assets/images/${item.name}`)"
               aspect-ratio=1
-              @click="gotoFeel()"
+              @click="gotoFeel(i+1)"
               class="feel-content"
             >
             </v-img>
@@ -50,8 +50,8 @@ export default {
     }
   },
   methods: {
-    gotoFeel() {
-      this.$router.push('/feel');
+    gotoFeel(feelPk) {
+      this.$router.push(`/feel/${feelPk}`);
     }
   }
 }
