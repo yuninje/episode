@@ -55,9 +55,9 @@
     <img class="portada" :src="novel.novelImage">
     <div class="title-total">   
       <div class="total">총 152화</div>
-      <h2>{{novel.novelName}}</h2>
+      <h3 class="overflow-text">{{novel.novelName}}</h3>
   
-  <div class="desc">{{novel.novelIntro}}</div>
+  <div class="desc overflow-text">{{novel.novelIntro}}</div>
   <div class="actions">
     <button><i class="far fa-heart"></i></button>
     <button><i class="far fa-envelope"></i></button>
@@ -321,5 +321,12 @@ button {
 .v-tab--active {
     background-color: rgba(255,83,83,1) !important;
     color: white !important;
+}
+
+.overflow-text {
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space: pre-line;
+  max-height: 60px;
 }
 </style>

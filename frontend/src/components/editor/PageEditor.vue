@@ -42,6 +42,38 @@
             @ready="onEditorReady($event)"
           />
           <div id="cnt-letter">{{ textCount | comma }} / 5000</div>
+
+
+          <!-- 맞춤법 검사 시작 -->
+          <button class="right-menu" v-on:click="hans">맞춤법 검사</button>
+          <div class="spell-box">
+            <!-- <ol>
+              <li v-for="(item, idx) in list" v-bind:key="idx"> {{item}} </li>
+            </ol> -->
+      <v-tabs vertical>
+        <v-tab class="overflow-text" v-for="(item, idx) in list" v-bind:key="idx">
+          {{item.token}}
+        </v-tab>
+  
+        <v-tab-item v-for="(item, idx) in list" v-bind:key="idx">
+          <v-card flat>
+            <v-card-text>
+              <h3> 추천 맞춤법 </h3>
+              <p>
+                <ol>
+                  <li v-for="(sug, idx) in item.suggestions" v-bind:key="idx"> {{sug}} </li>
+                </ol>
+              </p>
+              <p class="mb-0">
+                {{item.info}}
+              </p>
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+      </v-tabs>
+
+          </div>
+          <!-- 맞춤법 검사 끝 -->
         </div>
 
         <div class="middle-btm">
@@ -52,12 +84,10 @@
           >(자동 저장됨) 마지막 저장 시간: {{ getSaveTime.auto }}</span>
           <span v-show="this.getSaveTime.default" id="btm-autosave">마지막 저장 시간: {{ getSaveTime.default }}</span>
           <span class="div-save-wrap">
-            <button id="btn-save" v-on:click="hans">맞춤법 검사</button>
-          </span>
-          <span class="div-save-wrap">
             <button id="btn-save" v-on:click="save">저장하기</button>
           </span>
         </div>
+
       </div>
 
       <div class="right-wrap">
@@ -132,7 +162,7 @@ export default {
       setWriter:"",
 
       // 맞춤법 테스트
-      list: []
+      list: [],
     };
   },
   created() {
@@ -272,7 +302,7 @@ export default {
       console.log("스펠 이벤트 발생")
       console.log(this.textContent)
       // console.log(this.list)
-      this.list = hanspell(this.spell, 6000, this.checker, function () {
+      this.list = hanspell(this.textContent, 6000, this.checker, function () {
           console.log("// check ends");
       }, function (err) {
           console.error("HTTP status code: " + err);
@@ -328,6 +358,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap');
+
 .editor-page {
   margin-left: auto;
   margin-right: auto;
@@ -340,13 +372,13 @@ export default {
 .middle-wrap {
   flex-direction: column;
   display: table;
-  margin-left: auto;
+  margin-left: -200px;
   margin-right: auto;
   width: 60vw;
 }
 .div-editor-wrap {
   margin-bottom: 16px;
-
+  position: relative;
   .editor {
     // width: 50rem;
     // height: 36rem;
@@ -436,5 +468,54 @@ export default {
       outline: 0;
     }
   }
+}
+
+.right-menu {
+    position: absolute;
+    right: -71px;
+    top: 38px;
+    padding: 5px 20px;
+    border: solid 1px rgb(204, 197, 197);
+    outline: 0;
+    border-radius: 2px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    transition: all 0.1s;
+    transition: all 0.1s;
+
+    writing-mode:tb-rl;
+    -webkit-transform:rotate(90deg);
+    -moz-transform:rotate(90deg);
+    -o-transform: rotate(90deg);
+    white-space:nowrap;
+
+    font-family: 'Noto Sans KR', sans-serif;
+
+    &:hover {
+    color: #fff;
+    box-shadow: 300px 0 0 0 rgb(192, 0, 0) inset;
+    border: 0;
+    outline: 0;
+  }
+}
+
+.spell-box {
+  width: 400px;
+  height: 100%;
+  overflow: scroll;
+  white-space: pre-line;
+  overflow-x:hidden;
+  position: absolute;
+  right: -433px;
+  top: 0px;
+  border: solid 1px rgb(204,197,197);
+}
+
+.overflow-text {
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100px;
 }
 </style>
