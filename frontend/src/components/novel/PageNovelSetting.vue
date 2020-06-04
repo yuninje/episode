@@ -105,11 +105,11 @@
           <!-- 기존 등록된 캐릭터 카드 -->
           <v-col 
             cols="3" 
-            v-for="(card, i) in cards"
+            v-for="(character, i) in characters"
             :key=i
           >
             <v-card
-              :color="card.color"
+              color="blue"
             >
               <v-row>
                 <v-col cols="8">
@@ -118,18 +118,18 @@
                     dark
                   >
                     <v-list-item-content>
-                      <v-list-item-title class="title">{{card.name}}</v-list-item-title>
-                      <v-list-item-subtitle>나이 : {{card.age}}세</v-list-item-subtitle>
-                      <v-list-item-subtitle>직업 : {{card.job}}</v-list-item-subtitle>
-                      <v-list-item-subtitle>역할 : {{card.role}}</v-list-item-subtitle>
-                      <v-list-item-subtitle>특이사항 : {{card.special}}</v-list-item-subtitle>
+                      <v-list-item-title class="title">{{character.characterName}}</v-list-item-title>
+                      <v-list-item-subtitle>나이 : {{character.characterAge}}세</v-list-item-subtitle>
+                      <v-list-item-subtitle>직업 : {{character.characterJob}}</v-list-item-subtitle>
+                      <v-list-item-subtitle>역할 : {{character.characterRole}}</v-list-item-subtitle>
+                      <v-list-item-subtitle>특이사항 : {{character.characterSignificant}}</v-list-item-subtitle>
                     </v-list-item-content>
                   </v-list-item>
                 </v-col>
                 <v-col cols="4">
                   <v-avatar tile size="100%" class="px-2">
                     <v-img
-                      :src="card.img"
+                      :src="character.characterImage"
                     ></v-img>
                   </v-avatar>
                 </v-col>
@@ -193,43 +193,119 @@
 
     <!-- 캐릭터 등록 페이지 -->
     <v-dialog v-model="dialog" persistent max-width="400px">
-      <v-card>
-        <v-card-title class="text-center">
-          <v-spacer></v-spacer>
-          캐릭터 등록
-          <v-spacer></v-spacer>
-        </v-card-title>
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col cols="12">
-                <v-img 
-                  height="200"
-                  src="@/assets/images/upload.png"
-                  @click=""
-                ></v-img>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field label="이름" required></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field label="직업" required></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field label="역할" required></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field label="특이사항" required></v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="rgba(192,0,0,1)" text @click="dialog=false">create</v-btn>
-          <v-btn color="rgba(192,0,0,1)" text @click="dialog=false">close</v-btn>
-        </v-card-actions>
-      </v-card>
+      <v-form action="" method="post" id="_createCharacterForm" name="createCharacterForm" @submit.prevent="createNewCharacter">
+        <v-card>
+          <v-card-title class="text-center">
+            <v-spacer></v-spacer>
+            캐릭터 등록
+            <v-spacer></v-spacer>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col cols="12">
+                  <!-- <v-img 
+                    height="200"
+                    src="@/assets/images/upload.png"
+                    @click=""
+                  ></v-img> -->
+                  <picture-input
+                    @change="onChangeCharacter"
+                    @remove="onRemoveCharacter"
+                    ref="inputFileCha"
+                    button-class="btn"
+                    buttonClass="pic-ch-btn"
+                    removeButtonClass="pic-rem-btn"
+                    accept="image/jpeg, image/png"
+                    width="500"
+                    height="500"
+                    size="10"
+                    radius="0"
+                    :crop="true"
+                    :removable="true"
+                    :hideChangeButton="false"
+                    :custom-strings="{
+                      upload: '캐릭터이미지를 등록하세요 +',
+                      drag: '캐릭터 이미지를 등록하세요 😺',
+                      change: '이미지 수정  | ',
+                      remove: '삭제'
+                    }"
+                  ></picture-input>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field 
+                    label="이름" 
+                    required
+                    v-model="newCharacter.name"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <ValidationProvider rules="required|numeric|checkAge" v-slot="{errors}">
+                  <v-text-field 
+                    v-model="newCharacter.age"
+                    label="나이" 
+                    required
+                  ></v-text-field>
+                  <span class="error-message">{{errors[0]}}</span>
+                  </ValidationProvider>
+                </v-col>
+                <v-col cols="12" class="d-flex justify-center">
+                  <!-- <v-text-field 
+                    label="성별" 
+                    required
+                    v-model="newCharacter.gender"
+                  ></v-text-field> -->
+                  <v-radio-group v-model="newCharacter.gender" row>
+                    <v-radio
+                      label="남"
+                      color="rgba(192,0,0,1)"
+                      value="male"
+                    ></v-radio>
+                    <v-radio
+                      label="여"
+                      color="rgba(192,0,0,1)"
+                      value="female"
+                    ></v-radio>
+                  </v-radio-group>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field 
+                    label="역할" 
+                    required
+                    v-model="newCharacter.role"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field 
+                    label="직업" 
+                    required
+                    v-model="newCharacter.job"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field 
+                    label="성격" 
+                    required
+                    v-model="newCharacter.personallity"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field 
+                    label="특이사항" 
+                    required
+                    v-model="newCharacter.significant"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="rgba(192,0,0,1)" text @click="createNewCharacter(), dialog=false">create</v-btn>
+            <v-btn color="rgba(192,0,0,1)" text @click="clearNewCharacter(), dialog=false">close</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-form>
     </v-dialog>
 
   </v-container>
@@ -240,6 +316,26 @@ import http from "../../http-common";
 import PictureInput from "vue-picture-input";
 import AWS from "aws-sdk";
 import { mapActions, mapMutations, mapGetters } from "vuex";
+import { ValidationProvider, extend } from 'vee-validate';
+import { required, numeric } from 'vee-validate/dist/rules';
+
+extend('numeric', {
+  ...numeric,
+  message:"숫자만 입력해야합니다."
+});
+
+extend('required', {
+  ...required,
+  message: (field, value) => "필수 입력 항목입니다."
+});
+
+extend('checkAge', (value) => {
+  if(parseInt(value).toString() === value) {
+    return true;
+  } else{
+    return '올바르지 않은 형식입니다. 0 이상의 정수를 입력해주세요.'
+  }
+});
 
 export default {
   data() {
@@ -255,7 +351,7 @@ export default {
         genrePks: [3], //
         hashTagStrs: [] //
       },
-
+      
       bucketInfo: {
         albumBucketName: "episode-image",
         bucketRegion: "ap-northeast-2",
@@ -263,6 +359,7 @@ export default {
       },
       today: new Date().toLocaleDateString(),
       inputFile: null,
+      inputFileCha:null,
       buttons: [
         "캐릭터",
         "세계관",
@@ -272,60 +369,75 @@ export default {
         "+"
       ],
       dialog: false,
-      cards: [
-        {
-          img: "https://img1.daumcdn.net/thumb/R800x0/?scode=mtistory2&fname=https%3A%2F%2Ft1.daumcdn.net%2Fcfile%2Ftistory%2F2345743655F2DD2A08",
-          name:"치즈",
-          age:1,
-          job:"주인",
-          role:"놀고 먹는 것",
-          special: "잠이 많음",
-          color:"pink"
-        },
-        {
-          img:"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRvXvViz3ZxXneCFTsSC6bnkIgu-ZT29fIGl1C-nqx07E14SPZk&usqp=CAU",
-          name:"비글",
-          age:1,
-          job:"경비",
-          role:"집 지키는 것",
-          special: "3대 악마견",
-          color:"green"
-        },
-        {
-          img:"https://img1.daumcdn.net/thumb/R800x0/?scode=mtistory2&fname=https%3A%2F%2Ft1.daumcdn.net%2Fcfile%2Ftistory%2F27683E3B526DDFD620",
-          name:"리트리버",
-          age:2,
-          job:"경비",
-          role:"집 지키는 것",
-          special: "사람 친화적",
-          color:"grey"
-        },
-        {
-          img:"https://i.pinimg.com/736x/67/7e/db/677edbdb9e16f4f95adb302fa508fa3b.jpg",
-          name:"고등어",
-          age:2,
-          job:"주인",
-          role:"뛰어 다니는 것",
-          special: "말 안들음",
-          color:"indigo"
-        },
-        {
-          img:"https://scontent-gmp1-1.cdninstagram.com/v/t51.2885-15/e35/16584031_1846523242287591_6149872609245790208_n.jpg?_nc_ht=scontent-gmp1-1.cdninstagram.com&_nc_cat=103&_nc_ohc=JuXCIvXTWVsAX-iNib7&oh=96aaa7045ddb7a650773af098133def5&oe=5EF81923",
-          name:"순무",
-          age:4,
-          job:"분노고양이",
-          role:"화내는 것",
-          special: "순무처럼 생김",
-          color:"blue"
-        },
-      ],
+      characters:[],
+      // cards: [
+      //   {
+      //     img: "https://img1.daumcdn.net/thumb/R800x0/?scode=mtistory2&fname=https%3A%2F%2Ft1.daumcdn.net%2Fcfile%2Ftistory%2F2345743655F2DD2A08",
+      //     name:"치즈",
+      //     age:1,
+      //     job:"주인",
+      //     role:"놀고 먹는 것",
+      //     special: "잠이 많음",
+      //     color:"pink"
+      //   },
+      //   {
+      //     img:"https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRvXvViz3ZxXneCFTsSC6bnkIgu-ZT29fIGl1C-nqx07E14SPZk&usqp=CAU",
+      //     name:"비글",
+      //     age:1,
+      //     job:"경비",
+      //     role:"집 지키는 것",
+      //     special: "3대 악마견",
+      //     color:"green"
+      //   },
+      //   {
+      //     img:"https://img1.daumcdn.net/thumb/R800x0/?scode=mtistory2&fname=https%3A%2F%2Ft1.daumcdn.net%2Fcfile%2Ftistory%2F27683E3B526DDFD620",
+      //     name:"리트리버",
+      //     age:2,
+      //     job:"경비",
+      //     role:"집 지키는 것",
+      //     special: "사람 친화적",
+      //     color:"grey"
+      //   },
+      //   {
+      //     img:"https://i.pinimg.com/736x/67/7e/db/677edbdb9e16f4f95adb302fa508fa3b.jpg",
+      //     name:"고등어",
+      //     age:2,
+      //     job:"주인",
+      //     role:"뛰어 다니는 것",
+      //     special: "말 안들음",
+      //     color:"indigo"
+      //   },
+      //   {
+      //     img:"https://scontent-gmp1-1.cdninstagram.com/v/t51.2885-15/e35/16584031_1846523242287591_6149872609245790208_n.jpg?_nc_ht=scontent-gmp1-1.cdninstagram.com&_nc_cat=103&_nc_ohc=JuXCIvXTWVsAX-iNib7&oh=96aaa7045ddb7a650773af098133def5&oe=5EF81923",
+      //     name:"순무",
+      //     age:4,
+      //     job:"분노고양이",
+      //     role:"화내는 것",
+      //     special: "순무처럼 생김",
+      //     color:"blue"
+      //   },
+      // ],
+      newCharacter: {
+        image:'',
+        name:'',
+        age:'',
+        gender:'',
+        role:'',
+        job:'',
+        personallity:'',
+        significant:''
+        // 일단 more는 안함
+      },
       newCharacterImage:'',
       selectedButton: 0,
       inputStatus:0,  // -1: 삭제, 1: 새로운 사진, 0 변화 없음
+      errored: false,
+      loading: true
     };
   },
   components: {
-    PictureInput
+    PictureInput,
+    ValidationProvider
   },
   beforeCreate() {
     this.novelPk = this.$route.params.novelPk
@@ -340,7 +452,9 @@ export default {
       novelInfo: "getNovelInfo",
     }),
   },
-  mounted() {},
+  mounted() {
+    this.getCharacters();
+  },
   methods: {
     ...mapActions("storeGenNov", {
       postNovel: "postNovel",
@@ -360,7 +474,23 @@ export default {
     },
     onRemove() {
       this.image = ''
+      this.inputFile=null
       this.inputStatus = -1
+    },
+    onChangeCharacter(image) { //이미지가 선택됨
+      if (image) {  // 이미지가 로드됨
+        this.image = image;
+        this.inputFileCha = this.$refs.inputFileCha.file;
+      }else {
+        console.log("캐릭터 이미지를 로드하는데 실패했습니다.");
+      }
+    },
+    onRemoveCharacter() {
+      this.image = ''
+      this.$refs.inputFileCha.file=null
+      this.$refs.inputFileCha.image=""
+      this.$refs.inputFileCha.imageObject=null
+      this.inputFileCha = null
     },
     onPrefill() {
       if(this.novelInfo.novelImage) {
@@ -369,7 +499,7 @@ export default {
     },
 
     /** S3 이미지 업로드 */
-    uploadNovelImage(path, photoKey, ext) {
+    uploadNovelImage(path, photoKey, ext, file) {
       AWS.config.update({
         region: this.bucketInfo.bucketRegion,
         credentials: new AWS.CognitoIdentityCredentials({
@@ -381,8 +511,6 @@ export default {
         apiVersion: "2006-03-01",
         params: { Bucket: this.bucketInfo.albumBucketName }
       });
-
-      let file = this.inputFile
 
       s3.upload(
         {
@@ -496,8 +624,9 @@ export default {
           let memPk = this.novelInfo.member.memPk
           let photoKey = memPk+'_'+time.getTime()
           let ext='.jpg'
+          let file = this.inputFile
 
-          this.uploadNovelImage(path, photoKey, ext)
+          this.uploadNovelImage(path, photoKey, ext, file)
           this.updateInfo.novelImage = 'https://episode-image.s3.ap-northeast-2.amazonaws.com/' + path + photoKey + ext
         }
         this.inputStatus=0;
@@ -531,6 +660,95 @@ export default {
       if(this.selectedButton === index) {
         return true;
       } else {
+        return false;
+      }
+    },
+    getCharacters() {
+      http
+        .get(`/characters/novelPk=${this.$route.params.novelPk}`)
+        .then(response => {
+          console.log(response.data.data);
+          this.characters = response.data.data;
+        })
+        .catch(() => {
+          this.errored = true;
+        })
+        .finally(() => {
+          this.loading = false;
+        })
+    },
+    createNewCharacter() {
+      if(this.newCharacter.gender === '' || this.newCharacter.gender === null) {
+        alert('성별을 선택하지 않았습니다!');
+      }
+      else{ //  성별 선택 완료
+        let gender;
+        if(this.newCharacter.gender === "male") {
+          gender = true;
+        } else if(this.newCharacter.gender === "female") {
+          gender = false;
+        }
+
+        if(this.isNum(this.newCharacter.age) && this.newCharacter.age !== '') {
+          if(this.inputFileCha!=null) {
+            let path = 'character/' + this.novelPk + '/'
+            let time = new Date()
+            let photoKey = this.novelPk+'_'+time.getTime()
+            let ext='.jpg'
+            const file = this.inputFileCha
+            this.uploadNovelImage(path, photoKey, ext, file)
+            this.newCharacter.image = 'https://episode-image.s3.ap-northeast-2.amazonaws.com/' + path + photoKey + ext
+          }else {
+            // 기본 이미지로 저장
+            this.newCharacter.image = "https://www.mstoday.co.kr/news/photo/202004/_3_1018454_448598_1539.jpg"
+          }
+          
+          http
+            .post('/characters', {
+              characterImage : this.newCharacter.image,
+              characterName : this.newCharacter.name,
+              characterAge : this.newCharacter.age,
+              characterGender : gender,
+              characterRole : this.newCharacter.role,
+              characterJob : this.newCharacter.job,
+              characterPersonallity : this.newCharacter.personallity,
+              characterSignificant : this.newCharacter.significant,
+              novelPk: this.$route.params.novelPk
+            })
+            .then(response => {
+              if(response.data.state === "ok") {
+                alert(`새로운 캐릭터가 등록되었습니다.`);
+              }
+              this.clearNewCharacter();
+              this.$refs.inputFileCha.removeImage()
+            })
+            .catch(() => {
+              this.errored = true;
+            })
+            .finally(() => {
+              this.loading = false;
+            })
+        } else {  //  나이 형식 에러
+          alert('올바르지 않은 형식입니다. 나이는 0 이상의 정수를 입력해주세요.');
+        }
+      }
+    },
+    clearNewCharacter() {
+      this.newCharacter.image='';
+      this.newCharacter.name='';
+      this.newCharacter.age='';
+      this.newCharacter.gender='';
+      this.newCharacter.role='';
+      this.newCharacter.job='';
+      this.newCharacter.personallity='';
+      this.newCharacter.significant='';
+    },
+    isNum(str) {
+      if(parseInt(str).toString() === str) {
+        return true;
+      } else {
+        console.log(parseInt(str).toString());
+        console.log(str)
         return false;
       }
     }
@@ -581,5 +799,8 @@ export default {
 .rectangle-outlined {
   border: 1px solid;
   border-color: rgba(255,83,83,1);
+}
+.error-message {
+    color: rgb(192, 0, 0);
 }
 </style>

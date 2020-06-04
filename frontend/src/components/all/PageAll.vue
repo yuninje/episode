@@ -23,7 +23,7 @@
                             v-for="genre in genres"
                             :key="genre.genrePk"
                             class="tab"
-                            @click="getNovels(genre.genrePk)"
+                            f="getNovels(genre.genrePk)"
                         >
                             {{genre.genreName}}
                         </v-tab>
@@ -41,7 +41,14 @@
                               cols="6"
                               md="6"
                               >
-                        <div class="card">
+                                <NovelCard
+                                  :novelImage = "novel.novelImage"
+                                  :novelName = "novel.novelName"
+                                  :novelIntro = "novel.novelIntro"
+                                  :novelPk = "novel.novelPk"
+                                  :episodeCount = "novel.episodeCount"
+                                ></NovelCard>
+                        <!-- <div class="card">
   <div class="img-avatar">
     <svg viewBox="0 0 100 100">
     <path 
@@ -55,9 +62,13 @@
     <img class="portada" :src="novel.novelImage">
     <div class="title-total">   
       <div class="total">총 152화</div>
-      <h3 class="overflow-text">{{novel.novelName}}</h3>
+      <h2 style="overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;"
+      >{{novel.novelName}}</h2>
   
-  <div class="desc overflow-text">{{novel.novelIntro}}</div>
+  <div class="desc">{{novel.novelIntro}}</div>
   <div class="actions">
     <button><i class="far fa-heart"></i></button>
     <button><i class="far fa-envelope"></i></button>
@@ -68,7 +79,7 @@
   
  
   
-</div>
+</div> -->
                             </v-col>
                             </v-row>
                           </v-container>
@@ -82,6 +93,7 @@
 
 <script>
 import http from '../../http-common'
+import NovelCard from '../card/NovelCard'
 
 export default {
     data() {
@@ -177,6 +189,9 @@ export default {
             }
         }
     },
+    components: {
+      NovelCard
+    }
 }
 </script>
 
@@ -215,6 +230,10 @@ body {
 .card .desc {
   padding: 0.5rem 1rem;
   font-size: 12px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
 }
 .card .actions {
   display: grid;
@@ -264,8 +283,8 @@ path {
 }
 
 .portada {
-  width: 100%;
-  height: 100%;
+  width: 196px;
+  height: 280px;
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
   // background-image: url("https://comicthumb-phinf.pstatic.net/20190325_108/pocket_1553525187132gW0BF_JPEG/untitled.jpg");
