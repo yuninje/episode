@@ -45,7 +45,7 @@
 
 
           <!-- 맞춤법 검사 시작 -->
-          <button class="right-menu" v-on:click="hans">맞춤법 검사</button>
+          <button class="right-menu" v-on:click="hans">맞춤법 검사</button> 
           <div class="spell-box">
             <!-- <ol>
               <li v-for="(item, idx) in list" v-bind:key="idx"> {{item}} </li>
@@ -85,6 +85,7 @@
           <span v-show="this.getSaveTime.default" id="btm-autosave">마지막 저장 시간: {{ getSaveTime.default }}</span>
           <span class="div-save-wrap">
             <button id="btn-save" v-on:click="save">저장하기</button>
+            <button id="btn-save" v-on:click="exportToWord">Word로 출력하기</button>
           </span>
         </div>
 
@@ -310,6 +311,24 @@ export default {
     },
     checker: function(result){
       this.list = result
+    },
+    exportToWord: function(){
+      let header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
+            "xmlns:w='urn:schemas-microsoft-com:office:word' "+
+            "xmlns='http://www.w3.org/TR/REC-html40'>"+
+            "<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title></head><body>";
+      let footer = "</body></html>";
+      // 출력 내용 부분
+      let exportTitle = "<h1><center>"+this.epiInfo.episodeTitle+"</center></h1>";
+      let sourceHTML = header+exportTitle+this.htmlContent+footer;
+       
+      let source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+      let fileDownload = document.createElement("a");
+      document.body.appendChild(fileDownload);
+      fileDownload.href = source;
+      fileDownload.download = this.epiInfo.episodeTitle+'.doc';
+      fileDownload.click();
+      document.body.removeChild(fileDownload);
     }
   },
   computed: {
@@ -387,7 +406,7 @@ export default {
   }
 
   #cnt-letter {
-    padding-right: 10px;
+    padding-right: 25px;
     text-align: right;
     color: rgb(192, 0, 1);
   }

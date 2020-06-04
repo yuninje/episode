@@ -56,7 +56,7 @@
       <div class="total">총 152화</div>
       <h2>{{novel.novelName}}</h2>
   
-  <div class="desc overflow-text">{{novel.novelIntro}}</div>
+  <div class="des">{{novel.novelIntro}}</div>
   <div class="actions">
     <button><i class="far fa-heart"></i></button>
     <button><i class="far fa-envelope"></i></button>
