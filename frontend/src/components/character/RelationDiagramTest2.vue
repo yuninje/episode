@@ -24,7 +24,6 @@
       ref="net"
       :net-nodes="nodes"
       :net-links="links"
-      :selection="{nodes: selected, links: linksSelected}"
       :options="options"
       :linkCb="linkCb"
       @node-click="nodeClick"
@@ -33,6 +32,7 @@
   </div>
 </template>
 
+<script src="https://d3js.org/d3.v5.min.js"></script>
 <script>
 import D3Network from "vue-d3-network";
 import * as d3 from "d3";
@@ -47,12 +47,8 @@ export default {
   },
   data() {
     return {
-      window: {
-        width: 0,
-        height: 0
-      },
       nodes: [
-        { id: 1, name: "아이유", svgSym: nodeIcon3 },
+        { id: 1, name: "아이유", svgSym: nodeIcon3 }, //fx, fy : 고정 속성
         { id: 2, name: "my node 2" },
         { id: 3, name: "orange node", _color: "orange" },
         { id: 4, _color: "#4466ff" },
@@ -63,16 +59,12 @@ export default {
         { id: 9 }
       ],
       links: [
-        {
-          sid: 1,
-          tid: 2,
-          _color: "black"
-        },
+        { sid: 1, tid: 2, _color: "black" },
         { sid: 2, tid: 8, _color: "black" },
         {
           sid: 3,
           tid: 4,
-          _svgAttrs: { "stroke-width": 1, opacity: 1 },
+          _svgAttrs: { "stroke-width": 8, opacity: 1 },
           name: "custom link",
           _color: "black"
         },
@@ -83,125 +75,101 @@ export default {
         { sid: 3, tid: 8, _color: "black" },
         { sid: 7, tid: 9, _color: "black" }
       ],
-      nodeSize: 80,
+      nodeSize: 45,
       canvas: false
     };
   },
   computed: {
     options() {
       return {
-        force: 12000, // 퍼진 정도 (첫 화면의 노드 길이 ㅠ)
-        size: { w: this.window.width, h: this.window.height },
+        force: 3000,
+        size: { w: 900, h: 600 },
         nodeSize: this.nodeSize,
         nodeLabels: true,
         linkLabels: true,
         canvas: this.canvas,
         // nodeSize: 60,
-        linkWidth: 1,
-        strLinks: false
+        linkWidth: 1
+        // strLinks: false,
       };
     }
-    // nodes() { return this.nodes },
-    // links() { return this.links },
+    // nodes() { return this.data.nodes },
+    // links() { return this.data.links },
   },
   mounted() {
     var svg = d3.select("svg");
-    // var node = svg.selectAll(".node").data(this.nodes);
-    // var path = svg.selectAll("path").data(this.links);
+    console.log(svg);
 
     // 화살표 표시 define
     svg
       .append("svg:defs")
       .append("svg:marker")
       .attr("id", "m-end") // linke의 끝부분 id: m-end ㅠㅠ
-      .attr("viewBox", "0 -5 10 10")
-      .attr("refX", 15) // 화살표가 link의 끝에 겹치지 않도록 한다.
-      .attr("refY", -1.5)
+      //   .attr("viewBox", "0 -5 10 10")
+      //   .attr("refX", 15)        // 화살표가 link의 끝에 겹치지 않도록 한다.
+      //   .attr("refY", -1.5)
       //   .attr("refX", 6)
       //   .attr("refY", 6)
-      // .attr("refX", 33)
-      // .attr("refY", 6)
-      .attr("markerWidth", 25)
-      .attr("markerHeight", 25)
+      .attr("refX", 33)
+      .attr("refY", 6)
+      .attr("markerWidth", 30)
+      .attr("markerHeight", 30)
       .attr("markerUnits", "userSpaceOnUse")
       .attr("orient", "auto")
       .append("path")
-      // .attr("d", "M 0 0 12 6 0 12 3 6")
-      .attr("d", "M0,-5L10,0L0,5")
+      .attr("d", "M 0 0 12 6 0 12 3 6")
+      //   .attr("d", "M0,-5L10,0L0,5")
       .style("fill", "black");
-  },
-  created() {
-    window.addEventListener("resize", this.handleResize);
-    this.handleResize();
-    this.reset();
+
+    // path
+    svg
+      .append("path")
+      .attr("marker-end", "url(#m-end)")
+      .attr("d", "M10 80 C 40 10, 65 10, 95 80 S 150 150, 180 80")
+      .attr("stroke", "grey")
+      .attr("stroke-width", "1.5")
+      .attr("fill", "transparent")
+      .attr("class", "edges");
+
+    svg
+      .append("line")
+      .attr("x1", 100)
+      .attr("y1", 100)
+      .attr("x2", 200)
+      .attr("y2", 100)
+      .attr("stroke-width", 1)
+      .attr("stroke", "black")
+      .attr("marker-end", "url(#m-end)");
+
+    console.log(svg.select("circle"));
+    svg
+      .selectAll("circle")
+      .append("circle")
+      .attr("r", 30)
+      .call(
+        d3
+          .drag()
+          .on("drag", dragged)
+          .on("end", dragended)
+      );
+
+    function dragged(d) {
+      console.log("dragged(d)", d);
+      d.fx = d3.event.x;
+      d.fy = d3.event.y;
+    }
+
+    function dragended(d) {
+      console.log("dragended(d)", d);
+      d.fx = d3.event.x;
+      d.fy = d3.event.y;
+    }
   },
   methods: {
-    handleResize() {
-      this.window.width = window.innerWidth;
-      this.window.height = window.innerHeight;
-    },
-    reset() {
-      this.selected = {};
-      this.linksSelected = {};
-    },
-    selection() {
-      return {
-        nodes: this.selected,
-        links: this.linksSelected
-      };
-    },
-    selectNode(node) {
-      this.selected[node.id] = node;
-    },
-    selectNodesLinks() {
-      for (let link of this.links) {
-        // node is selected
-        if (this.selected[link.sid] || this.selected[link.tid]) {
-          this.selectLink(link);
-          // node is not selected
-        } else {
-          this.unSelectLink(link.id);
-        }
-      }
-    },
-    selectLink(link) {
-      this.$set(this.linksSelected, link.id, link);
-    },
-    unSelectLink(linkId) {
-      if (this.linksSelected[linkId]) {
-        delete this.linksSelected[linkId];
-      }
-    },
-    pinNode(node) {
-      if (!node.pinned) {
-        node.pinned = true;
-        node.fx = node.x;
-        node.fy = node.y;
-      } else {
-        node.pinned = false;
-        node.fx = null;
-        node.fy = null;
-      }
-      this.nodes[node.index] = node;
-      console.log(this.nodes[node.index]);
-      console.log(this.nodes);
-    },
     nodeClick(event, node) {
-      // 마우스 뗐을때    // select는 마우스 누른 순간인듯
       console.log("nodeClick()");
       // console.log("1. event", event);
       console.log("2. node", node);
-
-      console.log(this.selected[node.id]);
-      this.pinNode(node);
-
-      if (this.selected[node.id]) {
-        // this.unSelectNode(node.id)
-        // is not selected
-      } else {
-        this.selectNode(node);
-      }
-      this.selectNodesLinks();
 
       selector %= 2;
       if (selector == 0) {
@@ -227,12 +195,13 @@ export default {
     },
     linkCb(link) {
       // link
+      console.log("lcb(link)들어옴");
       link.source = link.sid;
       link.target = link.tid;
+      // link._color = "black"
       link._svgAttrs = {
         "marker-start": "url(#m-start)",
-        "marker-end": "url(#m-end)",
-        fill: "none"
+        "marker-end": "url(#m-end)"
       };
       return link;
     },
@@ -244,7 +213,7 @@ export default {
         }
       }
       // 연결이 존재하지 않으면 새로운 링크 생성
-      let newlink = { sid: from, tid: to, _color: "black" };
+      let newlink = { sid: from, tid: to, _color: "aquamarine" };
       this.links.push(newlink);
     },
     changeIcon(event, node) {
@@ -288,4 +257,15 @@ ul.menu li {
   margin-top: 1em;
   position: relative;
 }
+
+// 안먹음^^;
+.link {
+  _color: aquamarine;
+}
+#m-end path,
+#m-start {
+  fill: rgba(48, 211, 176, 0.8);
+}
 </style>
+
+

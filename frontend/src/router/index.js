@@ -15,7 +15,7 @@ import NovelSet from '../components/novel/PageNovelSetting'
 import Search from '../components/search/PageSearch'
 import All from '../components/all/PageAll'
 import RDT from '../components/character/RelationDiagramTest'
-import RDT2 from '../components/character/RDtest'
+import RDT2 from '../components/character/RelationDiagramTest2'
 
 import Viewer from '../components/viewer/PageViewer'
 
