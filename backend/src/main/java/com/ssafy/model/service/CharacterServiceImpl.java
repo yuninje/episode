@@ -64,7 +64,7 @@ public class CharacterServiceImpl implements CharacterService {
 				.orElseThrow(() -> new NovelException(NovelException.NOT_EXIST));
 
 		Person person = pRepo.findById(requestDto.getPersonPk())
-				.orElseThrow(() -> new PersonException(PersonException.NOT_EXIST));
+				.orElse(null);
 
 		Character characterEntity = requestDto.toEntity(novel, person);
 		characterEntity = cRepo.save(characterEntity);

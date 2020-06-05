@@ -42,7 +42,7 @@ public class CharacterResponseNoNovelDto {
 		this.characterImage = character.getCharacterImage();
 		this.relations = character.getWhos().stream().map(
 				r -> new RelationResponseDto(r)).collect(Collectors.toSet());
-		this.person = new PersonResponseDto(character.getPerson());
+		if(character.getPerson() != null) this.person = new PersonResponseDto(character.getPerson());
 	}
 	
 	@Builder
