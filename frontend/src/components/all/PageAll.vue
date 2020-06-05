@@ -23,7 +23,7 @@
                             v-for="genre in genres"
                             :key="genre.genrePk"
                             class="tab"
-                            f="getNovels(genre.genrePk)"
+                            @click="getNovels(genre.genrePk)"
                         >
                             {{genre.genreName}}
                         </v-tab>
@@ -161,8 +161,8 @@ export default {
                 .then(response => {
                     // console.log(response.data.data);
                     this.novels[0] = response.data.data.content;
-                    console.log(this.novels[0]);
-                    console.log(this.novels);
+                    // console.log(this.novels[0]);
+                    // console.log(this.novels);
                 })
                 .catch(() => {
                     this.errored = true;
@@ -175,10 +175,14 @@ export default {
             console.log("getNovels 진입")
             if(genrePk !== 0){
                 http
-                    .get(`/novels/genre-pk=${genrePk}`)
+                    .get(`/novels/genre-pk=${genrePk}`, {
+                      params: {
+                        sort: "updated"
+                      }
+                    })
                     .then(response => {
-                        this.novels[genrePk] = response.data.data
-                        console.log(response.data.data);
+                        this.novels[genrePk] = response.data.data.content;
+                        // console.log(response.data.data);
                     })
                     .catch(() => {
                         this.errored = true;
