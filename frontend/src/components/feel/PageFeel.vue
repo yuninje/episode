@@ -1,11 +1,11 @@
 <template>
     <v-container>
         <v-row>
-            <v-col cols="12">
+            <!-- <v-col cols="12">
                  <p class="search-result">현재 페이지는 작업중인 페이지입니다.</p>
-            </v-col>
+            </v-col> -->
             <v-col cols="12">
-                <p class="no-result">이런 소설은 어떤가요?</p>
+                <p class="no-result">{{feelType}}</p>
             </v-col>
             <v-col cols="12" class="d-flex justify-center">
                 <v-card
@@ -40,7 +40,14 @@
                               cols="6"
                               md="6"
                               >
-                        <div class="card">
+                              <NovelCard
+                                :novelImage = "novel.novelImage"
+                                :novelName = "novel.novelName"
+                                :novelIntro = "novel.novelIntro"
+                                :novelPk = "novel.novelPk"
+                                :episodeCount = "novel.episodeCount"
+                              ></NovelCard>
+                        <!-- <div class="card">
   <div class="img-avatar" v-on:click="gotoNovelDetail(novel.novelPk)">
     <svg viewBox="0 0 100 100">
     <path 
@@ -67,7 +74,7 @@
   
  
   
-</div>
+</div> -->
                             </v-col>
                             </v-row>
                           </v-container>
@@ -81,11 +88,13 @@
 
 <script>
 import http from "../../http-common"
+import NovelCard from "../card/NovelCard"
 
 export default {
     data() {
         return {
             tab: null,
+            feelType:'',
             items: [
                 { tab: '전체', content: 'Tab 1 Content' },
                 { tab: '판타지', content: 'Tab 2 Content' },
@@ -103,6 +112,7 @@ export default {
     },
     mounted() {
       this.getFeelNovels();
+      this.getFeelType();
     },
     methods: {
       getFeelNovels() {
@@ -123,10 +133,28 @@ export default {
             this.loading = false;
           })
       },
+      getFeelType() {
+        if(this.$route.params.feelPk === "1") {
+          this.feelType = "사이다 같은 통쾌함"
+        } else if(this.$route.params.feelPk === "2") {
+          this.feelType = "역대급 먼치킨 주인공"
+        } else if(this.$route.params.feelPk === "3") {
+          this.feelType = "로맨스 치사량 주의"
+        } else if(this.$route.params.feelPk === "4") {
+          this.feelType = "인생을 바로 살다"
+        } else if(this.$route.params.feelPk === "5") {
+          this.feelType = "범인은 바로"
+        } else if(this.$route.params.feelPk === "6") {
+          this.feelType = "저세상 텐션 꿀재미"
+        }
+      },
       gotoNovelDetail(novelPk){
         this.$router.push(`/novel/detail/${novelPk}`)
       }
     },
+    components: {
+      NovelCard
+    }
 }
 </script>
 

@@ -42,6 +42,38 @@
             @ready="onEditorReady($event)"
           />
           <div id="cnt-letter">{{ textCount | comma }} / 5000</div>
+
+
+          <!-- 맞춤법 검사 시작 -->
+          <button class="right-menu" v-on:click="hans">맞춤법 검사</button>
+          <div class="spell-box" v-show="spellOpen">
+            <!-- <ol>
+              <li v-for="(item, idx) in list" v-bind:key="idx"> {{item}} </li>
+            </ol> -->
+      <v-tabs vertical>
+        <v-tab class="overflow-text" v-for="(item, idx) in list" v-bind:key="idx">
+          {{item.token}}
+        </v-tab>
+  
+        <v-tab-item v-for="(item, idx) in list" v-bind:key="idx">
+          <v-card flat>
+            <v-card-text>
+              <h3> 추천 맞춤법 </h3>
+              <p>
+                <ol>
+                  <li v-for="(sug, idx) in item.suggestions" v-bind:key="idx"> {{sug}} </li>
+                </ol>
+              </p>
+              <p class="mb-0">
+                {{item.info}}
+              </p>
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+      </v-tabs>
+
+          </div>
+          <!-- 맞춤법 검사 끝 -->
         </div>
 
         <div class="middle-btm">
@@ -52,9 +84,11 @@
           >(자동 저장됨) 마지막 저장 시간: {{ getSaveTime.auto }}</span>
           <span v-show="this.getSaveTime.default" id="btm-autosave">마지막 저장 시간: {{ getSaveTime.default }}</span>
           <span class="div-save-wrap">
-            <button id="btn-save" v-on:click="save()">저장하기</button>
+            <button id="btn-save" v-on:click="save">저장하기</button>
+            <button id="btn-save" v-on:click="exportToWord">Word로 출력하기</button>
           </span>
         </div>
+
       </div>
 
       <div class="right-wrap">
@@ -79,6 +113,8 @@ import "quill/dist/quill.snow.css";
 import KProgress from "k-progress";
 import http from "../../http-common";
 import { mapActions, mapMutations, mapGetters, mapState } from "vuex";
+
+const hanspell = require('./episode-spell');
 
 export default {
   name: "quill-example-snow",
@@ -123,6 +159,14 @@ export default {
       autoSave: null,     // 자동 저장 함수
       episodeContent: "",
       episodeWriter: "",
+      setTitle:"",
+      setWriter:"",
+
+      // 맞춤법 테스트
+      list: [],
+
+      // 맞춤법 창 오픈 여부
+      spellOpen: false
     };
   },
   created() {
@@ -232,6 +276,9 @@ export default {
 
     /* 에디터 */
     onEditorChange(value) {
+      // console.log(value);
+      this.textContent = value.text;
+      console.log(this.textContent)
       this.textLength = value.text.length;
       this.htmlContent = value.html;
       // 자동
@@ -253,9 +300,47 @@ export default {
       // console.log("editor blur", editor);
     },
     onEditorReady(editor) {
-      // console.log("editor ready", editor);
+      // console.log("editor ready!", editor);
     },
-
+    hans: function(){
+      this.openSpellBox(); //  spell-box 오픈
+      console.log("스펠 이벤트 발생")
+      console.log(this.textContent)
+      // console.log(this.list)
+      this.list = hanspell(this.textContent, 6000, this.checker, function () {
+          console.log("// check ends");
+      }, function (err) {
+          console.error("HTTP status code: " + err);
+      });
+    },
+    checker: function(result){
+      this.list = result
+    },
+    exportToWord: function(){
+      let header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
+            "xmlns:w='urn:schemas-microsoft-com:office:word' "+
+            "xmlns='http://www.w3.org/TR/REC-html40'>"+
+            "<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title></head><body>";
+      let footer = "</body></html>";
+      // 출력 내용 부분
+      let exportTitle = "<h1><center>"+this.epiInfo.episodeTitle+"</center></h1>";
+      let sourceHTML = header+exportTitle+this.htmlContent+footer;
+       
+      let source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+      let fileDownload = document.createElement("a");
+      document.body.appendChild(fileDownload);
+      fileDownload.href = source;
+      fileDownload.download = this.epiInfo.episodeTitle+'.doc';
+      fileDownload.click();
+      document.body.removeChild(fileDownload);
+    },
+    openSpellBox() {
+      if(this.spellOpen === false) {
+        this.spellOpen = true;
+      } else {
+        this.spellOpen = false;
+      }
+    }
   },
   computed: {
     ...mapGetters("storeEditor", {
@@ -303,6 +388,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap');
+
 .editor-page {
   margin-left: auto;
   margin-right: auto;
@@ -315,13 +402,13 @@ export default {
 .middle-wrap {
   flex-direction: column;
   display: table;
-  margin-left: auto;
+  margin-left: -200px;
   margin-right: auto;
   width: 60vw;
 }
 .div-editor-wrap {
   margin-bottom: 16px;
-
+  position: relative;
   .editor {
     // width: 50rem;
     // height: 36rem;
@@ -330,7 +417,7 @@ export default {
   }
 
   #cnt-letter {
-    padding-right: 10px;
+    padding-right: 25px;
     text-align: right;
     color: rgb(192, 0, 1);
   }
@@ -411,5 +498,54 @@ export default {
       outline: 0;
     }
   }
+}
+
+.right-menu {
+    position: absolute;
+    right: -71px;
+    top: 38px;
+    padding: 5px 20px;
+    border: solid 1px rgb(204, 197, 197);
+    outline: 0;
+    border-radius: 2px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    transition: all 0.1s;
+    transition: all 0.1s;
+
+    writing-mode:tb-rl;
+    -webkit-transform:rotate(90deg);
+    -moz-transform:rotate(90deg);
+    -o-transform: rotate(90deg);
+    white-space:nowrap;
+
+    font-family: 'Noto Sans KR', sans-serif;
+
+    &:hover {
+    color: #fff;
+    box-shadow: 300px 0 0 0 rgb(192, 0, 0) inset;
+    border: 0;
+    outline: 0;
+  }
+}
+
+.spell-box {
+  width: 400px;
+  height: 100%;
+  overflow: scroll;
+  white-space: pre-line;
+  overflow-x:hidden;
+  position: absolute;
+  right: -433px;
+  top: 0px;
+  border: solid 1px rgb(204,197,197);
+}
+
+.overflow-text {
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100px;
 }
 </style>
