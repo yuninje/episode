@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@Api(tags = { "4. Genre" })
+@Api(tags = { "Genre" })
 @RestController
 @RequestMapping("/genres")
 @CrossOrigin(origins = {"*"}, maxAge = 6000)
@@ -42,7 +42,7 @@ public class GenreRestController {
 
 	@ApiOperation("장르 삭제")
 	@DeleteMapping("/{genrePk}")
-	ResponseEntity<Map<String, Object>> registGenre(@PathVariable int genrePk) {
+	ResponseEntity<Map<String, Object>> deleteGenre(@PathVariable int genrePk) {
 		gService.deleteGenre(genrePk);
 		return handleSuccess("장르 삭제 완료");
 	}

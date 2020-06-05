@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@Api(tags = { "5. Search" })
+@Api(tags = { "Search" })
 @RestController
 @RequestMapping("/search")
 @CrossOrigin(origins = {"*"}, maxAge = 6000)

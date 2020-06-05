@@ -1,29 +1,19 @@
 package com.ssafy.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.ssafy.model.dto.relation.RelationSaveRequestDto;
 import com.ssafy.model.dto.relation.RelationUpdateRequestDto;
 import com.ssafy.model.service.RelationService;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Api(tags = { "9. Relation" })
+import java.util.HashMap;
+import java.util.Map;
+
+@Api(tags = { "Relation" })
 @RestController
 @RequestMapping("/relations")
 @CrossOrigin(origins = {"*"}, maxAge = 6000)

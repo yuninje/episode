@@ -1,20 +1,15 @@
 package com.ssafy.model.dto.character;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
+import com.ssafy.model.dto.person.PersonResponseDto;
 import com.ssafy.model.dto.relation.RelationResponseDto;
-import com.ssafy.model.dto.relation.RelationResponseDtoNoCharacter;
 import com.ssafy.model.entity.Additional;
 import com.ssafy.model.entity.Character;
+import com.ssafy.model.entity.Person;
+import lombok.*;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -32,7 +27,8 @@ public class CharacterResponseNoNovelDto {
 	private Set<Additional> characterMore = new LinkedHashSet<>();
 	private String characterImage;
 	private Set<RelationResponseDto> relations = new LinkedHashSet<>();
-	
+	private PersonResponseDto person;
+
 	public CharacterResponseNoNovelDto(Character character) {
 		this.characterPk = character.getCharacterPk();
 		this.characterName = character.getCharacterName();
@@ -46,12 +42,13 @@ public class CharacterResponseNoNovelDto {
 		this.characterImage = character.getCharacterImage();
 		this.relations = character.getWhos().stream().map(
 				r -> new RelationResponseDto(r)).collect(Collectors.toSet());
+		this.person = new PersonResponseDto(character.getPerson());
 	}
 	
 	@Builder
 	public CharacterResponseNoNovelDto(int characterPk, String characterName, String characterAge, boolean characterGender,
-			String characterRole, String characterJob, String characterPersonallity, String characterSignificant,
-			Set<Additional> characterMore, String characterImage) {
+									   String characterRole, String characterJob, String characterPersonallity, String characterSignificant,
+									   Set<Additional> characterMore, String characterImage, Person person) {
 		this.characterPk = characterPk;
 		this.characterName = characterName;
 		this.characterAge = characterAge;
@@ -62,5 +59,6 @@ public class CharacterResponseNoNovelDto {
 		this.characterSignificant = characterSignificant;
 		this.characterMore = characterMore;
 		this.characterImage = characterImage;
+		this.person = new PersonResponseDto(person);
 	}
 }
