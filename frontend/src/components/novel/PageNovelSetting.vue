@@ -2,8 +2,9 @@
   <v-container v-if="novelInfo" >
     <v-row v-if="checkAuth(this.novelInfo.member.memPk)"> 
       <v-col cols="12" md="4" lg="3"> 
-        <!-- {{novelInfo.member}} -->
-        <!-- {{getNovelInfo}} {{getNovelInfo.novelPk}} -->
+        <!-- <div v-if="charInfo" >
+          {{ charInfo }}
+        </div> -->
         <v-row>
           <v-col cols="12">
             <div class="pic-uploader">
@@ -102,6 +103,30 @@
       </v-col>
       <v-col cols="12">
         <v-row class="rectangle-outlined" v-show="checkButtons(0)">
+          <char-card 
+            v-for="(char, i) in charInfo" 
+            :key="`character-${i}`" :name=char.characterName 
+            :age=char.characterAge 
+            :job=char.characterJob 
+            :role=char.characterRole 
+            :significant=char.characterSignificant
+            :src=char.characterImage
+          />
+          <v-col cols="3">
+            <v-card
+              color="rgba(242, 242, 242, 1)"
+              class="d-flex justify-center align-center"
+              height="152"
+              @click="createCharacter()"
+            >
+              <v-card-title><v-icon>mdi mdi-plus</v-icon></v-card-title>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-col>
+
+      <v-col cols="12">
+        <v-row class="rectangle-outlined" v-show="checkButtons(0)">
           <!-- 기존 등록된 캐릭터 카드 -->
           <v-col 
             cols="3" 
@@ -159,11 +184,7 @@
         </v-row>
         <v-row class="rectangle-outlined" v-show="checkButtons(2)">
           <v-col cols="12">
-            <v-textarea
-              auto-grow
-              flat
-              solo
-            ></v-textarea>
+            <relation-diagram />
           </v-col>
         </v-row>
         <v-row class="rectangle-outlined" v-show="checkButtons(3)">
@@ -318,6 +339,8 @@ import AWS from "aws-sdk";
 import { mapActions, mapMutations, mapGetters } from "vuex";
 import { ValidationProvider, extend } from 'vee-validate';
 import { required, numeric } from 'vee-validate/dist/rules';
+import relationDiagram from '../character/RelationDiagramTest';
+import CharCard from '../character/CharacterCard'
 
 extend('numeric', {
   ...numeric,
@@ -338,6 +361,12 @@ extend('checkAge', (value) => {
 });
 
 export default {
+  components: {
+    PictureInput,
+    ValidationProvider,
+    relationDiagram,
+    CharCard,
+  },
   data() {
     return {
       updateInfo: {
@@ -435,13 +464,10 @@ export default {
       loading: true
     };
   },
-  components: {
-    PictureInput,
-    ValidationProvider
-  },
   beforeCreate() {
     this.novelPk = this.$route.params.novelPk
     this.$store.dispatch(`storeNovSet/getNovelInfo`, this.novelPk );
+    this.$store.dispatch(`storeNovChar/FETCH_CHARACTER_INFO`, this.novelPk );
   },
   created() {
     
@@ -450,6 +476,9 @@ export default {
     ...mapGetters(["getSession"]),
     ...mapGetters("storeNovSet", {
       novelInfo: "getNovelInfo",
+    }),
+    ...mapGetters("storeNovChar", {
+      charInfo: "getCharacterInfo",
     }),
   },
   mounted() {
@@ -494,7 +523,7 @@ export default {
     },
     onPrefill() {
       if(this.novelInfo.novelImage) {
-        return this.novelInfo.novelImage
+        // return this.novelInfo.novelImage
       }
     },
 

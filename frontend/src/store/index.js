@@ -8,6 +8,7 @@ import moduleEditor from "./modules/moduleEditor"
 import moduleMywork from "./modules/moduleMywork"
 import moduleNovGen from "./modules/moduleNovGen"
 import moduleNovSet from "./modules/moduleNovSet"
+import moduleNovChar from "./modules/novel/moduleNovChar"
 import moduleNovel from "./modules/novel/moduleNovel"
 
 Vue.use(Vuex);
@@ -19,6 +20,7 @@ export default new Vuex.Store({
     storeMywork: moduleMywork,
     storeNovGen: moduleNovGen,
     storeNovSet: moduleNovSet,
+    storeNovChar : moduleNovChar,
     storeNovel : moduleNovel
   },
   state: {
