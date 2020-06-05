@@ -4,14 +4,19 @@
     <v-container>
       <v-row>
         <!-- 느낌별 소설 모음 -->
-        <v-col cols="12">
+        <!-- <v-col cols="12">
           <MainFeel/>
-        </v-col>
+        </v-col> -->
         <v-col cols="12" md="10">
           <v-row>
             <!-- Top 100 -->
-            <v-col cols="12">
+            <!-- <v-col cols="12">
               <MainTop100/>
+            </v-col> -->
+
+            <!-- Hot 캐릭터 셋 -->
+            <v-col cols="12">
+              <MainHotCharacterSet/>
             </v-col>
           </v-row>
         </v-col>
@@ -27,6 +32,10 @@
             </v-col>
           </v-row>
         </v-col>
+        <!-- Hot Fanfic -->
+        <v-col cols="12">
+          <MainHotFanfic/>
+        </v-col>
       </v-row>
     </v-container>
   </div>
@@ -38,6 +47,8 @@ import AdCarousel from "@/components/main/AdCarousel"
 import MainTop100 from "@/components/main/MainTop100"
 import MainFeel from "@/components/main/MainFeel"
 import KeywordRanking from "@/components/main/KeywordRanking"
+import MainHotFanfic from "@/components/main/MainHotFanfic"
+import MainHotCharacterSet from "@/components/main/MainHotCharacterSet"
 
 export default {
   name: 'Main',
@@ -46,7 +57,9 @@ export default {
     AdCarousel,
     MainTop100,
     MainFeel,
-    KeywordRanking
+    KeywordRanking,
+    MainHotFanfic,
+    MainHotCharacterSet
   },
   data () {
     return {
