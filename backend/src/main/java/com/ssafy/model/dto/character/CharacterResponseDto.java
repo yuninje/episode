@@ -1,22 +1,13 @@
 package com.ssafy.model.dto.character;
 
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Convert;
-
 import com.ssafy.model.dto.novel.NovelResponseDto;
+import com.ssafy.model.dto.person.PersonResponseDto;
 import com.ssafy.model.entity.Additional;
 import com.ssafy.model.entity.Character;
-import com.ssafy.model.entity.CharacterAdditionalConverter;
+import lombok.*;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -34,6 +25,7 @@ public class CharacterResponseDto {
 	private Set<Additional> characterMore = new HashSet<>();
 	private String characterImage;
 	private NovelResponseDto novel;
+	private PersonResponseDto person;
 	
 	public CharacterResponseDto(Character character) {
 		this.characterPk = character.getCharacterPk();
@@ -47,12 +39,13 @@ public class CharacterResponseDto {
 		this.characterMore = character.getCharacterMore();
 		this.characterImage = character.getCharacterImage();
 		this.novel = new NovelResponseDto(character.getNovel());
+		this.person = new PersonResponseDto(character.getPerson());
 	}
 	
 	@Builder
 	public CharacterResponseDto(int characterPk, String characterName, String characterAge, boolean characterGender,
-			String characterRole, String characterJob, String characterPersonallity, String characterSignificant,
-			Set<Additional> characterMore, String characterImage, NovelResponseDto novel) {
+								String characterRole, String characterJob, String characterPersonallity, String characterSignificant,
+								Set<Additional> characterMore, String characterImage, NovelResponseDto novel, PersonResponseDto person) {
 		this.characterPk = characterPk;
 		this.characterName = characterName;
 		this.characterAge = characterAge;
@@ -64,5 +57,6 @@ public class CharacterResponseDto {
 		this.characterMore = characterMore;
 		this.characterImage = characterImage;
 		this.novel = novel;
+		this.person = person;
 	}
 }

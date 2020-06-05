@@ -1,15 +1,5 @@
 package com.ssafy.model.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.transaction.Transactional;
-
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.ssafy.model.dto.character.CharacterResponseNoNovelDto;
 import com.ssafy.model.dto.relation.RelationResponseDto;
 import com.ssafy.model.dto.relation.RelationSaveRequestDto;
 import com.ssafy.model.dto.relation.RelationUpdateRequestDto;
@@ -19,7 +9,15 @@ import com.ssafy.model.entity.Relation;
 import com.ssafy.model.entity.RelationException;
 import com.ssafy.model.repository.CharacterRepository;
 import com.ssafy.model.repository.RelationRepository;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Transactional
 @Service
 public class RelationServiceImpl implements RelationService {
 	@Autowired

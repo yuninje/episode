@@ -1,31 +1,30 @@
 package com.ssafy.model.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.ssafy.model.dto.character.CharacterResponseDto;
 import com.ssafy.model.dto.character.CharacterResponseNoNovelDto;
 import com.ssafy.model.dto.character.CharacterSaveRequestDto;
 import com.ssafy.model.dto.character.CharacterUpdateRequestDto;
-import com.ssafy.model.dto.genre.GenreResponseDto;
 import com.ssafy.model.entity.Character;
-import com.ssafy.model.entity.CharacterException;
-import com.ssafy.model.entity.Novel;
-import com.ssafy.model.entity.NovelException;
-import com.ssafy.model.entity.Relation;
+import com.ssafy.model.entity.*;
 import com.ssafy.model.repository.CharacterRepository;
 import com.ssafy.model.repository.NovelRepository;
+import com.ssafy.model.repository.PersonRepository;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class CharacterServiceImpl implements CharacterService {
 	@Autowired 
 	NovelRepository nRepo;
 	@Autowired
 	CharacterRepository cRepo;
+	@Autowired
+	PersonRepository pRepo;
 	@Autowired
 	ModelMapper modelMapper;
 	
@@ -63,8 +62,11 @@ public class CharacterServiceImpl implements CharacterService {
 	public CharacterResponseNoNovelDto registCharacter(CharacterSaveRequestDto requestDto) {
 		Novel novel = nRepo.findById(requestDto.getNovelPk())
 				.orElseThrow(() -> new NovelException(NovelException.NOT_EXIST));
-		
-		Character characterEntity = requestDto.toEntity(novel);
+
+		Person person = pRepo.findById(requestDto.getPersonPk())
+				.orElseThrow(() -> new PersonException(PersonException.NOT_EXIST));
+
+		Character characterEntity = requestDto.toEntity(novel, person);
 		characterEntity = cRepo.save(characterEntity);
 		
 		CharacterResponseNoNovelDto character = new CharacterResponseNoNovelDto(characterEntity);
@@ -76,7 +78,10 @@ public class CharacterServiceImpl implements CharacterService {
 	public CharacterResponseNoNovelDto updateCharacter(int characterPk, CharacterUpdateRequestDto requestDto) {
 		Character characterEntity = cRepo.findById(characterPk)
 				.orElseThrow(() -> new CharacterException(CharacterException.NOT_EXIST));
-		
+
+		Person personEntity = pRepo.findById(requestDto.getPersonPk())
+				.orElseThrow(() -> new PersonException(PersonException.NOT_EXIST));
+
 		characterEntity.update(
 				requestDto.getCharacterName(), 
 				requestDto.getCharacterAge(), 
@@ -86,7 +91,8 @@ public class CharacterServiceImpl implements CharacterService {
 				requestDto.getCharacterPersonallity(), 
 				requestDto.getCharacterSignificant(), 
 				requestDto.getCharacterMore(), 
-				requestDto.getCharacterImage()
+				requestDto.getCharacterImage(),
+				personEntity
 		);
 		
 		CharacterResponseNoNovelDto character = new CharacterResponseNoNovelDto(cRepo.save(characterEntity));
@@ -96,9 +102,14 @@ public class CharacterServiceImpl implements CharacterService {
 
 	@Override
 	public void deleteCharacter(int characterPk) {
-//		Character characterEntity = cRepo.findById(characterPk)
-//				.orElseThrow(() -> new CharacterException(CharacterException.NOT_EXIST));
-		
-		cRepo.deleteById(characterPk);
+		Character characterEntity = cRepo.findById(characterPk)
+				.orElseThrow(() -> new CharacterException(CharacterException.NOT_EXIST));
+		deleteCharacter(characterEntity);
+	}
+
+	public void deleteCharacter(Character character){
+		character.beforeDelete();
+		cRepo.save(character);
+		cRepo.delete(character);
 	}
 }

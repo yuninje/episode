@@ -1,17 +1,13 @@
 package com.ssafy.model.dto.character;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.ssafy.model.entity.Additional;
 import com.ssafy.model.entity.Character;
 import com.ssafy.model.entity.Novel;
+import com.ssafy.model.entity.Person;
+import lombok.*;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -28,12 +24,14 @@ public class CharacterSaveRequestDto {
 	private String characterSignificant;
 	private Set<Additional> characterMore = new HashSet<>();
 	private String characterImage;
+	private int personPk;
 	
 	@Builder
-	public CharacterSaveRequestDto(int novelPk, String characterName, String characterAge,
+	public CharacterSaveRequestDto(int novelPk, int personPk, String characterName, String characterAge,
 			boolean characterGender, String characterRole, String characterJob, String characterPersonallity,
 			String characterSignificant, Set<Additional> characterMore, String characterImage) {
 		this.novelPk = novelPk;
+		this.personPk = personPk;
 		this.characterName = characterName;
 		this.characterAge = characterAge;
 		this.characterGender = characterGender;
@@ -45,9 +43,10 @@ public class CharacterSaveRequestDto {
 		this.characterImage = characterImage;
 	}
 	
-	public Character toEntity(Novel novel) {
+	public Character toEntity(Novel novel, Person person) {
 		return Character.builder()
 				.novel(novel)
+				.person(person)
 				.characterName(characterName)
 				.characterAge(characterAge)
 				.characterGender(characterGender)

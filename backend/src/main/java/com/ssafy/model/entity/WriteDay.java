@@ -1,7 +1,7 @@
 package com.ssafy.model.entity;
 
 //@Entity
-//@Table(name = "writeday")
+//@Table(nameName = "writeday")
 //@Getter
 //@Setter
 //@ToString
@@ -10,9 +10,9 @@ package com.ssafy.model.entity;
 //public class WriteDay {
 //	@Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//	@Column(name = "wrd_pk")
+//	@Column(nameName = "wrd_pk")
 //	private Integer wrdPk;
 //
-//	@Column(name = "wrd_day", nullable = false)
+//	@Column(nameName = "wrd_day", nullable = false)
 //	private Integer wrdDay;
 //}

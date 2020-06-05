@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Api(tags = { "8. NovelSetting" })
+@Api(tags = { "NovelSetting" })
 @RestController
 @RequestMapping("/novel-settings")
 @CrossOrigin(origins = {"*"}, maxAge = 6000)
