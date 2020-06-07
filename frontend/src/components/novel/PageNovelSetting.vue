@@ -166,7 +166,8 @@
         </v-row>
         <v-row class="rectangle-outlined" v-show="checkButtons(2)">
           <v-col cols="12">
-            <relation-diagram/>
+            <make-relation class="rlt-card"/>
+            <relation-diagram class="rlt-diagram"/>
           </v-col>
         </v-row>
         <v-row class="rectangle-outlined" v-show="checkButtons(3)">
@@ -291,6 +292,7 @@ import { mapActions, mapMutations, mapGetters } from "vuex";
 import { ValidationProvider, extend } from "vee-validate";
 import { required, numeric } from "vee-validate/dist/rules";
 import relationDiagram from "../character/RelationDiagramTest";
+import MakeRelation from "../character/MakeRelation";
 import CharCard from "../character/CharacterCard";
 
 extend("numeric", {
@@ -316,6 +318,7 @@ export default {
     PictureInput,
     ValidationProvider,
     relationDiagram,
+    MakeRelation,
     CharCard
   },
   data() {
@@ -967,6 +970,15 @@ export default {
   -ms-filter: "alpha(opacity=0)";
   -khtml-opacity: 0;
   -moz-opacity: 0;
+}
+.rlt-diagram{
+  position: relative;
+}
+.rlt-card {
+  position: relative;
+  float:right;
+  width:33%;
+  z-index: 500;
 }
 
 </style>

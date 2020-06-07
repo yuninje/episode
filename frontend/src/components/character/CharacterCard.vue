@@ -1,6 +1,6 @@
 <template>
   <v-col col="3">
-    <v-card color="blue" >
+    <v-card color="blue" sm="2">
       <v-row>
         <v-col cols="8">
           <v-list-item color="rgba(0,0,0,0.4)" dark>
