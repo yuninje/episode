@@ -1,7 +1,6 @@
 <template>
   <v-card>
     <!-- {{ charInfo }} -->
-
     <!-- 타이틀 -->
     <v-card-actions>
       <div class="make-rlt-title">관계 만들기</div>
@@ -19,14 +18,13 @@
 
           <!-- select character 1 -->
           <v-col sm="4">
-            <v-img :aspect-ratio="1" :src="char1Img"/>
+            <v-img :aspect-ratio="1" :src="charImg1"/>
             <v-select
               id="mySelect"
               @change="changeChar1"
-              v-model="char1Img"
               :items="charInfo"
               item-text="characterName"
-              item-value="characterImage"
+              item-value="characterPk"
               placeholder="캐릭터 선택"
               color="#333"
             ></v-select>
@@ -39,7 +37,7 @@
                 <input
                   type="text"
                   name="relation1"
-                  :v-model="node_sid"
+                  v-model="rltName1"
                   id="relation1"
                   placeholder="어떤 관계인가요?"
                 >
@@ -57,7 +55,7 @@
                 <input
                   type="text"
                   name="relation2"
-                  :v-model="node_tid"
+                  v-model="rltName2"
                   id="relation2"
                   placeholder="어떤 관계인가요?"
                 >
@@ -67,13 +65,12 @@
 
           <!-- select character 2 -->
           <v-col sm="4">
-            <v-img :aspect-ratio="1" :src="char2Img"/>
+            <v-img :aspect-ratio="1" :src="charImg2"/>
             <v-select
               @change="changeChar2"
-              v-model="char2Img"
               :items="charInfo"
               item-text="characterName"
-              item-value="characterImage"
+              item-value="characterPk"
               placeholder="캐릭터 선택"
               color="#333"
             ></v-select>
@@ -83,7 +80,7 @@
         <!-- button create relation -->
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="rgba(255,83,83,1" text>확인</v-btn>
+          <v-btn @click="saveRlt()" color="rgba(255,83,83,1" text>확인</v-btn>
         </v-card-actions>
         
       </div>
@@ -102,10 +99,22 @@ export default {
   data() {
     return {
       show: false,
-      char1Img: defaultImg,
-      char2Img: defaultImg,
-      node_sid: "",
-      node_tid: "",
+      char1:null,
+      char2:null,
+
+      charImg1: defaultImg,
+      charImg2: defaultImg,
+
+      rltName1: "",
+      rltName2: "",
+
+      relationInfo: {
+        relationArrowKinds: "",
+        relationrColor: "",
+        relationrName: "",
+        who: 0,
+        whom: 0
+      }
     };
   },
   computed: {
@@ -114,11 +123,56 @@ export default {
     })
   },
   methods: {
+    ...mapActions("storeNovChar", {
+      postRelation: "postRelation",
+    }),
+
+    /** select한 캐릭릭터의 charInfo를 찾는다 */
+    findCharInfo(select) {
+      return this.charInfo.find(e => e.characterPk === select);
+    },
+    /** char선택 : 선택된 char의 charInfo를 찾고, charImg 이미지를 바꾼다 */
     changeChar1(select) {
-      // console.log(select);
+      const char = this.findCharInfo(select)
+      this.char1 = char.characterPk
+      this.charImg1 = char.characterImage
     },
     changeChar2(select) {
-      // console.log(select);
+      const char = this.findCharInfo(select)
+      this.char2 = char.characterPk
+      this.charImg2 = char.characterImage
+    },
+    /** api 요청할 데이터를 set한다 */
+    setRelationData(name, from, to) {
+      let { relationArrowKinds, relationrColor, relationrName, who, whom } = this.relationInfo;
+      relationrName = name
+      who = from
+      whom = to
+      return  { relationArrowKinds, relationrColor, relationrName, who, whom }
+    },
+    /** 관계 만들기 확인버튼 클릭시 postRelation 메서드를 호출한다 */
+    saveRlt() {
+      let char1 = this.char1
+      let char2 = this.char2
+      if(char1!=null && char2!=null) {
+        if(char1!=char2) {
+
+          if(this.rltName1!="") {
+            const data = this.setRelationData(this.rltName1, char1, char2)
+            this.postRelation(data)
+          }
+          if(this.rltName2!="") {
+            const data = this.setRelationData(this.rltName2, char2, char1)
+            this.postRelation(data)
+          }
+          
+        }else {
+          alert("\n동일한 캐릭터의 관계를 생성할 수 없습니다.\n서로 다른 캐릭터를 선택하세요")
+        }
+
+      } else {
+        alert("\n캐릭터를 선택하지 않았습니다!\n캐릭터를 선택하세요")
+      }
     }
   }
 };
