@@ -44,6 +44,7 @@ export default {
           console.error("postNovel()", err);
         });
     },
+
     /** 이미지 업로드(by novelPk) */
     uploadNovelImage({ state, dispatch, commit, getters, rootGetters }, novelPk) {
       let bucketInfo= {

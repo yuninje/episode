@@ -115,7 +115,7 @@ export default {
   computed: {
     ...mapGetters(["getSession"]),
     ...mapGetters("storeNovGen", {
-      getNovelPk: "getNovelPk",
+      resNovelPk: "getNovelPk",
     })
   },
   created() {},
@@ -161,7 +161,8 @@ export default {
         {
           Key: path + photoKey + ext, // 파일경로와 파일명 지정
           Body: file,           // 업로드할 파일
-          ACL: "public-read"
+          ACL: "public-read",
+          ContentType: "image/jpeg"
         },(err, data) => {
           if (err) {
             console.log(err)

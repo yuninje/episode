@@ -1,4 +1,4 @@
-// Member 정보와 관련된 Vuex Store Module
+// Novel 정보와 관련된 Vuex Store Module
 import axios from "axios";
 
 export default {

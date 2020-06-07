@@ -32,6 +32,11 @@ export default {
         });
     },
 
+    /** store의 novelInfo삭제 */
+    destroyNovelInfo({ state, dispatch, commit, getters, rootGetters }, novelPk) {
+      commit('changeNovelInfo', null);
+    },
+
     /** 소설 정보 업데이트 */
     putNovel({ state, dispatch, commit, getters, rootGetters }, data) {
       let novelPk = state.novelInfo.novelPk
