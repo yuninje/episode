@@ -291,7 +291,7 @@ import AWS from "aws-sdk";
 import { mapActions, mapMutations, mapGetters } from "vuex";
 import { ValidationProvider, extend } from "vee-validate";
 import { required, numeric } from "vee-validate/dist/rules";
-import relationDiagram from "../character/RelationDiagramTest";
+import relationDiagram from "../character/RelationDiagram";
 import MakeRelation from "../character/MakeRelation";
 import CharCard from "../character/CharacterCard";
 
@@ -415,6 +415,7 @@ export default {
     this.novelPk = this.$route.params.novelPk;
     this.$store.dispatch(`storeNovSet/getNovelInfo`, this.novelPk);
     this.$store.dispatch(`storeNovChar/FETCH_CHARACTER_INFO`, this.novelPk);
+    this.$store.dispatch(`storeNovChar/FETCH_RELATION_INFO`, this.novelPk);
   },
   created() {},
   computed: {

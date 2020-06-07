@@ -95,7 +95,6 @@ import { mapActions, mapMutations, mapGetters } from "vuex";
 const defaultImg = require(`@/assets/images/selectCharCover.png`);
 
 export default {
-  // props: ["who", "whom"],
   data() {
     return {
       show: false,

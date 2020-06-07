@@ -15,8 +15,6 @@ import NovelSet from '../components/novel/PageNovelSetting'
 import Search from '../components/search/PageSearch'
 import All from '../components/all/PageAll'
 import RDT from '../components/character/RelationDiagramTest'
-import RDT2 from '../components/character/RelationDiagramTest2'
-// import makeRelation from '../components/character/makeRelation'
 
 import Viewer from '../components/viewer/PageViewer'
 
@@ -99,16 +97,6 @@ const routes = [
     name: 'RDT',
     component: RDT
   },
-  {
-    path: '/rdt2',
-    name: 'RDT2',
-    component: RDT2
-  },
-  // {
-  //   path: '/makeRelation',
-  //   name: 'makeRelation',
-  //   component: makeRelation
-  // },
 ]
 
 function rejectUnAuthUser (to, from, next) {

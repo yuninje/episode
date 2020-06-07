@@ -46,7 +46,6 @@ export default {
     },
     /** novelPk로 해당 소설의 relation 정보를 가져온다 */
     FETCH_RELATION_INFO({ commit, rootGetters }, novelPk) {
-      console.log("FETCH_RELATION_INFO() 들어옴")
       axios
         .get(`${rootGetters.getServer}/api/relations/novelPk=${novelPk}`)
         .then(res => {
