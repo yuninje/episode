@@ -1,6 +1,5 @@
 <template>
   <div v-if="links!=null">
-    <h1> 인물 관계도 </h1>
     <div v-if="nodes!=null" class="wrap-rlt-dg">
       <d3-network
         ref="net"
