@@ -37,7 +37,6 @@ export default {
         .then(res => {
           if (res.data.state == "ok") {
             commit("changeCharacterInfo", res.data.data);
-            console.log(res.data.data)
           }
         })
         .catch(err => {

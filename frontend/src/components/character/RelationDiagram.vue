@@ -1,27 +1,11 @@
 <template>
-  <div>
-    <!-- <div class="title">
-      <ul class="menu">
-        <li>
-          <label>Node size</label>
-          <input type="range" min="1" max="100" v-model="nodeSize">
-          {{ options.nodeSize }}
-        </li>
-        <li>
-          <label>Render as</label>
-          <input type="radio" :value="false" v-model="canvas">
-          <label>SVG</label>
-          <input type="radio" :value="true" v-model="canvas">
-          <label>Canvas</label>
-        </li>
-      </ul>
-    </div> -->
+  <div v-if="links!=null">
     <h1> 인물 관계도 </h1>
-    <div class="wrap-rlt-dg">
+    <div v-if="nodes!=null" class="wrap-rlt-dg">
       <d3-network
         ref="net"
         :net-nodes="nodes"
-        :net-links="mlinks"
+        :net-links="links"
         :selection="{nodes: selected, links: linksSelected}"
         :options="options"
         :linkCb="linkCb"
@@ -29,9 +13,6 @@
         @link-click="linkClick"
       />
     </div>
-
-    
-    
   </div>
 </template>
 
@@ -43,8 +24,7 @@ import { mapActions, mapMutations, mapGetters } from "vuex";
 var from, to;
 var selector = 0;
 
-const nodeIcon3 =
-  '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="20" height="32" viewBox="0 0 20 32"><image xlink:href="https://img4.yna.co.kr/photo/cms/2019/05/02/02/PCM20190502000402370_P2.jpg" x="0" y="0" height="45px" width="45px"/></svg>';
+const nodeIcon3 = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="20" height="32" viewBox="0 0 20 32"><image xlink:href="https://img4.yna.co.kr/photo/cms/2019/05/02/02/PCM20190502000402370_P2.jpg" x="0" y="0" height="30px" width="30px"/></svg>'
 export default {
   components: {
     D3Network
@@ -57,7 +37,7 @@ export default {
       },
       nodeSize: 80,
       nodes:[],
-      mlinks:[],
+      links:[],
     };
   },
   computed: {
@@ -117,21 +97,23 @@ export default {
       // 초기화
       this.nodes=[];
       // id, name, svgSym
-      let cid, cname, csvgSym
+      let cid, cname, csvgSym, cimg
       for(let i=0; i<this.charInfo.length; ++i) {
         let ni = this.charInfo[i]
 
         cid = ni.characterPk
         cname = ni.characterName
-        csvgSym = ni.characterImage
-        let newNode = { id: cid, name: cname, svgSym: nodeIcon3 }
+        cimg = ni.characterImage
+        
+        csvgSym = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><image xlink:href="'+ cimg +'" x="0" y="0" height="100" width="100" preserveAspectRatio="none"/></svg>'
+        let newNode = { id: cid, name: cname, svgSym: csvgSym }
         this.nodes.push(newNode)
       }
     },
     // 릴레이션 정보가 변경되면 링크 데이터를 다시 만든다
     makeLinks() {
       // 초기화
-      this.mlinks=[];
+      this.links=[];
       // sid, tid, name
       let from, to, rltName
       for(let i=0; i<this.relationInfo.length; ++i) {
@@ -141,7 +123,7 @@ export default {
         to = ri.whom.characterPk
         rltName = ri.relationrName
         let newlink = { sid: from, tid: to, name: rltName, _color: "black" };
-        this.mlinks.push(newlink);
+        this.links.push(newlink);
       }
     },
     handleResize() {
