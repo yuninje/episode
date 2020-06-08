@@ -1,6 +1,6 @@
 <template>
   <v-container v-if="novelInfo">
-    <v-row v-if="checkAuth(this.novelInfo.member.memPk)">
+    <v-row>
       <v-col cols="12" md="4" lg="3">
         <v-row>
 
@@ -15,7 +15,7 @@
               ></canvas>
             </div>
 
-            <div class="file-input-div">
+            <!-- <div class="file-input-div">
               <p>
                 <input type="button" value="소설 이미지 수정 📕" class="file-input-button">
                 <input
@@ -28,7 +28,7 @@
                   required="required"
                 >
               </p>
-            </div>
+            </div> -->
           </v-col>
 
         </v-row>
@@ -36,7 +36,7 @@
       <v-col cols="12" md="8" lg="9">
         <v-row>
           <v-col cols="12">
-            <p class="write-info">작가 | {{ novelInfo.member.memNick }}</p>
+            <p class="write-info">작가 | {{ novelInfo.member.memId }}</p>
             <p class="write-info">생성일 | {{ novelInfo.novelUpdatedAt.substr(0,10) }}</p>
           </v-col>
           <v-col cols="12" sm="5">
@@ -46,9 +46,9 @@
               placeholder="소설의 제목를 입력하세요."
               solo
               flat
-              clearable
               rows="1"
               row-height="15"
+              readonly
             ></v-text-field>
             <p class="write-info"></p>
           </v-col>
@@ -61,6 +61,7 @@
               flat
               rows="4"
               row-height="15"
+              readonly
             ></v-textarea>
             <p class="write-info"></p>
             <!-- <v-btn  rounded @click="clickUpdateNovel()" class="set-save-btn">저장</v-btn> -->
@@ -73,7 +74,7 @@
         </v-row>
       </v-col>
       <v-col cols="12">
-        <span>소설 설정 (아직 준비중인 페이지입니다.)</span>
+        <span>캐릭터 셋 (아직 준비중인 페이지입니다.)</span>
         <hr>
       </v-col>
       <v-col cols="12">
@@ -134,7 +135,7 @@
             </v-card>
           </v-col> -->
           <!-- 새로운 캐릭터 생성 카드 -->
-          <v-col 
+          <!-- <v-col 
             cols="12"
             sm="3"
           >
@@ -148,9 +149,9 @@
                 <v-icon>mdi mdi-plus</v-icon>
               </v-card-title>
             </v-card>
-          </v-col>
+          </v-col> -->
         </v-row>
-        <v-row class="rectangle-outlined" v-show="checkButtons(1)">
+        <!-- <v-row class="rectangle-outlined" v-show="checkButtons(1)">
           <v-col cols="12">
             <v-textarea auto-grow flat solo></v-textarea>
           </v-col>
@@ -169,9 +170,9 @@
           <v-col cols="12">
             <v-textarea auto-grow flat solo></v-textarea>
           </v-col>
-        </v-row>
+        </v-row> -->
       </v-col>
-      <v-col style="margin-top: 30px; margin-bottom: 10px">
+      <!-- <v-col style="margin-top: 30px; margin-bottom: 10px">
         <v-btn
           style="float:left"
           rounded
@@ -179,111 +180,33 @@
           class="set-save-btn"
         >이 소설을 삭제하겠습니다.</v-btn>
         <v-btn rounded @click="clickUpdateNovel()" class="set-save-btn">저장</v-btn>
-      </v-col>
+      </v-col> -->
+      <v-col cols="12" class="d-flex justify-end">
+        <v-select
+          item-text="novelName"
+          item-value="novelPk"
+          v-model="selectedNovelPk"
+          :items="novels"
+          label="소설을 골라주세요"
+          outlined
+        ></v-select>
+        <v-btn text @click="copyCharacters(selectedNovelPk)">로 가져오기</v-btn>
+        <v-btn text @click="gotoMain()">메인으로</v-btn>
+      </v-col>  
     </v-row>
 
-    <!-- 캐릭터 등록 페이지 -->
-    <v-dialog v-model="dialog" persistent max-width="400px">
-      <v-form
-        action
-        method="post"
-        id="_createCharacterForm"
-        name="createCharacterForm"
-        @submit.prevent="createNewCharacter"
-      >
-        <v-card>
-          <v-card-title class="text-center">
-            <v-spacer></v-spacer>캐릭터 등록
-            <v-spacer></v-spacer>
-          </v-card-title>
-          <v-card-text>
-            <v-container>
-              <v-row>
-                <v-col cols="12">
-                  <!-- <v-img 
-                    height="200"
-                    src="@/assets/images/upload.png"
-                    @click=""
-                  ></v-img>-->
-                  <picture-input
-                    @change="onChangeCharacter"
-                    @remove="onRemoveCharacter"
-                    ref="inputFileCha"
-                    button-class="btn"
-                    buttonClass="pic-ch-btn"
-                    removeButtonClass="pic-rem-btn"
-                    accept="image/jpeg, image/png"
-                    width="500"
-                    height="500"
-                    size="10"
-                    radius="0"
-                    :crop="true"
-                    :removable="true"
-                    :hideChangeButton="false"
-                    :custom-strings="{
-                      upload: '캐릭터이미지를 등록하세요 +',
-                      drag: '캐릭터 이미지를 등록하세요 😺',
-                      change: '이미지 수정  | ',
-                      remove: '삭제'
-                    }"
-                  ></picture-input>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field label="이름" required v-model="newCharacter.name"></v-text-field>
-                </v-col>
-                <v-col cols="12">
-                  <ValidationProvider rules="required|numeric|checkAge" v-slot="{errors}">
-                    <v-text-field v-model="newCharacter.age" label="나이" required></v-text-field>
-                    <span class="error-message">{{errors[0]}}</span>
-                  </ValidationProvider>
-                </v-col>
-                <v-col cols="12" class="d-flex justify-center">
-                  <!-- <v-text-field 
-                    label="성별" 
-                    required
-                    v-model="newCharacter.gender"
-                  ></v-text-field>-->
-                  <v-radio-group v-model="newCharacter.gender" row>
-                    <v-radio label="남" color="rgba(192,0,0,1)" value="true"></v-radio>
-                    <v-radio label="여" color="rgba(192,0,0,1)" value="false"></v-radio>
-                  </v-radio-group>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field label="역할" required v-model="newCharacter.role"></v-text-field>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field label="직업" required v-model="newCharacter.job"></v-text-field>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field label="성격" required v-model="newCharacter.personallity"></v-text-field>
-                </v-col>
-                <v-col cols="12">
-                  <v-text-field label="특이사항" required v-model="newCharacter.significant"></v-text-field>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="rgba(192,0,0,1)" text @click="createNewCharacter()">create</v-btn>
-            <v-btn color="rgba(192,0,0,1)" text @click="clearNewCharacter(), dialog=false">close</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-form>
-    </v-dialog>
-
-    <!-- 캐릭터 수정 페이지 -->
+    <!-- 캐릭터 상세 페이지 -->
     <v-dialog v-model="dialog2" persistent max-width="400px">
       <v-form
         action
-        method="put"
-        id="_updateCharacterForm"
-        name="updateCharacterForm"
-        @submit.prevent="updateCharacter"
+        method="get"
+        id="_readCharacterForm"
+        name="readCharacterForm"
+        @submit.prevent="readCharacter"
       >
         <v-card>
           <v-card-title class="text-center">
-            <v-spacer></v-spacer>캐릭터 수정
+            <v-spacer></v-spacer>캐릭터 상세
             <v-spacer></v-spacer>
           </v-card-title>
           <v-card-text>
@@ -354,8 +277,6 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="rgba(192,0,0,1)" text @click="updateCharacter(character.characterPk)">update</v-btn>
-            <v-btn color="rgba(192,0,0,1)" text @click="deleteCharacter(character.characterPk)">delete</v-btn>
             <v-btn color="rgba(192,0,0,1)" text @click="clearCharacter(), dialog2=false">close</v-btn>
           </v-card-actions>
         </v-card>
@@ -421,7 +342,7 @@ export default {
       today: new Date().toLocaleDateString(),
       inputFile: null,
       inputFileCha: null,
-      buttons: ["캐릭터", "세계관", "인물관계", "사건", "배경지식", "+"],
+      buttons: ["캐릭터"],
       dialog: false,
       dialog2: false,
       characters: [],
@@ -437,7 +358,8 @@ export default {
         significant: ""
         // 일단 more는 안함
       },
-      newCharacterImage: "",
+      novels: null,
+      selectedNovelPk: null,
       selectedButton: 0,
       inputStatus: 0, // -1: 삭제, 1: 새로운 사진, 0 변화 없음
       errored: false,
@@ -461,6 +383,7 @@ export default {
   },
   mounted() {
     this.getCharacters();
+    this.getMyNovels();
   },
   destroyed() {
     this.$store.dispatch(`storeNovSet/destroyNovelInfo`);
@@ -791,127 +714,46 @@ export default {
           this.loading = false;
         });
     },
-    createNewCharacter() {
-      if (
-        this.newCharacter.gender === "" ||
-        this.newCharacter.gender === null
-      ) {
-        alert("성별을 선택하지 않았습니다!");
-      } else {
-        //  성별 선택 완료
-        // let gender;
-        // if (this.newCharacter.gender === "male") {
-        //   gender = true;
-        // } else if (this.newCharacter.gender === "female") {
-        //   gender = false;
-        // }
-
-        if (this.isNum(this.newCharacter.age) && this.newCharacter.age !== "") {
-          if (this.inputFileCha != null) {
-            let path = "character/" + this.novelPk + "/";
-            let time = new Date();
-            let photoKey = this.novelPk + "_" + time.getTime();
-            let ext = ".jpg";
-            const file = this.inputFileCha;
-            this.uploadNovelImage(path, photoKey, ext, file);
-            this.newCharacter.image =
-              "https://episode-image.s3.ap-northeast-2.amazonaws.com/" +
-              path +
-              photoKey +
-              ext;
-          } else {
-            // 기본 이미지로 저장
-            this.newCharacter.image =
-              "https://www.mstoday.co.kr/news/photo/202004/_3_1018454_448598_1539.jpg";
-          }
-
-          http
-            .post("/characters", {
-              characterImage: this.newCharacter.image,
-              characterName: this.newCharacter.name,
-              characterAge: this.newCharacter.age,
-              characterGender: this.newCharacter.gender,
-              characterRole: this.newCharacter.role,
-              characterJob: this.newCharacter.job,
-              characterPersonallity: this.newCharacter.personallity,
-              characterSignificant: this.newCharacter.significant,
-              novelPk: this.$route.params.novelPk
-            })
-            .then(response => {
-              if (response.data.state === "ok") {
-                alert(`새로운 캐릭터가 등록되었습니다.`);
-              }
-              this.clearNewCharacter();
-              this.$refs.inputFileCha.removeImage();
-              this.dialog=false;
-            })
-            .catch(() => {
-              this.errored = true;
-            })
-            .finally(() => {
-              this.loading = false;
-            });
-        } else {
-          //  나이 형식 에러
-          alert(
-            "올바르지 않은 형식입니다. 나이는 0 이상의 정수를 입력해주세요."
-          );
-        }
-      }
-    },
-    clearNewCharacter() {
-      this.newCharacter.image = "";
-      this.newCharacter.name = "";
-      this.newCharacter.age = "";
-      this.newCharacter.gender = null;
-      this.newCharacter.role = "";
-      this.newCharacter.job = "";
-      this.newCharacter.personallity = "";
-      this.newCharacter.significant = "";
-    },
     clearCharacter() {
       this.character = {};
     },
-    updateCharacter(characterPk) {
+    copyCharacters(novelPk) {
+      if(novelPk === null || novelPk === "") {
+        alert('캐릭터 카드를 복사하여 저장할 소설을 골라주세요.');
+      } else {
+        for(let i in this.characters) {
+          http
+            .post(`/characters`, {
+              characterAge : this.characters[i].characterAge,
+              characterGender : this.characters[i].characterGender,
+              characterImage : this.characters[i].characterImage,
+              characterJob : this.characters[i].characterJob,
+              characterName : this.characters[i].characterName,
+              characterPersonallity : this.characters[i].characterPersonallity,
+              characterRole : this.characters[i].characterRole,
+              characterSignificant : this.characters[i].characterSignificant,
+              novelPk : novelPk
+            })
+            .then(response => {
+              if(response.data.state === "ok") {
+                console.log("등록 완료");
+              }
+            })
+        }
+      }
+    },
+    getMyNovels() {
       http
-        .put(`/characters/${characterPk}`, {
-          characterPk: characterPk,
-          characterAge: this.character.characterAge,
-          characterGender: this.character.characterGender,
-          characterImage: this.character.characterImage,
-          characterJob: this.character.characterJob,
-          characterName: this.character.characterName,
-          characterPersonallity: this.character.characterPersonallity,
-          characterRole: this.character.characterRole,
-          characterSignificant: this.character.characterSignificant,
-        })
-        .then(response => {
-          if(response.data.state === "ok") {
-            alert('수정되었습니다!');
-            this.dialog2 = false;
+        .get(`/novels/member-pk=${this.getSession.memPk}`, {
+          params: {
+            sort : "updated"
           }
         })
-        .catch(() => {
-          alert('캐릭터 정보 수정중 에러발생!!');
+        .then(response => {
+          this.novels = response.data.data.content;
+          console.log('본인의 소설 목록');
+          console.log(response.data.data.content);
         })
-    },
-    deleteCharacter(characterPk) {
-      let confirmflag = confirm("진짜로 삭제하시겠습니까?");
-      if(confirmflag) {
-        http
-          .delete(`/characters/${characterPk}`)
-          .then(response => {
-            if(response.data.state === "ok") {
-              alert('삭제되었습니다.');
-              this.dialog2 = false;
-            }
-          })
-          .catch(() => {
-            alert('캐릭터 삭제 중 에러 발생');
-          })
-      } else {
-        // 취소
-      }
     },
     isNum(str) {
       if (parseInt(str).toString() === str) {
@@ -921,6 +763,9 @@ export default {
         console.log(str);
         return false;
       }
+    },
+    gotoMain() {
+      this.$router.push("/");
     }
   }
 };

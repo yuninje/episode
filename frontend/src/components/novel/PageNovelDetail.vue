@@ -44,7 +44,15 @@
                     </v-col>
                     <v-col cols="12">
                         <p class = "sub-title">작품 소개</p>
-                        <p class="write-info">{{data.novel.novelIntro}}</p>
+                        <v-textarea
+                            v-model="data.novel.novelIntro"
+                            auto-grow
+                            solo
+                            flat
+                            rows="1"
+                            class="write-info"
+                        ></v-textarea>
+                        <!-- <p class="write-info">{{data.novel.novelIntro}}</p> -->
                     </v-col>
                     <v-col cols="12">
                         <br/>
