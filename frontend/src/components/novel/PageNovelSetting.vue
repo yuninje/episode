@@ -73,7 +73,7 @@
         </v-row>
       </v-col>
       <v-col cols="12">
-        <span>소설 설정 (아직 준비중인 페이지입니다.)</span>
+        <span>소설 설정</span>
         <hr>
       </v-col>
       <v-col cols="12">
