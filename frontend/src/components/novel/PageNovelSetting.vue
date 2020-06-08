@@ -155,10 +155,16 @@
             <v-textarea auto-grow flat solo></v-textarea>
           </v-col>
         </v-row>
-        <v-row class="rectangle-outlined" v-show="checkButtons(2)">
-          <v-col cols="12">
-            <relation-diagram/>
+        <v-row  v-show="checkButtons(2)">
+          <v-col cols="9" class="rectangle-outlined">
+            <make-relation class="rlt-card"/>
+            <relation-diagram class="rlt-diagram"/>
           </v-col>
+          <v-col cols="3">
+            <h3>인물 리스트</h3>
+            <char-list-sero/>
+          </v-col>
+            
         </v-row>
         <v-row class="rectangle-outlined" v-show="checkButtons(3)">
           <v-col cols="12">
@@ -371,8 +377,10 @@ import AWS from "aws-sdk";
 import { mapActions, mapMutations, mapGetters } from "vuex";
 import { ValidationProvider, extend } from "vee-validate";
 import { required, numeric } from "vee-validate/dist/rules";
-import relationDiagram from "../character/RelationDiagramTest";
+import relationDiagram from "../character/RelationDiagram";
+import MakeRelation from "../character/MakeRelation";
 import CharCard from "../character/CharacterCard";
+import CharListSero from "../character/CharacterCardVerticalList";
 
 extend("numeric", {
   ...numeric,
@@ -397,7 +405,9 @@ export default {
     PictureInput,
     ValidationProvider,
     relationDiagram,
-    CharCard
+    MakeRelation,
+    CharCard,
+    CharListSero
   },
   data() {
     return {
@@ -448,6 +458,7 @@ export default {
     this.novelPk = this.$route.params.novelPk;
     this.$store.dispatch(`storeNovSet/getNovelInfo`, this.novelPk);
     this.$store.dispatch(`storeNovChar/FETCH_CHARACTER_INFO`, this.novelPk);
+    this.$store.dispatch(`storeNovChar/FETCH_RELATION_INFO`, this.novelPk);
   },
   created() {},
   computed: {
@@ -1063,6 +1074,15 @@ export default {
   -ms-filter: "alpha(opacity=0)";
   -khtml-opacity: 0;
   -moz-opacity: 0;
+}
+.rlt-diagram{
+  position: relative;
+}
+.rlt-card {
+  position: relative;
+  float:right;
+  width:33%;
+  z-index: 500;
 }
 
 </style>
