@@ -36,7 +36,7 @@ export default {
         novelImage: {type: String},
         novelName: {type: String},
         novelIntro: {type: String},
-        episodeCount: {type: String},
+        episodeCount: {type: Number},
         novelPk: {type: Number}
     },
     methods: {

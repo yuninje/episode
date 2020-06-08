@@ -15,7 +15,6 @@ import NovelSet from '../components/novel/PageNovelSetting'
 import Search from '../components/search/PageSearch'
 import All from '../components/all/PageAll'
 import RDT from '../components/character/RelationDiagramTest'
-import RDT2 from '../components/character/RelationDiagramTest2'
 
 import Viewer from '../components/viewer/PageViewer'
 import CharacterSet from '../components/characterset/PageCharacterSet'
@@ -97,12 +96,7 @@ const routes = [
   {
     path: '/rdt',
     name: 'RDT',
-    component: RDT,
-  },
-  {
-    path: '/rdt2',
-    name: 'RDT2',
-    component: RDT2,
+    component: RDT
   },
   {
     path: '/characterset/:novelPk',

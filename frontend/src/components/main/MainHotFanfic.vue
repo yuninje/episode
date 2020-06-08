@@ -1,5 +1,5 @@
 <template>
-    <v-containter>
+    <v-container>
         <div>
             <span class="sub-title-red" @click="gotoTop100()">HOT FANFIC</span>
         </div>
@@ -20,7 +20,7 @@
                 ></NovelCard>
             </v-col>
         </v-row>
-    </v-containter>
+    </v-container>
 </template>
 
 <script>
@@ -28,6 +28,7 @@ import http from "../../http-common"
 import NovelCard from "../card/NovelCard"
 
 export default {
+    name: 'MainHotFanfic',
     data() {
         return {
             topNovels:[],

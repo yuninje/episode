@@ -47,6 +47,13 @@
           <!-- 맞춤법 검사 시작 -->
           <button class="right-menu" v-on:click="hans">맞춤법 검사</button>
           <div class="spell-box" v-show="spellOpen">
+                <div class="v-progress-circular" v-if="isLoading">
+                  <v-progress-circular
+                    indeterminate
+                    color="#D50000"
+                    :size="50"
+                  />
+                </div>
             <!-- <ol>
               <li v-for="(item, idx) in list" v-bind:key="idx"> {{item}} </li>
             </ol> -->
@@ -166,7 +173,10 @@ export default {
       list: [],
 
       // 맞춤법 창 오픈 여부
-      spellOpen: false
+      spellOpen: false,
+
+      // 로딩중 써클 표시
+      isLoading: false
     };
   },
   created() {
@@ -304,17 +314,20 @@ export default {
     },
     hans: function(){
       this.openSpellBox(); //  spell-box 오픈
+      this.isLoading = true;
       console.log("스펠 이벤트 발생")
       console.log(this.textContent)
       // console.log(this.list)
       this.list = hanspell(this.textContent, 6000, this.checker, function () {
-          console.log("// check ends");
+          console.log("// 체크 끝");
       }, function (err) {
           console.error("HTTP status code: " + err);
-      });
+      })
     },
     checker: function(result){
       this.list = result
+      this.isLoading = false;
+      console.log(this.isLoading)
     },
     exportToWord: function(){
       let header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
@@ -547,5 +560,11 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 100px;
+}
+
+.v-progress-circular {
+position:absolute;
+left: 40%;
+top: 40%;
 }
 </style>
