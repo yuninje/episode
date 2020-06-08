@@ -24,6 +24,9 @@ public class Person {
 
     @Column(name = "person_job", length = 20, nullable =  false)
     private String personJob;
+    
+    @Column(name = "person_image", length = 100, nullable = true)
+	private String personImage;
 
     @Column(name = "person_official", columnDefinition="TINYINT(1)", nullable = false)
     private Boolean personOfficial;
@@ -37,9 +40,10 @@ public class Person {
     private List<Character> characters = new ArrayList<>();
 
     @Builder
-    public Person(String personBirth, String personJob, Boolean personOfficial, List<Name> names, List<Character> characters) {
+    public Person(String personBirth, String personJob, String personImage, Boolean personOfficial, List<Name> names, List<Character> characters) {
         this.personBirth = personBirth;
         this.personJob = personJob;
+        this.personImage = personImage;
         this.personOfficial = personOfficial;
         this.names = names;
         this.characters = characters;
@@ -48,12 +52,14 @@ public class Person {
     public Person update(
             String personBirth,
             String personJob,
+            String personImage,
             Boolean personOfficial,
             List<Name> names
 //            List<Character> characters
     ) {
         this.personBirth = personBirth;
         this.personJob = personJob;
+        this.personImage = personImage;
         this.personOfficial = personOfficial;
         this.names = names;
 //        this.characters = characters;   // 얘네는 변하지 않음.

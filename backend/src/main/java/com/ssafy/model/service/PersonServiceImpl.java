@@ -79,6 +79,7 @@ public class PersonServiceImpl implements PersonService {
         person.update(
                 requestDto.getPersonBirth(),
                 requestDto.getPersonJob(),
+                requestDto.getPersonImage(),
                 requestDto.getPersonOfficial(),
                 names
         );
