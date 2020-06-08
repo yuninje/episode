@@ -164,11 +164,16 @@
             <v-textarea auto-grow flat solo></v-textarea>
           </v-col>
         </v-row>
-        <v-row class="rectangle-outlined" v-show="checkButtons(2)">
-          <v-col cols="12">
+        <v-row  v-show="checkButtons(2)">
+          <v-col cols="9" class="rectangle-outlined">
             <make-relation class="rlt-card"/>
             <relation-diagram class="rlt-diagram"/>
           </v-col>
+          <v-col cols="3">
+            <h3>인물 리스트</h3>
+            <char-list-sero/>
+          </v-col>
+            
         </v-row>
         <v-row class="rectangle-outlined" v-show="checkButtons(3)">
           <v-col cols="12">
@@ -294,6 +299,7 @@ import { required, numeric } from "vee-validate/dist/rules";
 import relationDiagram from "../character/RelationDiagram";
 import MakeRelation from "../character/MakeRelation";
 import CharCard from "../character/CharacterCard";
+import CharListSero from "../character/CharacterCardVerticalList";
 
 extend("numeric", {
   ...numeric,
@@ -319,7 +325,8 @@ export default {
     ValidationProvider,
     relationDiagram,
     MakeRelation,
-    CharCard
+    CharCard,
+    CharListSero
   },
   data() {
     return {

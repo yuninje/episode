@@ -1,6 +1,6 @@
 <template>
-  <div v-if="links!=null">
-    <div v-if="nodes!=null" class="wrap-rlt-dg">
+  <div :v-if="isReady" >
+    <div  class="wrap-rlt-dg">
       <d3-network
         ref="net"
         :net-nodes="nodes"
@@ -47,13 +47,19 @@ export default {
     options() {
       return {
         force: 10000, // 퍼진 정도 (첫 화면의 노드 길이 ㅠ)
-        size: { w: this.window.width, h: this.window.height },
+        size: { w: (this.window.width)*0.73, h: this.window.height },
         nodeSize: this.nodeSize,
         nodeLabels: true,
         linkLabels: true,
-        linkWidth: 1,
-        strLinks: false
+        linkWidth: 1.5,
+        strLinks: true,
+        fontSize: 18
       };
+    },
+    isReady() {
+      if(this.nodes!=null && this.links!=null) {
+        return true;
+      }
     }
   },
   mounted() {
@@ -172,7 +178,7 @@ export default {
         node.fy = null;
       }
       this.nodes[node.index] = node;
-      console.log(this.nodes[node.index]);
+      // console.log(this.nodes[node.index]);
     },
     nodeClick(event, node) {
       // 마우스 뗐을때    // select는 마우스 누른 순간인듯
@@ -218,17 +224,5 @@ h1,
 a {
   color: #1aad8d;
   text-decoration: none;
-}
-
-ul.menu {
-  list-style: none;
-  position: absolute;
-  z-index: 100;
-  min-width: 20em;
-  text-align: left;
-}
-ul.menu li {
-  margin-top: 1em;
-  position: relative;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card class="make-rdt-card">
     <!-- {{ charInfo }} -->
     <!-- 타이틀 -->
     <v-card-actions>
@@ -178,6 +178,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.make-rdt-card {
+  width: 50%;
+  background-color: transparent;
+}
 input {
   text-align: center;
 }
