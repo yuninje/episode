@@ -1,7 +1,7 @@
 <template>
   <div class="mywork">
     <div class="work">
-      <div class="work-category">전체작품</div>
+      <div class="work-category">전체작품 ({{allList.length}})</div>
       <section class="work-section">
         <div class="card-grid">
           <router-link :to="`novel/detail/${ item.novelPk }`" v-for="item in allList" :key="item.novelPk" class="card">
@@ -23,7 +23,7 @@
     </div>
 
     <div class="work">
-      <div class="work-category">연재 중 작품</div>
+      <div class="work-category">연재 중 작품 ({{publishList.length}})</div>
       <section class="work-section">
         <div class="card-grid">
           <router-link :to="`novel/detail/${ item.novelPk }`" v-for="item in publishList" :key="item.novelPk" class="card">
@@ -45,7 +45,7 @@
     </div>
 
     <div class="work">
-      <div class="work-category">작성 중 작품</div>
+      <div class="work-category">작성 중 작품 ({{writeList.length}})</div>
       <section class="work-section">
         <div class="card-grid">
           <router-link :to="`novel/detail/${ item.novelPk }`" v-for="item in writeList" :key="item.novelPk" class="card">
@@ -225,5 +225,11 @@ export default {
   text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.2);
   line-height: 1.4;
   word-spacing: 100vw;
+}
+
+.work{
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
 }
 </style>
