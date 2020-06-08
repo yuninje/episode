@@ -75,7 +75,7 @@ export default {
             searchText:'',
             loading: true,
             errored: false,
-            desktopSize: false,
+            desktopSize: true,
             windowSize:'',
             items: [
                 {

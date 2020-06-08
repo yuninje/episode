@@ -1,5 +1,5 @@
 <template>
-    <v-containter>
+    <v-container>
         <div>
             <span class="sub-title-red">HOT 캐릭터셋</span>
         </div>
@@ -24,11 +24,12 @@
                 </v-card>
             </v-col>
         </v-row>
-    </v-containter>
+    </v-container>
 </template>
 
 <script>
 export default {
+    name: 'MainHotCharacterSet',
     data() {
         return {
             items: [
