@@ -4,7 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,8 +52,7 @@ public class Novel {
 
 	@LastModifiedDate
 	@Column(name = "novel_updated_at", nullable = false)
-	private LocalDateTime novelUpdatedAt = LocalDateTime.now();
-
+	private ZonedDateTime novelUpdatedAt = ZonedDateTime.now();
 
 	// novel <-> member >> N : 1 관계  
 	@ManyToOne
@@ -143,8 +142,9 @@ public class Novel {
 	}
 
 	public void updateUpdatedAt(){
-		this.novelUpdatedAt = LocalDateTime.now();
+		this.novelUpdatedAt = ZonedDateTime.now();
 	}
+	
 	public void updateView(){ this.novelView += 1;}
 	public void updateImage(String imageUrl){ this.novelImage = imageUrl;}
 

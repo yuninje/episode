@@ -6,6 +6,7 @@ import com.ssafy.model.entity.Comment;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 public class CommentResponseDto {
     private int commentPk;
     private String commentContent;
-    private LocalDateTime commentCreatedAt;
+    private ZonedDateTime commentCreatedAt;
     private MemberResponseDto member;
     private EpisodeResponseNoNovelDto episode; // 소설 안붙어있는거
 

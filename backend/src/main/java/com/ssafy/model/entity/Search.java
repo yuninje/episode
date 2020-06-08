@@ -28,7 +28,7 @@ public class Search {
 
 	// search <-> member >> N : 1 관계
 	@ManyToOne
-	@JoinColumn(name = "mem_pk", nullable = false)
+	@JoinColumn(name = "mem_pk", nullable = true)
 	private Member member;
 	
 	@Transient

@@ -14,13 +14,15 @@ import java.util.List;
 public class PersonSaveRequestDto {
     private String personBirth;
     private String personJob;
+    private String personImage;
     private Boolean personOfficial;
     private List<String> names = new ArrayList<>();
 
     @Builder
-    public PersonSaveRequestDto(String personBirth, String personJob, Boolean personOfficial, List<String> names) {
+    public PersonSaveRequestDto(String personBirth, String personJob, String personImage, Boolean personOfficial, List<String> names) {
         this.personBirth = personBirth;
         this.personJob = personJob;
+        this.personImage = personImage;
         this.personOfficial = personOfficial;
         this.names = names;
     }
@@ -29,6 +31,7 @@ public class PersonSaveRequestDto {
         return Person.builder()
                 .personBirth(personBirth)
                 .personJob(personJob)
+                .personImage(personImage)
                 .personOfficial(personOfficial)
                 .names(names)
                 .build();

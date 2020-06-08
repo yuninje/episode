@@ -14,14 +14,15 @@ import java.util.List;
 public class PersonUpdateRequestDto {
     private String personBirth;
     private String personJob;
+    private String personImage;
     private Boolean personOfficial;
     private List<String> names = new ArrayList<>();
 
-
     @Builder
-    public PersonUpdateRequestDto(String personBirth, String personJob, Boolean personOfficial, List<String> names) {
+    public PersonUpdateRequestDto(String personBirth, String personJob, String personImage, Boolean personOfficial, List<String> names) {
         this.personBirth = personBirth;
         this.personJob = personJob;
+        this.personImage = personImage;
         this.personOfficial = personOfficial;
         this.names = names;
     }

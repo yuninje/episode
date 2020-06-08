@@ -62,19 +62,16 @@ public class NovelServiceImpl implements NovelService {
     public Page<NovelResponseDto> getNovelsBySearchWord(String type, String word, Pageable pageable, String sort, int memPk, int genrePk) {
         PageRequest pageRequest = getPageRequest(pageable, sort);
 
-        if (memPk != 0) {
-            Member member = mRepo.findById(memPk)
-                    .orElseThrow(() -> new IllegalArgumentException("member pk :  " + memPk + "가 존재하지 않습니다."));
-
-            Date date = new Date();
-            String[] words = word.split(" ");
-            for (String word_ : words) {
-                Search search = new Search();
-                search.setMember(member);
-                search.setSearchWord(word_);
-                search.setSearchCreatedAt(date);
-                sRepo.save(search);
-            }
+        Member member = mRepo.findById(memPk).orElse(null);
+        
+        Date date = new Date();
+        String[] words = word.split(" ");
+        for (String word_ : words) {
+        	Search search = new Search();
+        	search.setMember(member);
+        	search.setSearchWord(word_);
+        	search.setSearchCreatedAt(date);
+        	sRepo.save(search);
         }
 
         Page<Novel> novelEntityPage;
