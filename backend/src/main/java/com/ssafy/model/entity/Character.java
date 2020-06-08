@@ -99,8 +99,16 @@ public class Character {
 		this.characterMore = characterMore;
 		this.characterImage = characterImage;
 
-		if(person != null){
-			if(this.person != null){
+		if(this.person == person){
+			// 패스
+		}else{
+			if(this.person == null && person != null){	// person 넣기
+				this.person = person;
+				this.person.getCharacters().add(this);
+			}else if(this.person != null && person == null){	// person 취소
+				this.person.getCharacters().remove(this);
+				this.person = null;
+			}else{										// 다른 person 넣기
 				this.person.getCharacters().remove(this);
 				this.person = person;
 				this.person.getCharacters().add(this);
