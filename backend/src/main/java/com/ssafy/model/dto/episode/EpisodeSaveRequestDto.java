@@ -5,6 +5,7 @@ import com.ssafy.model.entity.Novel;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -30,7 +31,7 @@ public class EpisodeSaveRequestDto {
                 .episodeTitle(episodeTitle)
                 .episodeContent(episodeContent)
                 .episodeWriter(episodeWriter)
-                .episodeCreatedAt(LocalDateTime.now())
+                .episodeCreatedAt(ZonedDateTime.now())
                 .episodeView(0L)
                 .build();
     }
