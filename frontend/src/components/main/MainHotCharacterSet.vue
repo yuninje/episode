@@ -9,12 +9,13 @@
                 sm="2"
                 v-for="i in Math.min(limit, items.length)"
                 :key="i"
-                @click="gotoCharacterSet(items[i-1].novelPk)"
             >
                 <v-card
                     out-lined
                     dark
                     :img="items[i-1].src"
+                    @click="gotoCharacterSet(items[i-1].novelPk)"
+                    class="character-set-card"
                 >
                     <v-responsive :aspect-ratio="0.7">
                         <v-card-title class="card-title">
@@ -98,7 +99,7 @@ export default {
     },
     methods: {
         gotoCharacterSet(novelPk) {
-            if(novelPk !== null || novelPk !== '') {
+            if(novelPk !== null && novelPk !== '') {
                 this.$router.push(`/characterset/${novelPk}`);
             }
         }
@@ -114,5 +115,8 @@ export default {
 }
 .card-title {
     text-shadow: 2px 2px 2px gray;
+}
+.character-set-card {
+    cursor:pointer;
 }
 </style>
