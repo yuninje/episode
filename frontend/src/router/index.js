@@ -17,6 +17,7 @@ import All from '../components/all/PageAll'
 import RDT from '../components/character/RelationDiagramTest'
 
 import Viewer from '../components/viewer/PageViewer'
+import CharacterSet from '../components/characterset/PageCharacterSet'
 
 Vue.use(VueRouter)
 
@@ -97,6 +98,11 @@ const routes = [
     name: 'RDT',
     component: RDT
   },
+  {
+    path: '/characterset/:novelPk',
+    name: 'CharacterSet',
+    component: CharacterSet
+  }
 ]
 
 function rejectUnAuthUser (to, from, next) {
