@@ -99,9 +99,12 @@ public class Character {
 		this.characterMore = characterMore;
 		this.characterImage = characterImage;
 
-		if(this.person != person){
-			this.person.getCharacters().remove(this);
-			this.person = person;
+		if(person != null){
+			if(this.person != null){
+				this.person.getCharacters().remove(this);
+				this.person = person;
+				this.person.getCharacters().add(this);
+			}
 		}
 
 		return this;

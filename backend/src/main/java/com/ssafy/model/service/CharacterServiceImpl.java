@@ -80,7 +80,7 @@ public class CharacterServiceImpl implements CharacterService {
 				.orElseThrow(() -> new CharacterException(CharacterException.NOT_EXIST));
 
 		Person personEntity = pRepo.findById(requestDto.getPersonPk())
-				.orElseThrow(() -> new PersonException(PersonException.NOT_EXIST));
+				.orElse(null);
 
 		characterEntity.update(
 				requestDto.getCharacterName(), 
