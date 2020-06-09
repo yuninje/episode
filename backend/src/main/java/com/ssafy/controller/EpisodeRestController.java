@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@Api(tags = {"3. Episode"})
+@Api(tags = {"Episode"})
 @RestController
 @RequestMapping("/episodes")
 @CrossOrigin(origins = {"*"}, maxAge = 6000)
@@ -63,6 +63,12 @@ public class EpisodeRestController {
         return handleSuccess("pk : " + episodePk + " 에피소드 삭제 완료");
     }
 
+    @ApiOperation("조회수 증가")
+    @GetMapping("/view/{episodePk}")
+    ResponseEntity<Map<String, Object>> updateViewEpisode(@PathVariable int episodePk) {
+        eService.updateViewEpisode(episodePk);
+        return handleSuccess("조회수 업데이트 완료");
+    }
 
     public ResponseEntity<Map<String, Object>> handleSuccess(Object data) {
         Map<String, Object> resultMap = new HashMap<String, Object>();

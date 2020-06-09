@@ -5,8 +5,8 @@ import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class Episode {
 
 	@CreatedDate
 	@Column(name = "episode_created_at", nullable = false)
-	private LocalDateTime episodeCreatedAt = LocalDateTime.now();
+	private ZonedDateTime episodeCreatedAt = ZonedDateTime.now();
 	
 	@Column(name = "episode_writer", length = 100, nullable = true)
 	private String episodeWriter;
@@ -59,7 +59,7 @@ public class Episode {
 	private List<Member> likedMembers = new ArrayList<>();
 
 	@Builder
-	public Episode(Novel novel,Integer episodePk, String episodeTitle, String episodeContent, LocalDateTime episodeCreatedAt, String episodeWriter, Long episodeView) {
+	public Episode(Novel novel,Integer episodePk, String episodeTitle, String episodeContent, ZonedDateTime episodeCreatedAt, String episodeWriter, Long episodeView) {
 		this.novel = novel;
 		this.episodePk = episodePk;
 		this.episodeTitle = episodeTitle;
@@ -77,20 +77,6 @@ public class Episode {
 	}
 
 
-
-	// 좋아요
-	@Transactional
-	public void likedMember(Member member){
-		likedMembers.add(member);
-//		member.getLikeNovels().remove(this);
-	}
-	// 좋아요 취소
-	@Transactional
-	public void unLikedMember(Member member){
-		likedMembers.remove(member);
-//		member.getLikeNovels().remove(this);
-	}
-
 	public void updateView(){ this.episodeView += 1;}
 
 	public void beforeDelete(){
@@ -98,7 +84,7 @@ public class Episode {
 		comments.forEach(comment -> comment.beforeDelete());
 
 		//좋아요
-		likedMembers.forEach(member -> member.unLikeEpisode(this));
+		likedMembers.forEach(member -> member.getLikeEpisodes().remove(this));
 		likedMembers = new ArrayList<>();
 	}
 }

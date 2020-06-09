@@ -35,12 +35,12 @@
                         <v-container>
                           <v-row>
                             <v-col
-                              v-for="i in 6"
-                              :key="i"
+                              v-for="(novel, index) in data.content"
+                              :key="index"
                               cols="6"
                               md="6"
                               >
-                        <div class="card">
+                        <div class="card" v-on:click="gotoNovelDetail(novel.novelPk)">
   <div class="img-avatar">
     <svg viewBox="0 0 100 100">
     <path 
@@ -51,12 +51,12 @@
   </svg>
   </div>
   <div class="card-text">
-    <img class="portada" src="https://comicthumb-phinf.pstatic.net/20190325_108/pocket_1553525187132gW0BF_JPEG/untitled.jpg">
+    <img class="portada" :src="novel.novelImage">
     <div class="title-total">   
       <div class="total">총 152화</div>
-      <h2>서울역 드루이드</h2>
+      <h2>{{novel.novelName}}</h2>
   
-  <div class="desc">숲의 수호자, 자연의 관찰자이자, 동물들의 왕. 드루이드가 되어 홀로 천 년의 시간을 보낸 후. 드디어 지구로 귀환했다. "응? 내가 알던 서울이 아..</div>
+  <div class="des">{{novel.novelIntro}}</div>
   <div class="actions">
     <button><i class="far fa-heart"></i></button>
     <button><i class="far fa-envelope"></i></button>
@@ -105,25 +105,25 @@ export default {
         this.getGenres();
     },
     mounted() {
-        console.log("여긴 마운티드입니다!");
+        // console.log("여긴 마운티드입니다!");
         this.getSearchResult();
         this.searchKeyword = this.$route.params.searchKeyword;
-        console.log("여기에서 마운티드가 끝납니다!");
+        // console.log("여기에서 마운티드가 끝납니다!");
     },
     methods: {
         getSearchResult() {
-            console.log("함수 실행");
+            // console.log("함수 실행");
             http
                 .get(`/search/${this.type}`, {
                     params:{
                         genrePk: 0,
-                        memPk: 0,
+                        memPk: this.getSession.memPk,
                         sort: this.sort,
                         word: this.$route.params.searchKeyword
                     }
                 })
                 .then(response => {
-                    console.log(response.data.data);
+                    // console.log(response.data.data);
                     this.data = response.data.data;
                 })
                 .catch((e) => {
@@ -136,11 +136,11 @@ export default {
         },
         getGenres() {
             http
-                .get('/genrePks')
+                .get('/genres')
                 .then(response => {
-                    console.log(response.data.data);
+                    // console.log(response.data.data);
                     this.genres = response.data.data;
-                    console.log(this.genres);
+                    // console.log(this.genres);
                 })
                 .catch(() => {
                     this.errored = true;
@@ -148,6 +148,9 @@ export default {
                 .finally(() => {
                     this.loading = false;
                 })
+        },
+        gotoNovelDetail(novelPk){
+          this.$router.push(`/novel/detail/${novelPk}`)
         }
     },
 }
@@ -173,6 +176,7 @@ body {
   flex-direction: row;
   border-radius: 25px;
   position: relative;
+  cursor:pointer;
 }
 .card h2 {
   margin: 0;
@@ -294,5 +298,12 @@ button {
 .v-tab--active {
     background-color: rgba(255,83,83,1) !important;
     color: white !important;
+}
+
+.overflow-text {
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100px;
 }
 </style>

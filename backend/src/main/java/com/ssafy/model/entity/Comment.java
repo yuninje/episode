@@ -4,8 +4,8 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class Comment {
 
 	@CreatedDate
 	@Column(name = "comment_created_at", nullable = false)
-	private LocalDateTime commentCreatedAt;
+	private ZonedDateTime commentCreatedAt = ZonedDateTime.now();
 
 	// comment <-> member >> N : 1 관계
 	@ManyToOne
@@ -49,7 +49,7 @@ public class Comment {
 	private List<Member> likedMembers = new ArrayList<Member>();
 
 	@Builder
-	public Comment(Integer commentPk, String commentContent, LocalDateTime commentCreatedAt, Member member, Episode episode) {
+	public Comment(Integer commentPk, String commentContent, ZonedDateTime commentCreatedAt, Member member, Episode episode) {
 		this.commentPk = commentPk;
 		this.commentContent = commentContent;
 		this.commentCreatedAt = commentCreatedAt;
@@ -62,24 +62,10 @@ public class Comment {
 		return this;
 	}
 
-
-	// 좋아요
-	@Transactional
-	public void likedMember(Member member){
-		likedMembers.add(member);
-//		member.getLikeNovels().remove(this);
-	}
-	// 좋아요 취소
-	@Transactional
-	public void unLikedMember(Member member){
-		likedMembers.remove(member);
-//		member.getLikeNovels().remove(this);
-	}
-
 	public void beforeDelete(){
 		// 좋아요 데이터
 		for (Member member : this.likedMembers) {
-			member.unLikeComment(this);
+			member.getLikeComments().remove(this);
 		}
 		likedMembers = new ArrayList<>();
 	}

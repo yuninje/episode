@@ -8,6 +8,7 @@ import com.ssafy.model.entity.Novel;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,12 +27,13 @@ public class NovelResponseDto {
     private int novelStatus;
     private boolean novelOnly;
     private Long novelView = 0L;
-    private LocalDateTime novelUpdatedAt;
+    private ZonedDateTime novelUpdatedAt;
     private MemberResponseDto member;
     private List<GenreResponseDto> genres = new ArrayList<>();
     private List<HashTagResponseDto> hashTags = new ArrayList<>();
     private long novelLikes = 0L;
     private long novelRecommends = 0L;
+    private int episodeCount;
 
     public NovelResponseDto(Novel novel) {
         this.novelPk = novel.getNovelPk();
@@ -51,23 +53,6 @@ public class NovelResponseDto {
         		hashTag -> new HashTagResponseDto(hashTag)).collect(Collectors.toList());
         this.novelLikes = novel.getEpisodes().stream().mapToInt(episode -> episode.getLikedMembers().size()).sum();
         this.novelRecommends = novel.getNovelRecommends();
-    }
-
-    @Builder
-    public NovelResponseDto(int novelPk, String novelName, String novelIntro, String novelImage, boolean novelLimit, boolean novelOpen, int novelStatus, boolean novelOnly, Long novelView, LocalDateTime novelUpdatedAt, MemberResponseDto member, List<GenreResponseDto> genres, long likes, long recommends) {
-        this.novelPk = novelPk;
-        this.novelName = novelName;
-        this.novelIntro = novelIntro;
-        this.novelImage = novelImage;
-        this.novelLimit = novelLimit;
-        this.novelOpen = novelOpen;
-        this.novelStatus = novelStatus;
-        this.novelOnly = novelOnly;
-        this.novelView = novelView;
-        this.novelUpdatedAt = novelUpdatedAt;
-        this.member = member;
-        this.genres = genres;
-        this.novelLikes = likes;
-        this.novelRecommends = recommends;
+        this.episodeCount = novel.getEpisodes().size();
     }
 }

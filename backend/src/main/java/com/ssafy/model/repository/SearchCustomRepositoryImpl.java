@@ -42,6 +42,7 @@ public class SearchCustomRepositoryImpl extends QuerydslRepositorySupport implem
 						.where(search.searchCreatedAt.gt(yesterday))
 						.groupBy(search.searchWord)
 						.orderBy(searchCnt.desc());
+		
 		List<Search> searchs = query.fetch();
 
 		return searchs;

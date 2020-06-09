@@ -13,11 +13,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
-@org.springframework.transaction.annotation.Transactional
+@Transactional
 @Service
 public class CommentServiceImpl implements CommentService{
 	@Autowired
@@ -62,15 +62,15 @@ public class CommentServiceImpl implements CommentService{
 
 	@Override
 	public void deleteComment(int commentPk) {
-		Comment commentEntity = cRepo.findById(commentPk).orElseThrow(()->
+		Comment comment = cRepo.findById(commentPk).orElseThrow(()->
 				new IllegalArgumentException("comment " + commentPk + "가 존재하지 않습니다."));
 
 		// 좋아요 데이터 삭제
-		for(Member memberEntity : commentEntity.getLikedMembers()){
-			memberEntity.unLikeComment(commentEntity);
+		for(Member member : comment.getLikedMembers()){
+			member.getLikeComments().remove(comment);
 		}
 
-		cRepo.save(commentEntity);
+		cRepo.save(comment);
 		cRepo.deleteById(commentPk);
 	}
 

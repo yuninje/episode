@@ -51,9 +51,9 @@ public class EpisodeServiceImpl implements EpisodeService {
 
     @Override
     public Page<EpisodeResponseDto> getEpisodes(Pageable pageable) {
-        Page<Episode> episodeEntityPage = eRepo.findAll(pageable);
+        Page<Episode> episodePage = eRepo.findAll(pageable);
         Page<EpisodeResponseDto> episodes =
-                episodeEntityPage.map(episodeEntity -> new EpisodeResponseDto(episodeEntity));
+                episodePage.map(episode -> new EpisodeResponseDto(episode));
         return episodes;
     }
 
@@ -62,12 +62,18 @@ public class EpisodeServiceImpl implements EpisodeService {
         Episode episode = eRepo.findById(episodePk).orElseThrow(() ->
                 new EpisodeException(EpisodeException.NOT_EXIST));
 
+        EpisodeResponseDto responseDto = new EpisodeResponseDto(episode);
+        return responseDto;
+    }
+
+    @Override
+    public void updateViewEpisode(int episodePk){
+        Episode episode = eRepo.findById(episodePk).orElseThrow(() ->
+                new EpisodeException(EpisodeException.NOT_EXIST));
+
         episode.updateView();
         episode.getNovel().updateView();
         eRepo.save(episode);
-
-        EpisodeResponseDto responseDto = new EpisodeResponseDto(episode);
-        return responseDto;
     }
 
     @Override
@@ -96,16 +102,16 @@ public class EpisodeServiceImpl implements EpisodeService {
     public Map getEpisodesByNovel(int novelPk, Pageable pageable) {
         Map data = new HashMap();
 
-        Novel novelEntity = nRepo.findById(novelPk).orElseThrow(() ->
+        Novel novel = nRepo.findById(novelPk).orElseThrow(() ->
                 new EpisodeException(EpisodeException.NOT_EXIST));
-        NovelResponseDto novel = new NovelResponseDto(novelEntity);
+        NovelResponseDto novelDto = new NovelResponseDto(novel);
 
-        Page<Episode> episodeEntityPage = eRepo.findByNovel(novelEntity, pageable);
-        Page<EpisodeResponseNoNovelDto> episodes =
-                episodeEntityPage.map(episodeEntity -> new EpisodeResponseNoNovelDto(episodeEntity));
+        Page<Episode> episodePage = eRepo.findByNovel(novel, pageable);
+        Page<EpisodeResponseNoNovelDto> episodeDtoPage =
+                episodePage.map(episode -> new EpisodeResponseNoNovelDto(episode));
 
-        data.put("novel", novel);
-        data.put("episodes", episodes);
+        data.put("novel", novelDto);
+        data.put("episodes", episodeDtoPage);
         return data;
     }
 

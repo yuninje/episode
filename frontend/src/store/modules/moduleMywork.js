@@ -36,7 +36,7 @@ export default {
     // 전체 소설 목록
     getNovelByMemPk({ state, dispatch, commit, getters, rootGetters }) {
       axios
-        .get(`${rootGetters.getServer}/api/novels/member-pk=${rootGetters.getSession.memPk}?sort=updated` )
+        .get(`${rootGetters.getServer}/api/novels/member-pk=${rootGetters.getSession.memPk}?size=30&sort=updated` )
         .then( res => {
           let content = res.data.data.content
           let pubList = []

@@ -6,6 +6,7 @@ import com.ssafy.model.entity.Member;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -28,7 +29,7 @@ public class CommentSaveRequestDto {
                 .member(member)
                 .episode(episode)
                 .commentContent(commentContent)
-                .commentCreatedAt(LocalDateTime.now())
+                .commentCreatedAt(ZonedDateTime.now())
                 .build();
     }
 }

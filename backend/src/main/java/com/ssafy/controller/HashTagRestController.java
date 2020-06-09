@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@Api(tags = { "7. HashTag" })
+@Api(tags = { "HashTag" })
 @RestController
 @RequestMapping("/hashTags")
 @CrossOrigin(origins = {"*"}, maxAge = 6000)
@@ -41,7 +41,7 @@ public class HashTagRestController {
 
 	@ApiOperation("해시태그 삭제")
 	@DeleteMapping("/{hashTagPk}")
-	ResponseEntity<Map<String, Object>> registHashTag(@PathVariable int hashTagPk) {
+	ResponseEntity<Map<String, Object>> deleteHashTag(@PathVariable int hashTagPk) {
 		hService.deleteHashTag(hashTagPk);
 		return handleSuccess("해시태그 삭제 완료");
 	}

@@ -5,15 +5,14 @@ import com.ssafy.model.dto.genre.GenreSaveRequestDto;
 import com.ssafy.model.dto.genre.GenreUpdateRequestDto;
 import com.ssafy.model.entity.Genre;
 import com.ssafy.model.entity.GenreException;
-import com.ssafy.model.entity.Novel;
 import com.ssafy.model.repository.GenreRepository;
 import com.ssafy.model.repository.NovelRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,12 +68,7 @@ public class GenreServiceImpl implements GenreService{
 		Genre genre = gRepo.findById(genrePk)
 				.orElseThrow(() -> new GenreException(GenreException.NOT_EXIST));
 		// 장르에 속한 소설 데이터 삭제
-		for(Novel novel : genre.getNovels()){
-			novel.notBelongGenre(genre);
-		}
-
-		gRepo.save(genre);
-		gRepo.deleteById(genrePk);
+		deleteGenre(genre);
 	}
 
 	public void deleteGenre(Genre genre){
