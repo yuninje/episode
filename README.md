@@ -13,11 +13,13 @@
 
 ### Development environment
 - Front-end : Vue, Nginx
-- Back-end : Spring Boot (Maven), Lombok, JPA
-- DB : mysql - Docker
+- Back-end : Spring Boot ^2.6.11 (Maven), Lombok, JPA
+- DB : mysql 8.0.12 - Docker
 - ERD : ERD Cloud
 - IDE : STS 3.9.7, VS code
-
+- Language : Java 1.8
+- OS : Ubuntu 18.04
+- Storage : AWS S3
 
 ## Folder organization
 ```
@@ -62,3 +64,15 @@ Back-end
 ## 주요 기능
 - 검색 : 작품, 작가 검색, 실시간 검색어 API 연동
 - 소설 관리 페이지 : 소설 에피소드 생성, 소설 삭제
+
+# Version 1.2 (2020.06.04)
+## 주요 기능
+- 소설 관리 페이지 : 캐릭터 생성, 소설 세부 설정
+- 메인 페이지 : 메인 페이지 디자인 변경
+- 인물 관계 : 인물 관계 생성 기능 1차 배포
+
+# Version 2.0 (2020.06.08)
+## 주요 기능
+- 캐릭터 셋 : 캐릭터 모음집, 내 소설로 캐릭터 불러오기
+- 인물 관계 : 인물 관계 생성 기능 최종 배포
+- 소설 뷰어 : 드래그 방지
