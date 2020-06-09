@@ -158,7 +158,6 @@
         </v-row>
         <v-row class="rectangle-outlined" v-show="checkButtons(2)">
           <v-col cols="12">
-            <relation-diagram/>
           </v-col>
         </v-row>
         <v-row class="rectangle-outlined" v-show="checkButtons(3)">
@@ -292,7 +291,6 @@ import AWS from "aws-sdk";
 import { mapActions, mapMutations, mapGetters } from "vuex";
 import { ValidationProvider, extend } from "vee-validate";
 import { required, numeric } from "vee-validate/dist/rules";
-import relationDiagram from "../character/RelationDiagramTest";
 import CharCard from "../character/CharacterCard";
 
 extend("numeric", {
@@ -317,7 +315,6 @@ export default {
   components: {
     PictureInput,
     ValidationProvider,
-    relationDiagram,
     CharCard
   },
   data() {
