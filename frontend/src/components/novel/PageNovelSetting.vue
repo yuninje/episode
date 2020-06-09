@@ -3,12 +3,11 @@
     <v-row v-if="checkAuth(this.novelInfo.member.memPk)">
       <v-col cols="12" md="4" lg="3">
         <v-row>
-
           <v-col cols="12">
             <div class="canvas-wrap">
               <canvas
                 id="previewCanvas"
-                width="700" 
+                width="700"
                 height="1000"
                 :style="{ 'background-image': `url(${this.novelInfo.novelImage})` }"
                 style="background-repeat:no-repeat;background-position: center; background-size : cover;"
@@ -30,7 +29,6 @@
               </p>
             </div>
           </v-col>
-
         </v-row>
       </v-col>
       <v-col cols="12" md="8" lg="9">
@@ -63,8 +61,6 @@
               row-height="15"
             ></v-textarea>
             <p class="write-info"></p>
-            <!-- <v-btn  rounded @click="clickUpdateNovel()" class="set-save-btn">저장</v-btn> -->
-            <!-- <v-btn rounded @click="clickDeleteNovel()" class="set-save-btn">이 소설을 삭제하겠습니다.</v-btn> -->
           </v-col>
           <v-col cols="12">
             <br>
@@ -95,14 +91,14 @@
       <v-col cols="12">
         <v-row class="rectangle-outlined" v-show="checkButtons(0)">
           <!-- 기존 등록된 캐릭터 카드 -->
-          <v-col 
+          <v-col
             cols="12"
             sm="3"
             v-for="(char, i) in charInfo"
             :key="`character-${i}`"
             @click="getCharacter(char.characterPk)"
           >
-            <char-card  
+            <char-card
               :name="char.characterName"
               :age="char.characterAge"
               :job="char.characterJob"
@@ -132,12 +128,9 @@
                 </v-col>
               </v-row>
             </v-card>
-          </v-col> -->
+          </v-col>-->
           <!-- 새로운 캐릭터 생성 카드 -->
-          <v-col 
-            cols="12"
-            sm="3"
-          >
+          <v-col cols="12" sm="3">
             <v-card
               color="rgba(242, 242, 242, 1)"
               class="d-flex justify-center align-center"
@@ -155,7 +148,7 @@
             <v-textarea auto-grow flat solo></v-textarea>
           </v-col>
         </v-row>
-        <v-row  v-show="checkButtons(2)">
+        <v-row v-show="checkButtons(2)">
           <v-col cols="9" class="rectangle-outlined">
             <make-relation class="rlt-card"/>
             <relation-diagram class="rlt-diagram"/>
@@ -164,7 +157,6 @@
             <h3>인물 리스트</h3>
             <char-list-sero/>
           </v-col>
-            
         </v-row>
         <v-row class="rectangle-outlined" v-show="checkButtons(3)">
           <v-col cols="12">
@@ -179,17 +171,24 @@
       </v-col>
       <v-col style="margin-top: 30px; margin-bottom: 10px">
         <v-btn
-          style="float:left"
-          rounded
           @click="clickDeleteNovel()"
-          class="set-save-btn"
-        >이 소설을 삭제하겠습니다.</v-btn>
-        <v-btn rounded @click="clickUpdateNovel()" class="set-save-btn">저장</v-btn>
+          outlined
+          color="rgba(255,83,83,1)"
+          class="set-del-btn"
+        >
+          <v-icon color="rgba(255,83,83,1)">mdi mdi-pencil</v-icon>이 소설을 삭제하겠습니다.
+        </v-btn>
+        <v-btn
+          @click="clickUpdateNovel()"
+          outlined
+          color="rgba(255,83,83,1)"
+          style="float:right"
+        >저장</v-btn>
       </v-col>
     </v-row>
 
     <!-- 캐릭터 등록 페이지 -->
-    <v-dialog v-model="dialog" persistent max-width="400px">
+    <v-dialog v-model="dialog" persistent max-width="400px" @keydown.esc="dialog=false">
       <v-form
         action
         method="post"
@@ -199,8 +198,8 @@
       >
         <v-card>
           <v-card-title class="text-center">
-            <v-spacer></v-spacer>캐릭터 등록
-            <v-spacer></v-spacer>
+            <v-spacer></v-spacer><v-spacer></v-spacer>캐릭터 등록<v-spacer></v-spacer>
+            <v-btn style="margin:0 0" color="rgba(192,0,0,1)" text @click="clearNewCharacter(), dialog=false">닫기</v-btn>
           </v-card-title>
           <v-card-text>
             <v-container>
@@ -270,16 +269,16 @@
             </v-container>
           </v-card-text>
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="rgba(192,0,0,1)" text @click="createNewCharacter()">create</v-btn>
-            <v-btn color="rgba(192,0,0,1)" text @click="clearNewCharacter(), dialog=false">close</v-btn>
+            <v-col>
+            <v-btn color="rgba(192,0,0,1)" text @click="createNewCharacter()" style="float:right">만들기</v-btn>
+            </v-col>
           </v-card-actions>
         </v-card>
       </v-form>
     </v-dialog>
 
     <!-- 캐릭터 수정 페이지 -->
-    <v-dialog v-model="dialog2" persistent max-width="400px">
+    <v-dialog v-model="dialog2" persistent max-width="400px" @keydown.esc="dialog2=false">
       <v-form
         action
         method="put"
@@ -289,17 +288,14 @@
       >
         <v-card>
           <v-card-title class="text-center">
-            <v-spacer></v-spacer>캐릭터 수정
-            <v-spacer></v-spacer>
+            <v-spacer></v-spacer><v-spacer></v-spacer>캐릭터 수정<v-spacer></v-spacer>
+            <v-btn color="rgba(192,0,0,1)" text @click="clearCharacter(), dialog2=false">닫기</v-btn> 
           </v-card-title>
           <v-card-text>
             <v-container>
               <v-row>
                 <v-col cols="12">
-                  <v-img 
-                    aspect-ratio="1"
-                    :src="character.characterImage"
-                  ></v-img>
+                  <v-img aspect-ratio="1" :src="character.characterImage"></v-img>
                   <!-- <picture-input
                     @change="onChangeCharacter"
                     @remove="onRemoveCharacter"
@@ -321,7 +317,7 @@
                       change: '이미지 수정  | ',
                       remove: '삭제'
                     }"
-                  ></picture-input> -->
+                  ></picture-input>-->
                 </v-col>
                 <v-col cols="12">
                   <v-text-field label="이름" required v-model="character.characterName"></v-text-field>
@@ -359,10 +355,20 @@
             </v-container>
           </v-card-text>
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="rgba(192,0,0,1)" text @click="updateCharacter(character.characterPk)">update</v-btn>
-            <v-btn color="rgba(192,0,0,1)" text @click="deleteCharacter(character.characterPk)">delete</v-btn>
-            <v-btn color="rgba(192,0,0,1)" text @click="clearCharacter(), dialog2=false">close</v-btn>
+            <v-col>
+            <v-btn
+              color="rgba(192,0,0,1)"
+              text
+              @click="deleteCharacter(character.characterPk)"
+              style="float:left"
+            >캐릭터 삭제</v-btn>
+            <v-btn
+              color="rgba(192,0,0,1)"
+              text
+              @click="updateCharacter(character.characterPk)"
+              style="float:right"
+            >수정</v-btn>
+            </v-col>
           </v-card-actions>
         </v-card>
       </v-form>
@@ -435,7 +441,7 @@ export default {
       dialog: false,
       dialog2: false,
       characters: [],
-      character:{},
+      character: {},
       newCharacter: {
         image: "",
         name: "",
@@ -503,7 +509,7 @@ export default {
       };
 
       reader.readAsDataURL(event.target.files[0]);
-      
+
       this.inputFile = this.$refs.inputFile.files[0];
       this.inputStatus = 1;
     },
@@ -776,7 +782,7 @@ export default {
     getCharacter(characterPk) {
       http
         .get(`/characters/${characterPk}`)
-        .then(response=>{
+        .then(response => {
           this.character = response.data.data;
           console.log(this.character);
           this.dialog2 = true;
@@ -784,9 +790,9 @@ export default {
         .catch(() => {
           this.errored = true;
         })
-        .finally (() => {
+        .finally(() => {
           this.loading = false;
-        })
+        });
     },
     getCharacters() {
       http
@@ -854,7 +860,7 @@ export default {
               }
               this.clearNewCharacter();
               this.$refs.inputFileCha.removeImage();
-              this.dialog=false;
+              this.dialog = false;
             })
             .catch(() => {
               this.errored = true;
@@ -894,32 +900,32 @@ export default {
           characterName: this.character.characterName,
           characterPersonallity: this.character.characterPersonallity,
           characterRole: this.character.characterRole,
-          characterSignificant: this.character.characterSignificant,
+          characterSignificant: this.character.characterSignificant
         })
         .then(response => {
-          if(response.data.state === "ok") {
-            alert('수정되었습니다!');
+          if (response.data.state === "ok") {
+            alert("수정되었습니다!");
             this.dialog2 = false;
           }
         })
         .catch(() => {
-          alert('캐릭터 정보 수정중 에러발생!!');
-        })
+          alert("캐릭터 정보 수정중 에러발생!!");
+        });
     },
     deleteCharacter(characterPk) {
       let confirmflag = confirm("진짜로 삭제하시겠습니까?");
-      if(confirmflag) {
+      if (confirmflag) {
         http
           .delete(`/characters/${characterPk}`)
           .then(response => {
-            if(response.data.state === "ok") {
-              alert('삭제되었습니다.');
+            if (response.data.state === "ok") {
+              alert("삭제되었습니다.");
               this.dialog2 = false;
             }
           })
           .catch(() => {
-            alert('캐릭터 삭제 중 에러 발생');
-          })
+            alert("캐릭터 삭제 중 에러 발생");
+          });
       } else {
         // 취소
       }
@@ -960,8 +966,8 @@ export default {
   font-size: 1.2rem;
   font-weight: 500;
 }
-.set-save-btn {
-  float: right;
+.set-del-btn {
+  float:left;
   margin-right: 12px;
   -webkit-transition: all 0.1s;
   -moz-transition: all 0.1s;
@@ -1008,59 +1014,8 @@ export default {
   height: 56px;
   position: absolute;
   top: 0px;
-  color: #1d3e6e;
-  // border-radius: 8px;
-
-  background: linear-gradient(135deg, #b1f6ff, #7aafeb, #48bdeb, #f4ff5c, #fde34d);
-  background-size: 500% 500%;
-  -webkit-animation: inputBtn-Animation 10s ease infinite;
-  -moz-animation: inputBtn-Animation 10s ease infinite;
-  -o-animation: inputBtn-Animation 10s ease infinite;
-  animation: inputBtn-Animation 10s ease infinite;
-  @-webkit-keyframes inputBtn-Animation {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-  @-moz-keyframes inputBtn-Animation {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-  @-o-keyframes inputBtn-Animation {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-  @keyframes inputBtn-Animation {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
+  color: rgba(255,83,83,1);
+  border: 1px solid;
 }
 .file-input-hidden {
   font-size: 25px;
@@ -1075,14 +1030,20 @@ export default {
   -khtml-opacity: 0;
   -moz-opacity: 0;
 }
-.rlt-diagram{
+.rlt-diagram {
   position: relative;
 }
 .rlt-card {
   position: relative;
-  float:right;
-  width:33%;
+  float: right;
+  width: 33%;
   z-index: 500;
 }
-
+.fd-bg {
+  // background-image: url('../../assets/images/foldersvg.svg');
+  // background-repeat: no-repeat;
+  // // background-size: cover;
+  // background-size: 150% 150%;
+  // background-position: center;
+}
 </style>
