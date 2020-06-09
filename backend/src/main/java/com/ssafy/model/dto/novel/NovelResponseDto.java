@@ -8,6 +8,7 @@ import com.ssafy.model.entity.Novel;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +27,7 @@ public class NovelResponseDto {
     private int novelStatus;
     private boolean novelOnly;
     private Long novelView = 0L;
-    private LocalDateTime novelUpdatedAt;
+    private ZonedDateTime novelUpdatedAt;
     private MemberResponseDto member;
     private List<GenreResponseDto> genres = new ArrayList<>();
     private List<HashTagResponseDto> hashTags = new ArrayList<>();

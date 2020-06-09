@@ -2,6 +2,7 @@ package com.ssafy.model.dto.relation;
 
 import java.util.Set;
 
+import com.ssafy.model.dto.character.CharacterResponseNoNovelAndNoRelationDto;
 import com.ssafy.model.dto.character.CharacterResponseNoNovelDto;
 import com.ssafy.model.dto.novel.NovelResponseDto;
 import com.ssafy.model.entity.Additional;
@@ -22,21 +23,21 @@ public class RelationResponseDto {
 	private String relationrName;
 	private String relationrColor;
 	private String relationArrowKinds;
-	private CharacterResponseNoNovelDto who;
-	private CharacterResponseNoNovelDto whom;
+	private CharacterResponseNoNovelAndNoRelationDto who;
+	private CharacterResponseNoNovelAndNoRelationDto whom;
 	
 	public RelationResponseDto(Relation relation) {
 		this.relationPk = relation.getRelationPk();
 		this.relationrName = relation.getRelationrName();
 		this.relationrColor = relation.getRelationrColor();
 		this.relationArrowKinds = relation.getRelationArrowKinds();
-		this.who = new CharacterResponseNoNovelDto(relation.getWho());
-		this.whom = new CharacterResponseNoNovelDto(relation.getWhom());
+		this.who = new CharacterResponseNoNovelAndNoRelationDto(relation.getWho());
+		this.whom = new CharacterResponseNoNovelAndNoRelationDto(relation.getWhom());
 	}
 	
 	@Builder
 	public RelationResponseDto(int relationPk, String relationrName, String relationrColor, String relationArrowKinds,
-			CharacterResponseNoNovelDto who, CharacterResponseNoNovelDto whom) {
+			CharacterResponseNoNovelAndNoRelationDto who, CharacterResponseNoNovelAndNoRelationDto whom) {
 		this.relationPk = relationPk;
 		this.relationrName = relationrName;
 		this.relationrColor = relationrColor;

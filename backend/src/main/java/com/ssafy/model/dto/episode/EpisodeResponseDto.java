@@ -5,6 +5,7 @@ import com.ssafy.model.entity.Episode;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
@@ -14,7 +15,7 @@ public class EpisodeResponseDto {
     private int episodePk;
     private String episodeTitle;
     private String episodeContent;
-    private LocalDateTime episodeCreatedAt;
+    private ZonedDateTime episodeCreatedAt;
     private String episodeWriter;
     private Long episodeView;
     private NovelResponseDto novel;
@@ -30,7 +31,7 @@ public class EpisodeResponseDto {
     }
 
     @Builder
-    public EpisodeResponseDto(int episodePk, String episodeTitle, String episodeContent, LocalDateTime episodeCreatedAt, String episodeWriter, Long episodeView, NovelResponseDto novel) {
+    public EpisodeResponseDto(int episodePk, String episodeTitle, String episodeContent, ZonedDateTime episodeCreatedAt, String episodeWriter, Long episodeView, NovelResponseDto novel) {
         this.episodePk = episodePk;
         this.episodeTitle = episodeTitle;
         this.episodeContent = episodeContent;

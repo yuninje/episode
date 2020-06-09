@@ -47,4 +47,11 @@ public class RelationCustomRepositoryImpl extends QuerydslRepositorySupport impl
 		return relations;
 	}
 
+	@Override
+	public void deleteByWhoAndWhom(int who, int whom) {
+		queryFactory.delete(relation)
+			.where(relation.who.characterPk.eq(who)
+					.and(relation.whom.characterPk.eq(whom)))
+			.execute();
+	}
 }

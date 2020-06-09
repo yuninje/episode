@@ -13,8 +13,8 @@ import com.ssafy.model.repository.NovelRepository;
 import com.ssafy.model.repository.NovelSettingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

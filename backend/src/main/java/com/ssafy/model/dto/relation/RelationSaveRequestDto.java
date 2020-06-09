@@ -19,18 +19,15 @@ public class RelationSaveRequestDto {
 	private String relationArrowKinds;
 	private int who;
 	private int whom;
-	// true: 양방향, false: 단방향
-	private boolean type;
 	
 	@Builder
 	public RelationSaveRequestDto(String relationrName, String relationrColor,
-			String relationArrowKinds, int who, int whom, boolean type) {
+			String relationArrowKinds, int who, int whom) {
 		this.relationrName = relationrName;
 		this.relationrColor = relationrColor;
 		this.relationArrowKinds = relationArrowKinds;
 		this.who = who;
 		this.whom = whom;
-		this.type = type;
 	}
 	
 	public Relation toEntity(Character who, Character whom) {

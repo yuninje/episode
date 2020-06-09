@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -177,7 +178,7 @@ public class Dummy {
                     .novel(novel)
                     .episodeTitle(str)
                     .episodeContent(str)
-                    .episodeCreatedAt(LocalDateTime.now())
+                    .episodeCreatedAt(ZonedDateTime.now())
                     .episodeView(0L)
                     .episodeWriter(str)
                     .build();
@@ -199,7 +200,7 @@ public class Dummy {
                     .member(member)
                     .episode(episode)
                     .commentContent(STR)
-                    .commentCreatedAt(LocalDateTime.now())
+                    .commentCreatedAt(ZonedDateTime.now())
                     .build();
 
             commentRepository.save(comment);

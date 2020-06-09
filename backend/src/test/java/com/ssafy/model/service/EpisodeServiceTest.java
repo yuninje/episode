@@ -22,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -150,7 +151,7 @@ public class EpisodeServiceTest {
 
     @Test
     public void 에피소드_생성(){  // 소설 updatedAt 갱신
-        LocalDateTime beforeTime = novel.getNovelUpdatedAt();
+        ZonedDateTime beforeTime = novel.getNovelUpdatedAt();
 
         EpisodeSaveRequestDto requestDto = EpisodeSaveRequestDto.builder()
                 .episodeTitle(UPDATE_STR)
@@ -168,7 +169,7 @@ public class EpisodeServiceTest {
         assertThat(episode.getEpisodeView()).isEqualTo(responseDto.getEpisodeView());
         assertThat(episode.getEpisodeWriter()).isEqualTo(responseDto.getEpisodeWriter());
 
-        LocalDateTime afterTime = novel.getNovelUpdatedAt();
+        ZonedDateTime afterTime = novel.getNovelUpdatedAt();
         assertThat(beforeTime).isNotEqualTo(afterTime);
     }
 

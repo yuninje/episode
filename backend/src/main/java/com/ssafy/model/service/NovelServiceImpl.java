@@ -12,8 +12,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,19 +62,16 @@ public class NovelServiceImpl implements NovelService {
     public Page<NovelResponseDto> getNovelsBySearchWord(String type, String word, Pageable pageable, String sort, int memPk, int genrePk) {
         PageRequest pageRequest = getPageRequest(pageable, sort);
 
-        if (memPk != 0) {
-            Member member = mRepo.findById(memPk)
-                    .orElseThrow(() -> new IllegalArgumentException("member pk :  " + memPk + "가 존재하지 않습니다."));
-
-            Date date = new Date();
-            String[] words = word.split(" ");
-            for (String word_ : words) {
-                Search search = new Search();
-                search.setMember(member);
-                search.setSearchWord(word_);
-                search.setSearchCreatedAt(date);
-                sRepo.save(search);
-            }
+        Member member = mRepo.findById(memPk).orElse(null);
+        
+        Date date = new Date();
+        String[] words = word.split(" ");
+        for (String word_ : words) {
+        	Search search = new Search();
+        	search.setMember(member);
+        	search.setSearchWord(word_);
+        	search.setSearchCreatedAt(date);
+        	sRepo.save(search);
         }
 
         Page<Novel> novelEntityPage;
@@ -150,6 +147,14 @@ public class NovelServiceImpl implements NovelService {
         NovelResponseDto responseDto = new NovelResponseDto(novel);
         
         return responseDto;
+    }
+
+    @Override
+    public NovelResponseDto updateNovelImage(int novelPk, String imageUrl) {
+        Novel novel = nRepo.findById(novelPk).orElseThrow(() -> new NovelException(NovelException.NOT_EXIST));
+        novel.updateImage(imageUrl);
+        nRepo.save(novel);
+        return new NovelResponseDto(novel);
     }
 
     @Override
