@@ -14,7 +14,6 @@ import NovelGen from '../components/novel/PageNovelGenerate'
 import NovelSet from '../components/novel/PageNovelSetting'
 import Search from '../components/search/PageSearch'
 import All from '../components/all/PageAll'
-import RDT from '../components/character/RelationDiagramTest'
 
 import Viewer from '../components/viewer/PageViewer'
 import CharacterSet from '../components/characterset/PageCharacterSet'
@@ -92,11 +91,6 @@ const routes = [
     name: 'NovelSet',
     component: NovelSet,
     beforeEnter: rejectUnAuthUser
-  },
-  {
-    path: '/rdt',
-    name: 'RDT',
-    component: RDT
   },
   {
     path: '/characterset/:novelPk',
