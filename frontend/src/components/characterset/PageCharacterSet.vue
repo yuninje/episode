@@ -74,12 +74,12 @@
         </v-row>
       </v-col>
       <v-col cols="12">
-        <span>캐릭터 셋 (아직 준비중인 페이지입니다.)</span>
+        <span class="characterset-title">{{novelInfo.novelName}} 캐릭터 셋</span>
         <hr>
       </v-col>
       <v-col cols="12">
         <v-row>
-          <v-col cols="2" v-for="(button, i) in buttons" :key="i">
+          <v-col md="2" v-for="(button, i) in buttons" :key="i">
             <v-card
               color="rgba(255,83,83,1)"
               class="d-flex justify-center align-center"
@@ -908,6 +908,11 @@ export default {
   -ms-filter: "alpha(opacity=0)";
   -khtml-opacity: 0;
   -moz-opacity: 0;
+}
+
+.characterset-title{
+  font-weight: bold;
+  font-size: 1rem;
 }
 
 </style>

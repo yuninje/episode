@@ -14,6 +14,7 @@
                 이전화
             </div>
             <div class="home">
+                <img src="@/assets/images/home.png"/>
             </div>
             <div class="next">
                 다음화
@@ -22,7 +23,7 @@
 
         <!-- 소설 본문 -->
         <div class="novel-content">
-            <div class="novel-text" v-html="data.episodeContent">
+            <div draggable="true" class="novel-text" v-html="data.episodeContent">
             </div>
         </div>
 
@@ -90,6 +91,7 @@ export default {
                    disabledEvent(e);
                }
            }, false);
+
            function disabledEvent(e) {
                if (e.stopPropagation) {
                    e.stopPropagation();
@@ -145,6 +147,7 @@ export default {
     font-size: 1rem;
     text-align: center;
     color: white;
+    padding-top: 0.75rem; 
 }
 
 .home {
@@ -153,6 +156,11 @@ export default {
     height: 50px;
     margin-left: 2%;
     margin-right: 2%;
+}
+.home > img {
+    width: 80%;
+    padding-top: 0.5rem;
+    padding-left: 0.5rem;
 }
 
 .next {
@@ -164,6 +172,7 @@ export default {
     font-size: 1rem;
     text-align: center;
     color: white;
+    padding-top: 0.75rem;
 }
 .novel-content {
     margin-top: 20px;

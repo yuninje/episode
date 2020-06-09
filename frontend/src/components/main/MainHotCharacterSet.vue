@@ -9,12 +9,13 @@
                 sm="2"
                 v-for="i in Math.min(limit, items.length)"
                 :key="i"
-                @click="gotoCharacterSet(items[i-1].novelPk)"
             >
                 <v-card
                     out-lined
                     dark
                     :img="items[i-1].src"
+                    @click="gotoCharacterSet(items[i-1].novelPk)"
+                    class="character-set-card"
                 >
                     <v-responsive :aspect-ratio="0.7">
                         <v-card-title class="card-title">
@@ -76,22 +77,22 @@ export default {
                 {
                     title:"호텔 델루나",
                     src:"https://upload.wikimedia.org/wikipedia/commons/2/2b/%EB%8D%B8%EB%A3%A8%EB%82%98_%EB%8B%A8%EC%B2%B4.jpg",
-                    novelPk: null
+                    novelPk: 137
                 },
                 {
                     title:"부산행",
-                    src:"https://lh3.googleusercontent.com/proxy/hlrpU88guWb2P5kOeRkFdlPlkrTbeIPXU0eYGklK84DkZiTczCg5jHAe9By7nzBEwzHAF7TBiM_2b3vse2p_2tCZ723RbD2DI3Ac1u9pYrYLdvLF5x3LuVTGGBFVt0tF5QYA3iMreDfiI9LoYqHb-Tt0yG6OTWfNwQ64u1Z3sMPtQgZqKWUobI0dJxe2bwA9qWATbdAJtfJUJAfF5DIHk8Sum-XihD0qRumlgtnNARJ3V2EN6SavAxRRrLolKdIGXo5SOQzSoznEfsSlLe2ORmPWfTaqmbB_M-SflapN0dwmZ_LlZz_ZIt9pqLsa1a6DmOEYlCVIag",
-                    novelPk: null
+                    src:"https://img.cgv.co.kr/Movie/Thumbnail/Poster/000078/78982/78982_1000.jpg",
+                    novelPk: 138
                 },
                 {
                     title:"부부의 세계",
                     src:"https://upload.wikimedia.org/wikipedia/ko/thumb/2/23/%EB%B6%80%EB%B6%80%EC%9D%98_%EC%84%B8%EA%B3%84_%ED%8F%AC%EC%8A%A4%ED%84%B0.jpg/250px-%EB%B6%80%EB%B6%80%EC%9D%98_%EC%84%B8%EA%B3%84_%ED%8F%AC%EC%8A%A4%ED%84%B0.jpg",
-                    novelPk: null
+                    novelPk: 139
                 },
                 {
-                    title:"번외수사",
-                    src:"https://lh3.googleusercontent.com/proxy/kDY-7HMd6471Oc4pOUAQFPKJdGeOveUsoz9Oay90xR9eMWoiitjMw8-hI8VwWo6suXDpdoiHUTW-yyJslg6GC2qeHsX-N98QUcDGp30aHFGIHI17IfLLF1H9ItGQMj3lEaX_PhqCvw",
-                    novelPk: null
+                    title:"이태원클라쓰",
+                    src:"https://upload.wikimedia.org/wikipedia/ko/f/f4/%EB%93%9C%EB%9D%BC%EB%A7%88_%EC%9D%B4%ED%83%9C%EC%9B%90_%ED%81%B4%EB%9D%BC%EC%93%B0_%ED%8F%AC%EC%8A%A4%ED%84%B0.jpg",
+                    novelPk: 141
                 },
             ],
             limit:12
@@ -99,7 +100,7 @@ export default {
     },
     methods: {
         gotoCharacterSet(novelPk) {
-            if(novelPk !== null || novelPk !== '') {
+            if(novelPk !== null && novelPk !== '') {
                 this.$router.push(`/characterset/${novelPk}`);
             }
         }
@@ -115,5 +116,8 @@ export default {
 }
 .card-title {
     text-shadow: 2px 2px 2px gray;
+}
+.character-set-card {
+    cursor:pointer;
 }
 </style>
