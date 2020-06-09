@@ -172,7 +172,6 @@
       <v-col style="margin-top: 30px; margin-bottom: 10px">
         <v-btn
           @click="clickDeleteNovel()"
-          style="float:left"
           outlined
           color="rgba(255,83,83,1)"
           class="set-del-btn"
@@ -189,7 +188,7 @@
     </v-row>
 
     <!-- 캐릭터 등록 페이지 -->
-    <v-dialog v-model="dialog" persistent max-width="400px">
+    <v-dialog v-model="dialog" persistent max-width="400px" @keydown.esc="dialog=false">
       <v-form
         action
         method="post"
@@ -199,8 +198,8 @@
       >
         <v-card>
           <v-card-title class="text-center">
-            <v-spacer></v-spacer>캐릭터 등록
-            <v-spacer></v-spacer>
+            <v-spacer></v-spacer><v-spacer></v-spacer>캐릭터 등록<v-spacer></v-spacer>
+            <v-btn style="margin:0 0" color="rgba(192,0,0,1)" text @click="clearNewCharacter(), dialog=false">닫기</v-btn>
           </v-card-title>
           <v-card-text>
             <v-container>
@@ -270,16 +269,16 @@
             </v-container>
           </v-card-text>
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="rgba(192,0,0,1)" text @click="createNewCharacter()">create</v-btn>
-            <v-btn color="rgba(192,0,0,1)" text @click="clearNewCharacter(), dialog=false">close</v-btn>
+            <v-col>
+            <v-btn color="rgba(192,0,0,1)" text @click="createNewCharacter()" style="float:right">만들기</v-btn>
+            </v-col>
           </v-card-actions>
         </v-card>
       </v-form>
     </v-dialog>
 
     <!-- 캐릭터 수정 페이지 -->
-    <v-dialog v-model="dialog2" persistent max-width="400px">
+    <v-dialog v-model="dialog2" persistent max-width="400px" @keydown.esc="dialog2=false">
       <v-form
         action
         method="put"
@@ -289,8 +288,8 @@
       >
         <v-card>
           <v-card-title class="text-center">
-            <v-spacer></v-spacer>캐릭터 수정
-            <v-spacer></v-spacer>
+            <v-spacer></v-spacer><v-spacer></v-spacer>캐릭터 수정<v-spacer></v-spacer>
+            <v-btn color="rgba(192,0,0,1)" text @click="clearCharacter(), dialog2=false">닫기</v-btn> 
           </v-card-title>
           <v-card-text>
             <v-container>
@@ -356,18 +355,20 @@
             </v-container>
           </v-card-text>
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
-              color="rgba(192,0,0,1)"
-              text
-              @click="updateCharacter(character.characterPk)"
-            >update</v-btn>
+            <v-col>
             <v-btn
               color="rgba(192,0,0,1)"
               text
               @click="deleteCharacter(character.characterPk)"
-            >delete</v-btn>
-            <v-btn color="rgba(192,0,0,1)" text @click="clearCharacter(), dialog2=false">close</v-btn>
+              style="float:left"
+            >캐릭터 삭제</v-btn>
+            <v-btn
+              color="rgba(192,0,0,1)"
+              text
+              @click="updateCharacter(character.characterPk)"
+              style="float:right"
+            >수정</v-btn>
+            </v-col>
           </v-card-actions>
         </v-card>
       </v-form>
@@ -966,7 +967,7 @@ export default {
   font-weight: 500;
 }
 .set-del-btn {
-  float: right;
+  float:left;
   margin-right: 12px;
   -webkit-transition: all 0.1s;
   -moz-transition: all 0.1s;
@@ -1013,66 +1014,8 @@ export default {
   height: 56px;
   position: absolute;
   top: 0px;
-  color: #1d3e6e;
-  // border-radius: 8px;
-
-  background: linear-gradient(
-    135deg,
-    #b1f6ff,
-    #7aafeb,
-    #48bdeb,
-    #f4ff5c,
-    #fde34d
-  );
-  background-size: 500% 500%;
-  -webkit-animation: inputBtn-Animation 10s ease infinite;
-  -moz-animation: inputBtn-Animation 10s ease infinite;
-  -o-animation: inputBtn-Animation 10s ease infinite;
-  animation: inputBtn-Animation 10s ease infinite;
-  @-webkit-keyframes inputBtn-Animation {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-  @-moz-keyframes inputBtn-Animation {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-  @-o-keyframes inputBtn-Animation {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-  @keyframes inputBtn-Animation {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
+  color: rgba(255,83,83,1);
+  border: 1px solid;
 }
 .file-input-hidden {
   font-size: 25px;
@@ -1095,5 +1038,12 @@ export default {
   float: right;
   width: 33%;
   z-index: 500;
+}
+.fd-bg {
+  // background-image: url('../../assets/images/foldersvg.svg');
+  // background-repeat: no-repeat;
+  // // background-size: cover;
+  // background-size: 150% 150%;
+  // background-position: center;
 }
 </style>
