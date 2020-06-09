@@ -168,15 +168,9 @@ export default {
       }
     },
     pinNode(node) {
-      if (!node.pinned) {
         node.pinned = true;
         node.fx = node.x;
         node.fy = node.y;
-      } else {
-        node.pinned = false;
-        node.fx = null;
-        node.fy = null;
-      }
       this.nodes[node.index] = node;
       // console.log(this.nodes[node.index]);
     },
