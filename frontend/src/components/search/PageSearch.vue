@@ -40,7 +40,7 @@
                               cols="6"
                               md="6"
                               >
-                        <div class="card">
+                        <div class="card" v-on:click="gotoNovelDetail(novel.novelPk)">
   <div class="img-avatar">
     <svg viewBox="0 0 100 100">
     <path 
@@ -56,7 +56,7 @@
       <div class="total">총 152화</div>
       <h2>{{novel.novelName}}</h2>
   
-  <div class="desc">{{novel.novelIntro}}</div>
+  <div class="des">{{novel.novelIntro}}</div>
   <div class="actions">
     <button><i class="far fa-heart"></i></button>
     <button><i class="far fa-envelope"></i></button>
@@ -105,14 +105,14 @@ export default {
         this.getGenres();
     },
     mounted() {
-        console.log("여긴 마운티드입니다!");
+        // console.log("여긴 마운티드입니다!");
         this.getSearchResult();
         this.searchKeyword = this.$route.params.searchKeyword;
-        console.log("여기에서 마운티드가 끝납니다!");
+        // console.log("여기에서 마운티드가 끝납니다!");
     },
     methods: {
         getSearchResult() {
-            console.log("함수 실행");
+            // console.log("함수 실행");
             http
                 .get(`/search/${this.type}`, {
                     params:{
@@ -123,7 +123,7 @@ export default {
                     }
                 })
                 .then(response => {
-                    console.log(response.data.data);
+                    // console.log(response.data.data);
                     this.data = response.data.data;
                 })
                 .catch((e) => {
@@ -138,9 +138,9 @@ export default {
             http
                 .get('/genres')
                 .then(response => {
-                    console.log(response.data.data);
+                    // console.log(response.data.data);
                     this.genres = response.data.data;
-                    console.log(this.genres);
+                    // console.log(this.genres);
                 })
                 .catch(() => {
                     this.errored = true;
@@ -148,6 +148,9 @@ export default {
                 .finally(() => {
                     this.loading = false;
                 })
+        },
+        gotoNovelDetail(novelPk){
+          this.$router.push(`/novel/detail/${novelPk}`)
         }
     },
 }
@@ -173,6 +176,7 @@ body {
   flex-direction: row;
   border-radius: 25px;
   position: relative;
+  cursor:pointer;
 }
 .card h2 {
   margin: 0;
@@ -294,5 +298,12 @@ button {
 .v-tab--active {
     background-color: rgba(255,83,83,1) !important;
     color: white !important;
+}
+
+.overflow-text {
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100px;
 }
 </style>

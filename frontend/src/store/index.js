@@ -6,7 +6,10 @@ import router from "@/router/index";
 import moduleMember from "./modules/moduleMember"
 import moduleEditor from "./modules/moduleEditor"
 import moduleMywork from "./modules/moduleMywork"
-import moduleGenNov from "./modules/moduleGenNov"
+import moduleNovGen from "./modules/moduleNovGen"
+import moduleNovSet from "./modules/moduleNovSet"
+import moduleNovChar from "./modules/novel/moduleNovChar"
+import moduleNovel from "./modules/novel/moduleNovel"
 
 Vue.use(Vuex);
 
@@ -15,7 +18,10 @@ export default new Vuex.Store({
     storeMember: moduleMember,
     storeEditor: moduleEditor,
     storeMywork: moduleMywork,
-    storeGenNov: moduleGenNov,
+    storeNovGen: moduleNovGen,
+    storeNovSet: moduleNovSet,
+    storeNovChar : moduleNovChar,
+    storeNovel : moduleNovel
   },
   state: {
     server: "http://k02a2061.p.ssafy.io:8080",
@@ -57,7 +63,7 @@ export default new Vuex.Store({
         .post(`${getters.getServer}/api/members/login`, data)
         .then(res => {
           let session = res.data.data;
-
+          
           // 세션 정보 저장
           // this._vm.$session.set("login_info", { id: session.mem_id });
 

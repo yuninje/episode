@@ -41,7 +41,14 @@
                               cols="6"
                               md="6"
                               >
-                        <div class="card">
+                                <NovelCard
+                                  :novelImage = "novel.novelImage"
+                                  :novelName = "novel.novelName"
+                                  :novelIntro = "novel.novelIntro"
+                                  :novelPk = "novel.novelPk"
+                                  :episodeCount = "novel.episodeCount"
+                                ></NovelCard>
+                        <!-- <div class="card">
   <div class="img-avatar">
     <svg viewBox="0 0 100 100">
     <path 
@@ -55,7 +62,11 @@
     <img class="portada" :src="novel.novelImage">
     <div class="title-total">   
       <div class="total">총 152화</div>
-      <h2>{{novel.novelName}}</h2>
+      <h2 style="overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;"
+      >{{novel.novelName}}</h2>
   
   <div class="desc">{{novel.novelIntro}}</div>
   <div class="actions">
@@ -68,7 +79,7 @@
   
  
   
-</div>
+</div> -->
                             </v-col>
                             </v-row>
                           </v-container>
@@ -82,6 +93,7 @@
 
 <script>
 import http from '../../http-common'
+import NovelCard from '../card/NovelCard'
 
 export default {
     data() {
@@ -149,8 +161,8 @@ export default {
                 .then(response => {
                     // console.log(response.data.data);
                     this.novels[0] = response.data.data.content;
-                    console.log(this.novels[0]);
-                    console.log(this.novels);
+                    // console.log(this.novels[0]);
+                    // console.log(this.novels);
                 })
                 .catch(() => {
                     this.errored = true;
@@ -163,10 +175,14 @@ export default {
             console.log("getNovels 진입")
             if(genrePk !== 0){
                 http
-                    .get(`/novels/genre-pk=${genrePk}`)
+                    .get(`/novels/genre-pk=${genrePk}`, {
+                      params: {
+                        sort: "updated"
+                      }
+                    })
                     .then(response => {
-                        this.novels[genrePk] = response.data.data
-                        console.log(response.data.data);
+                        this.novels[genrePk] = response.data.data.content;
+                        // console.log(response.data.data);
                     })
                     .catch(() => {
                         this.errored = true;
@@ -177,6 +193,9 @@ export default {
             }
         }
     },
+    components: {
+      NovelCard
+    }
 }
 </script>
 
@@ -215,6 +234,10 @@ body {
 .card .desc {
   padding: 0.5rem 1rem;
   font-size: 12px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
 }
 .card .actions {
   display: grid;
@@ -264,8 +287,8 @@ path {
 }
 
 .portada {
-  width: 100%;
-  height: 100%;
+  width: 196px;
+  height: 280px;
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
   // background-image: url("https://comicthumb-phinf.pstatic.net/20190325_108/pocket_1553525187132gW0BF_JPEG/untitled.jpg");
@@ -321,5 +344,12 @@ button {
 .v-tab--active {
     background-color: rgba(255,83,83,1) !important;
     color: white !important;
+}
+
+.overflow-text {
+  overflow:hidden;
+  text-overflow: ellipsis;
+  white-space: pre-line;
+  max-height: 60px;
 }
 </style>

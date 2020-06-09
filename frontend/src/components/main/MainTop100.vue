@@ -85,7 +85,7 @@ export default {
     },
     gotoNovelDetail(novelPk) {
       console.log("받은 novelPk : " + novelPk);
-      this.$router.push(`/noveldetail/${novelPk}`);
+      this.$router.push(`/novel/detail/${novelPk}`);
     },
     getTop100() {
       http

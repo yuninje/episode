@@ -16,7 +16,7 @@
             class="pt-6"    
         ></v-text-field>
         <v-spacer></v-spacer>
-        <template v-if="getDesktopSize()">
+        <template v-if="desktopSize">
             <v-flex>
                 <v-btn color="black" text @click="gotoAll()">소설 전체보기</v-btn>
                 <v-btn color="black" text @click="gotoMywork()">작품쓰기</v-btn>
@@ -75,7 +75,8 @@ export default {
             searchText:'',
             loading: true,
             errored: false,
-            desktopSize: false,
+            desktopSize: true,
+            windowSize:'',
             items: [
                 {
                     title:"소설 전체 보기",
@@ -99,6 +100,11 @@ export default {
     computed: {
         ...mapGetters(["getIsLogin"]),
         ...mapGetters(["getSession"])
+    },
+    mounted() {
+        window.addEventListener('resize', () => {
+            this.getDesktopSize();
+        })
     },
     methods: {
         gotoAll() {
@@ -129,11 +135,11 @@ export default {
         },
         getDesktopSize() {
             if(window.innerWidth > 600) {
-                console.log("데스크탑 화면");
+                // console.log("데스크탑 화면");
                 this.desktopSize = true;
                 return true;
             } else {
-                console.log("모바일 화면");
+                // console.log("모바일 화면");
                 this.desktopSize = false;
                 return false;
             }
