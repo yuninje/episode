@@ -46,8 +46,8 @@ export default {
     }),
     options() {
       return {
-        force: 10000, // 퍼진 정도 (첫 화면의 노드 길이 ㅠ)
-        size: { w: (this.window.width)*0.73, h: this.window.height },
+        force: 15000, // 퍼진 정도 (첫 화면의 노드 길이 ㅠ)
+        size: { w:980, h: 1010},
         nodeSize: this.nodeSize,
         nodeLabels: true,
         linkLabels: true,
@@ -66,7 +66,7 @@ export default {
     var svg = d3.select("svg");
     // var node = svg.selectAll(".node").data(this.nodes);
     // var path = svg.selectAll("path").data(this.links);
-
+    
     // 화살표 표시 define
     svg
       .append("svg:defs")
