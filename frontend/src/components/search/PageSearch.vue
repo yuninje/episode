@@ -39,8 +39,16 @@
                               :key="index"
                               cols="6"
                               md="6"
-                              >
-                        <div class="card" v-on:click="gotoNovelDetail(novel.novelPk)">
+                            >
+                              <NovelCard
+                                :novelImage= "novel.novelImage"
+                                :novelName= "novel.novelName"
+                                :novelIntro= "novel.novelIntro"
+                                :novelPk= "novel.novelPK"
+                                :episodeCount= "novel.episodeCount"
+                              ></NovelCard>
+
+                        <!-- <div class="card" v-on:click="gotoNovelDetail(novel.novelPk)">
   <div class="img-avatar">
     <svg viewBox="0 0 100 100">
     <path 
@@ -67,7 +75,7 @@
   
  
   
-</div>
+</div> -->
                             </v-col>
                             </v-row>
                           </v-container>
@@ -82,6 +90,7 @@
 <script>
 import http from "../../http-common"
 import { mapActions, mapMutations, mapGetters } from "vuex";
+import NovelCard from '../card/NovelCard';
 
 export default {
     data() {
@@ -153,6 +162,9 @@ export default {
           this.$router.push(`/novel/detail/${novelPk}`)
         }
     },
+    components: {
+      NovelCard
+    }
 }
 </script>
 

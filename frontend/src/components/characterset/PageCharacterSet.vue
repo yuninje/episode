@@ -35,13 +35,14 @@
       </v-col>
       <v-col cols="12" md="8" lg="9">
         <v-row>
-          <v-col cols="12">
+          <!-- <v-col cols="12">
             <p class="write-info">작가 | {{ novelInfo.member.memId }}</p>
             <p class="write-info">생성일 | {{ novelInfo.novelUpdatedAt.substr(0,10) }}</p>
-          </v-col>
+          </v-col> -->
           <v-col cols="12" sm="5">
-            <p class="sub-title">제목</p>
-            <v-text-field
+            <!-- <p class="sub-title">제목</p> -->
+            <p class="sub-title">{{novelInfo.novelName}}</p>
+            <!-- <v-text-field
               v-model="novelInfo.novelName"
               placeholder="소설의 제목를 입력하세요."
               solo
@@ -50,10 +51,10 @@
               row-height="15"
               readonly
             ></v-text-field>
-            <p class="write-info"></p>
+            <p class="write-info"></p> -->
           </v-col>
           <v-col cols="12">
-            <p class="sub-title">작품 소개</p>
+            <p class="sub-title">소개</p>
             <v-textarea
               v-model="novelInfo.novelIntro"
               placeholder="작품소개를 입력하세요."
