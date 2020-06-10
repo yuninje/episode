@@ -18,7 +18,7 @@
         <v-spacer></v-spacer>
         <template v-if="desktopSize">
             <v-flex>
-                <v-btn color="black" text @click="gotoAll()">소설 전체보기</v-btn>
+                <v-btn color="black" text @click="gotoNovelList()">소설 전체보기</v-btn>
                 <v-btn color="black" text @click="gotoMywork()">작품쓰기</v-btn>
             </v-flex>
             <v-spacer></v-spacer>
@@ -43,7 +43,7 @@
                 </template>
                 <v-list>
                     <!-- v-for로 @click에 함수 연결이 어려워 직접 코딩 -->
-                    <v-list-item @click=""><v-list-item-title>소설 전체 보기</v-list-item-title></v-list-item>
+                    <v-list-item @click="gotoNovelList()"><v-list-item-title>소설 전체 보기</v-list-item-title></v-list-item>
                     <v-list-item @click="gotoMywork()"><v-list-item-title>작품쓰기</v-list-item-title></v-list-item>
                     <v-list-item @click="gotoSignIn()" v-show="!getIsLogin"><v-list-item-title>로그인</v-list-item-title></v-list-item>
                     <v-list-item @click="gotoSignUp()" v-show="!getIsLogin"><v-list-item-title>회원가입</v-list-item-title></v-list-item>
@@ -109,6 +109,9 @@ export default {
     methods: {
         gotoAll() {
             this.$router.push('/all');
+        },
+        gotoNovelList() {
+            this.$router.push('/novel/list/0/1');
         },
         gotoSearch() {
             this.$router.push(`/search/${this.searchText}`)

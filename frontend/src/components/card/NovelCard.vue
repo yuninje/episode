@@ -61,13 +61,15 @@ body {
 .card {
   background: #fff;
   border-radius: 4px;
-  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.5);
+  box-shadow: none !important;
+  /* box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.5); */
   max-width: 550px;
   display: flex;
   flex-direction: row;
   border-radius: 25px;
   position: relative;
   cursor:pointer;
+  border: 1px solid rgba(34,35,58,.5);
 }
 .card h2 {
   margin: 0;
@@ -81,11 +83,11 @@ body {
   font-size: 12px;
 }
 .card .desc {
-  padding: 0.5rem 1rem;
+  padding: .5rem 1rem 0 1rem;
   font-size: 12px;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 5;
+  -webkit-line-clamp: 6;
   -webkit-box-orient: vertical;
 }
 .card .actions {
@@ -118,7 +120,7 @@ body {
 }
 
 .title-total {
-  padding: 2.5em 1.5em 1.5em 1.5em;
+  padding: 2.5em 1.5em 1em 1.5em;
 }
 
 .total {
@@ -143,6 +145,7 @@ path {
   // background-image: url("https://comicthumb-phinf.pstatic.net/20190325_108/pocket_1553525187132gW0BF_JPEG/untitled.jpg");
   background-position: bottom center;
   background-size: cover;
+  border-radius: 24px 0 0 24px;
 }
 
 button {
