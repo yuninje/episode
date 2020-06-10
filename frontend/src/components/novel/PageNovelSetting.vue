@@ -149,11 +149,11 @@
           </v-col>
         </v-row>
         <v-row v-show="checkButtons(2)">
-          <v-col cols="9" class="rectangle-outlined">
-            <make-relation class="rlt-card"/>
+          <v-col cols="9" class="rectangle-outlined rlt-wrap" >
             <relation-diagram class="rlt-diagram"/>
           </v-col>
           <v-col cols="3">
+            <make-relation class="rlt-card"/>
             <h3>인물 리스트</h3>
             <char-list-sero/>
           </v-col>
@@ -798,7 +798,6 @@ export default {
       http
         .get(`/characters/novelPk=${this.$route.params.novelPk}`)
         .then(response => {
-          console.log(response.data.data);
           this.characters = response.data.data;
         })
         .catch(() => {
@@ -1030,20 +1029,31 @@ export default {
   -khtml-opacity: 0;
   -moz-opacity: 0;
 }
-.rlt-diagram {
-  position: relative;
+.rlt-wrap {
+  position: relative;;
+  overflow: scroll;
+  resize: both;
+  text-align: center;
+
+  .rlt-diagram {
+    position: relative;
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+  }
+  .rlt-card {
+    position: absolute;
+    // left:65.5%;
+    // width: 33%;
+    z-index: 500;
+  }
 }
-.rlt-card {
-  position: relative;
-  float: right;
-  width: 33%;
-  z-index: 500;
-}
+
 .fd-bg {
-  // background-image: url('../../assets/images/foldersvg.svg');
-  // background-repeat: no-repeat;
-  // // background-size: cover;
-  // background-size: 150% 150%;
-  // background-position: center;
+  background-image: url('../../assets/images/foldersvg.svg');
+  background-repeat: no-repeat;
+  // background-size: cover;
+  background-size: 150% 150%;
+  background-position: center;
 }
 </style>
