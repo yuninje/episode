@@ -13,6 +13,5 @@ import java.util.List;
 @Repository
 public interface NovelRepository extends JpaRepository<Novel, Integer>, NovelCustomRepository {
 	Page<Novel> findByMember(Member member, Pageable pageable);
-	List<Novel> findTop100ByOrderByNovelViewDesc();
 	Page<Novel> findByGenresLike(Genre genre, Pageable pageable);
 }
