@@ -79,7 +79,7 @@ const routes = [
     beforeEnter: rejectUnAuthUser
   },
   { 
-    path: '/search/:searchKeyword',
+    path: '/search/:searchKeyword/:searchPk/:pageNum',
     name: 'Search',
     component: Search
   },

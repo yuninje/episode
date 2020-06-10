@@ -5,7 +5,7 @@
         <v-spacer></v-spacer>
         <!-- class="pt-6" 는 padding-top:6 줌-->
         <v-text-field
-            v-model="searchText"
+            v-model="searchKeyword"
             append-icon="mdi mdi-magnify"
             @keyup.enter="gotoSearch()"
             @click:append="gotoSearch()"
@@ -72,7 +72,7 @@ export default {
     name: 'NavigationBar',
     data() {
         return {
-            searchText:'',
+            searchKeyword:'',
             loading: true,
             errored: false,
             desktopSize: true,
@@ -114,7 +114,7 @@ export default {
             this.$router.push('/novel/list/0/1');
         },
         gotoSearch() {
-            this.$router.push(`/search/${this.searchText}`)
+            this.$router.push(`/search/${this.searchKeyword}/0/1`);
         },
         gotoMain() {
             console.log(this.getSession.memPk)
