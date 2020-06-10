@@ -52,7 +52,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .scroll-height {
-  height: 900px; 
+  height: 680px; 
   // height: "`(${this.window.height}-300)px`";
   overflow-x: hidden;
   overflow-y: auto;
