@@ -33,6 +33,7 @@
             >
                 <v-row>
                     <v-col cols="12">
+                        <p class="main-title">{{data.novel.novelName}}</p>
                         <p class="write-info">작가 | {{data.novel.member.memNick}}</p>
                         <p class="write-info">최근 업로드 날짜 | {{data.novel.novelUpdatedAt.substr(0,10)}}</p>
                         <!-- <v-btn 
@@ -169,6 +170,7 @@ export default {
                 })
                 .then(response => {
                     this.data = response.data.data;
+                    console.log(this.data);
                     if(this.pageLength === 0){
                         this.pageLength = this.data.episodes.totalPages;
                     }
@@ -245,5 +247,9 @@ export default {
 .write-info {
     font-size : 1.2rem;
     font-weight: 500;
+}
+.main-title {
+    font-size : 2rem;
+    font-weight: bold;
 }
 </style>
