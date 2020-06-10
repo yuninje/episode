@@ -1,5 +1,5 @@
 <template>
-  <v-card color="blue" class="vert-card-space">
+  <v-card :color="`${color}`" class="vert-card-space">
     <v-row>
       <v-col sm="6">
         <v-list-item color="rgba(0,0,0,0.4)" dark>
@@ -21,7 +21,7 @@
 
 <script>
 export default {
-  props: ["name", "age", "job", "role", "significant", "src"]
+  props: ["name", "age", "job", "role", "significant", "src", "color"]
 };
 </script>
 <style lang="scss" scoped>
