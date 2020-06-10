@@ -55,7 +55,7 @@
 
 <script>
 import http from '../../http-common'
-import NovelCard from '../card/NovelCard'
+import NovelCard from '../card/NovelCard2'
 import CategoriBar from '../all/CategoriBar'
 
 export default {
