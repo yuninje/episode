@@ -1048,12 +1048,4 @@ export default {
     z-index: 500;
   }
 }
-
-.fd-bg {
-  background-image: url('../../assets/images/foldersvg.svg');
-  background-repeat: no-repeat;
-  // background-size: cover;
-  background-size: 150% 150%;
-  background-position: center;
-}
 </style>
