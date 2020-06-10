@@ -111,6 +111,7 @@
               :role="char.characterRole"
               :significant="char.characterSignificant"
               :src="char.characterImage"
+              :color="getRandomRgb(char.characterName)"
             />
           </v-col>
           <!-- <v-col cols="3" v-for="(character, i) in characters" :key="i">
@@ -764,6 +765,20 @@ export default {
     },
     gotoMain() {
       this.$router.push("/");
+    },
+    djb2(str){
+      let hash = 5381;
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) + hash) + str.charCodeAt(i); /* hash * 33 + c */
+      }
+      return hash;
+    }
+    ,getRandomRgb(str) {
+      let hash = this.djb2(str);
+      let r = (hash & 0xFF0000) >> 16;
+      let g = (hash & 0x00FF00) >> 8;
+      let b = hash & 0x0000FF;
+      return "#" + ("0" + r.toString(16)).substr(-2) + ("0" + g.toString(16)).substr(-2) + ("0" + b.toString(16)).substr(-2);
     }
   }
 };

@@ -1,5 +1,5 @@
 <template>
-  <v-card color="blue" >
+  <v-card :color="`${color}`" >
     <v-row>
       <v-col cols="6">
         <v-list-item color="rgba(0,0,0,0.4)" dark>
@@ -24,7 +24,7 @@
 <script>
 export default {
   // name: CharCard,
-  props: ["name", "age", "job", "role", "significant", "src"]
+  props: ["name", "age", "job", "role", "significant", "src", "color"]
 };
 </script>
 
