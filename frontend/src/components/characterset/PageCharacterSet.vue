@@ -717,6 +717,7 @@ export default {
       this.character = {};
     },
     copyCharacters(novelPk) {
+      let checkNum = 0;
       if(novelPk === null || novelPk === "") {
         alert('캐릭터 카드를 복사하여 저장할 소설을 골라주세요.');
       } else {
@@ -736,6 +737,7 @@ export default {
             .then(response => {
               if(response.data.state === "ok") {
                 console.log("등록 완료");
+                checkNum += 1;
               }
             })
         }

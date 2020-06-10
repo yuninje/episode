@@ -4,6 +4,7 @@
         background-color="white"
         color="rgba(255,83,83,1)"
         class="tabs"
+        show-arrows
     >
         <v-tabs-slider color="transparent"></v-tabs-slider>
         <!-- v-tab을 페이지 이동을 위한 방법으로 사용 가능 -->

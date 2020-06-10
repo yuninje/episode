@@ -7,7 +7,7 @@
         flat
         class="rounded-card"
     >
-        <v-responsive :aspect-ratio="2">
+        <v-responsive :aspect-ratio="2.0">
             <v-row>
                 <v-col cols="4" class="pa-0">
                     <v-img
@@ -89,7 +89,7 @@ body {
   font-size: 12px;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 5;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
 }
 .rounded-card {

@@ -22,16 +22,27 @@
                         <v-col 
                           v-for="(novel, index) in novels"
                           :key="index"
-                          cols="6"
-                          md="6"
+                          cols="12"
+                          sm="6"
                         >
+                          <!-- 태블릿, 데스크탑 화면에선 기존 카드 -->
                           <NovelCard
                             :novelImage= "novel.novelImage"
                             :novelName= "novel.novelName"
                             :novelIntro= "novel.novelIntro"
                             :novelPk= "novel.novelPk"
                             :episodeCount= "novel.episodeCount"
+                            class="hidden-xs-only"
                           ></NovelCard>
+                          <!-- 모바일 화면에선 한줄 요약 카드 -->
+                          <NovelCard2
+                            :novelImage= "novel.novelImage"
+                            :novelName= "novel.novelName"
+                            :novelIntro= "novel.novelIntro"
+                            :novelPk= "novel.novelPk"
+                            :episodeCount= "novel.episodeCount"
+                            class="hidden-sm-and-up"
+                          ></NovelCard2>
                         </v-col>
                       </v-row>
                     </v-col>
@@ -54,6 +65,7 @@
 import http from "../../http-common"
 import { mapActions, mapMutations, mapGetters } from "vuex";
 import NovelCard from '../card/NovelCard';
+import NovelCard2 from '../card/NovelCard2';
 import SearchOptionBar from '../search/SearchOptionBar';
 
 export default {
@@ -136,6 +148,7 @@ export default {
     },
     components: {
       NovelCard,
+      NovelCard2,
       SearchOptionBar
     }
 }
