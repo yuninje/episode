@@ -32,7 +32,7 @@
                             :novelImage= "novel.novelImage"
                             :novelName= "novel.novelName"
                             :novelIntro= "novel.novelIntro"
-                            :novelPk= "novel.novelPK"
+                            :novelPk= "novel.novelPk"
                             :episodeCount= "novel.episodeCount"
                           ></NovelCard>
                         </v-col>

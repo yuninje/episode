@@ -29,7 +29,7 @@
                             :novelImage= "novel.novelImage"
                             :novelName= "novel.novelName"
                             :novelIntro= "novel.novelIntro"
-                            :novelPk= "novel.novelPK"
+                            :novelPk= "novel.novelPk"
                             :episodeCount= "novel.episodeCount"
                           ></NovelCard>
                         </v-col>
@@ -117,7 +117,7 @@ export default {
             }
           })
           .then(response => {
-            // console.log(response.data.data);
+            // console.log(response.data.data.content);
             this.novels = response.data.data.content;
             this.pageLength = response.data.data.totalPages;
             this.page = Number(this.$route.params.pageNum);
