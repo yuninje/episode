@@ -739,6 +739,9 @@ export default {
                 console.log("등록 완료");
                 checkNum += 1;
               }
+              if(checkNum === this.characters.length) {
+                alert("캐릭터 복사 완료!");
+              }
             })
         }
       }
