@@ -27,9 +27,7 @@ public class NovelSettingRestController {
     @ApiOperation("전체 소설설정 조회")
     @GetMapping()
     ResponseEntity<Map<String, Object>> getNovelSettings(){
-        List<NovelSettingResponseDto> novelSettingResponseDtos = novelSettingService.getNovelSettings();
-        novelSettingResponseDtos.forEach(novelSettingResponseDto -> System.out.println(novelSettingResponseDto));
-        return handleSuccess(novelSettingResponseDtos);
+        return handleSuccess(novelSettingService.getNovelSettings());
     }
 
     @ApiOperation("소설설정 한 개의 정보를 조회")

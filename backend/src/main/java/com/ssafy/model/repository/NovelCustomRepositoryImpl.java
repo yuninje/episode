@@ -140,7 +140,7 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 	}
 	
 	private BooleanBuilder authorNameLike(String word) {
-		String[] wordArr = word.split(" ");
+		String[] wordArr = word.trim().split(" ");
 		BooleanBuilder builder = new BooleanBuilder();
 		
 		for(int i=0; i<wordArr.length; i++) {
@@ -151,7 +151,7 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 	}
 	
 	private BooleanBuilder novelNameLike(String word) {
-		String[] wordArr = word.split(" ");
+		String[] wordArr = word.trim().split(" ");
 		BooleanBuilder builder = new BooleanBuilder();
 		
 		for(int i=0; i<wordArr.length; i++) {
@@ -162,7 +162,7 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 	}
 	
 	private BooleanBuilder hashTagLike(String word) {
-		String[] wordArr = word.split(" ");
+		String[] wordArr = word.trim().split(" ");
 		BooleanBuilder builder = new BooleanBuilder();
 		
 		for(int i=0; i<wordArr.length; i++) {
