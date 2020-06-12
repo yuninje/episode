@@ -4,6 +4,7 @@ import com.ssafy.model.entity.Episode;
 import com.ssafy.model.entity.Novel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -56,4 +57,8 @@ public interface EpisodeRepository extends JpaRepository<Episode, Integer> {
 
 
 	Page<Episode> findByNovel(Novel novel, Pageable pageable);
+	// 이전화 pk 구하기
+	Episode findFirstEpisodePkOrderByEpisodePkLessThan(int episodePk, Sort sort);
+	// 다음화 pk 구하기
+	Episode findFirstEpisodePkOrderByEpisodePkGreaterThan(int episodePk);
 }
