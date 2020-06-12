@@ -1,42 +1,10 @@
 <template>
   <div class="main">
-    <MainCarousel/>
     <v-container>
-      <v-row>
-        <!-- 느낌별 소설 모음 -->
-        <!-- <v-col cols="12">
-          <MainFeel/>
-        </v-col> -->
-        <v-col cols="12" md="10">
-          <v-row>
-            <!-- Top 100 -->
-            <!-- <v-col cols="12">
-              <MainTop100/>
-            </v-col> -->
-
-            <!-- Hot 캐릭터 셋 -->
-            <v-col cols="12">
-              <MainHotCharacterSet/>
-            </v-col>
-          </v-row>
-        </v-col>
-        <v-col cols="2" class="pa-5 hidden-sm-and-down">
-          <v-row>
-            <!-- 검색 순위 들어갈 곳 -->
-            <v-col cols="12">
-              <KeywordRanking/>
-            </v-col>
-            <!-- 광고 캐러셀 -->
-            <v-col cols="12">
-              <AdCarousel/>
-            </v-col>
-          </v-row>
-        </v-col>
-        <!-- Hot Fanfic -->
-        <v-col cols="12">
-          <MainHotFanfic/>
-        </v-col>
-      </v-row>
+      <img src="@/assets/images/iwillkillyou.jpg"/>
+      <h1>
+        aaa1234 너 감당할 수 있겠니? 테러 그만해라 찾아간다
+      </h1>
     </v-container>
   </div>
 </template>
@@ -87,5 +55,9 @@ export default {
 .sub-item-black {
   color: black;
   font-size: 1.0rem;
+}
+img {
+  margin-left: auto;
+  margin-right: auto;
 }
 </style>

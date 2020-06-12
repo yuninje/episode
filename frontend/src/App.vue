@@ -1,8 +1,8 @@
 <template>
   <v-app id="app">
-    <div id="nav">
+    <!-- <div id="nav">
       <NavigationBar/>
-    </div>
+    </div> -->
     <router-view :key="$route.fullPath"/>
   </v-app>
 </template>
