@@ -12,6 +12,7 @@ public interface CharacterService {
 	List<CharacterResponseNoNovelDto> getCharactersByNovel(int novelPk);
 	CharacterResponseNoNovelDto getCharacter(int characterPk);
 	CharacterResponseNoNovelDto registCharacter(CharacterSaveRequestDto requestDto);
+	void copyCharacters(int fromNovelPk, int toNovelPk);
 	CharacterResponseNoNovelDto updateCharacter(int characterPk, CharacterUpdateRequestDto requestDto);
 	void deleteCharacter(int characterPk);
 }
