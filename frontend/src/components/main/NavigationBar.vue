@@ -28,7 +28,7 @@
             </v-flex>
             <v-flex v-show="getIsLogin">
                 <v-btn color="black" text @click="signout()">로그아웃</v-btn>
-                <v-btn color="black" text @click="">마이페이지</v-btn>
+                <v-btn color="black" text @click="gotoMyInfo()">마이페이지</v-btn>
             </v-flex>
         </template>
         <template v-else>
@@ -48,7 +48,7 @@
                     <v-list-item @click="gotoSignIn()" v-show="!getIsLogin"><v-list-item-title>로그인</v-list-item-title></v-list-item>
                     <v-list-item @click="gotoSignUp()" v-show="!getIsLogin"><v-list-item-title>회원가입</v-list-item-title></v-list-item>
                     <v-list-item @click="signout()" v-show="getIsLogin"><v-list-item-title>로그아웃</v-list-item-title></v-list-item>
-                    <v-list-item @click="" v-show="getIsLogin"><v-list-item-title>마이페이지</v-list-item-title></v-list-item>
+                    <v-list-item @click="gotoMyInfo()" v-show="getIsLogin"><v-list-item-title>마이페이지</v-list-item-title></v-list-item>
                     <!-- <v-list-item
                         v-for="(item, index) in items"
                         :key="index"
@@ -114,6 +114,7 @@ export default {
             this.$router.push('/novel/list/0/1');
         },
         gotoSearch() {
+            this.searchKeyword = this.searchKeyword.trim();
             this.$router.push(`/search/${this.searchKeyword}/0/1`);
         },
         gotoMain() {
@@ -146,6 +147,9 @@ export default {
                 this.desktopSize = false;
                 return false;
             }
+        },
+        gotoMyInfo() {
+            this.$router.push('/myinfo');
         }
     }
 }

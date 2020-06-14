@@ -5,6 +5,7 @@ import store from '../store';
 import Main from '../components/main/PageMain'
 import Signup from '../components/member/PageSignUp'
 import Signin from '../components/member/PageSignIn'
+import MyInfo from '../components/member/PageMyInfo'
 import Editor from '../components/editor/PageEditor'
 import Mywork from '../components/work/PageMyWork'
 import Feel from '../components/feel/PageFeel'  //  여긴 나중에 바뀔 예정
@@ -39,6 +40,12 @@ const routes = [
     component: Signin, 
     beforeEnter: rejectAuthUser
 
+  },
+  {
+    path: '/myinfo',
+    name: MyInfo,
+    component: MyInfo,
+    beforeEnter: rejectUnAuthUser
   },
   {
     path: '/novel/edit',
