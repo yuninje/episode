@@ -58,7 +58,7 @@ public interface EpisodeRepository extends JpaRepository<Episode, Integer> {
 
 	Page<Episode> findByNovel(Novel novel, Pageable pageable);
 	// 이전화 pk 구하기
-	Episode findFirstEpisodePkOrderByEpisodePkLessThan(int episodePk, Sort sort);
+	Episode findFirstEpisodeByEpisodePkLessThanAndNovelEquals(int episodePk, Novel novel, Sort sort);
 	// 다음화 pk 구하기
-	Episode findFirstEpisodePkOrderByEpisodePkGreaterThan(int episodePk);
+	Episode findFirstEpisodeByEpisodePkGreaterThanAndNovelEquals(int episodePk, Novel novel, Sort sort);
 }

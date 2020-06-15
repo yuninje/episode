@@ -63,13 +63,15 @@ public class EpisodeServiceImpl implements EpisodeService {
     public EpisodeResponseContainsPreNextPkDto getEpisode(int episodePk) {    // 조회수 + 1
         Episode episode = eRepo.findById(episodePk).orElseThrow(() ->
                 new EpisodeException(EpisodeException.NOT_EXIST));
+        
+        Novel novel = episode.getNovel();
 
         EpisodeResponseContainsPreNextPkDto responseDto = new EpisodeResponseContainsPreNextPkDto(episode);
         
-        Episode preEpisode = eRepo.findFirstEpisodePkOrderByEpisodePkLessThan(episodePk, Sort.by("episodePk").descending());
+        Episode preEpisode = eRepo.findFirstEpisodeByEpisodePkLessThanAndNovelEquals(episodePk, novel, Sort.by("episodePk").descending());
         int pre = preEpisode == null ? 0 : preEpisode.getEpisodePk();
         
-        Episode nextEpisode = eRepo.findFirstEpisodePkOrderByEpisodePkGreaterThan(episodePk);
+        Episode nextEpisode = eRepo.findFirstEpisodeByEpisodePkGreaterThanAndNovelEquals(episodePk, novel, Sort.by("episodePk").ascending());
         int next = nextEpisode == null ? 0 : nextEpisode.getEpisodePk();
         
         responseDto.setPreEpisodePk(pre);

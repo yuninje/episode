@@ -17,9 +17,8 @@ public class EpisodeCutomRepositoryImpl extends QuerydslRepositorySupport implem
 	}
 	
 	@Override
-	public Episode[] findEpisodesByEpisodePk(int episodePk) {
+	public Episode[] findEpisodesByEpisodePk(int episodePk, int novelPk) {
 		Episode[] episodes = new Episode[2];
-		System.out.println("aaaaa");
 		
 		episodes[0] = queryFactory.select(episode)
 					.from(episode)
@@ -27,8 +26,6 @@ public class EpisodeCutomRepositoryImpl extends QuerydslRepositorySupport implem
 		episodes[1] = queryFactory.select(episode)
 					.from(episode)
 					.where(episode.episodePk.min().lt(episodePk)).fetchOne();
-		
-		System.out.println(episodes.length);
 		
 		return episodes;
 	}
