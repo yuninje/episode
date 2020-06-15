@@ -146,7 +146,7 @@ extend('checkInput', async (value, args) => {
   let response = await http.post(`/members/check/${args}`, value);
   let old = localStorage.getItem('savedSession');
   old = JSON.parse(old);
-  console.log(old);
+//   console.log(old);
   if(response.data.state == "ok"){
     return true;
   }
@@ -308,7 +308,7 @@ export default {
             // 일단 이 부분은 백엔드에서 어떤걸 보내줄지에 따라 함수를 구현해야함.
             if (response.data.state === "ok") {
                 alert('회원 정보 수정 완료!')
-                console.log(response.data)
+                // console.log(response.data)
                 this.$router.push('/')
             } else {
                 alert("이거 뜨면 뭔가 문제")

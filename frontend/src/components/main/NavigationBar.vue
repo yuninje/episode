@@ -118,7 +118,7 @@ export default {
             this.$router.push(`/search/${this.searchKeyword}/0/1`);
         },
         gotoMain() {
-            console.log(this.getSession.memPk)
+            // console.log(this.getSession.memPk)
             this.$router.push('/')
                         .catch(err => {});
         },
