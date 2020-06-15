@@ -689,7 +689,7 @@ export default {
         .get(`/characters/${characterPk}`)
         .then(response=>{
           this.character = response.data.data;
-          console.log(this.character);
+          // console.log(this.character);
           this.dialog2 = true;
         })
         .catch(() => {
@@ -703,7 +703,7 @@ export default {
       http
         .get(`/characters/novelPk=${this.$route.params.novelPk}`)
         .then(response => {
-          console.log(response.data.data);
+          // console.log(response.data.data);
           this.characters = response.data.data;
         })
         .catch(() => {
@@ -717,6 +717,25 @@ export default {
       this.character = {};
     },
     copyCharacters(novelPk) {
+      if(novelPk === null || novelPk === "") {
+        alert('캐릭터 카드를 복사하여 저장할 소설을 골라주세요.');
+      } else {
+        http
+          .post(`/characters/from/${this.$route.params.novelPk}/to/${novelPk}`)
+          .then(response => {
+            if(response.data.state === "ok") {
+              alert("캐릭터 복사 완료!");
+            }
+          })
+          .catch(() => {
+            alert("캐릭터 복사 중 에러 발생!");
+          })
+          .finally(() => {
+
+          })
+      }
+    },
+    copyCharacters2(novelPk) {
       let checkNum = 0;
       if(novelPk === null || novelPk === "") {
         alert('캐릭터 카드를 복사하여 저장할 소설을 골라주세요.');
@@ -755,16 +774,16 @@ export default {
         })
         .then(response => {
           this.novels = response.data.data.content;
-          console.log('본인의 소설 목록');
-          console.log(response.data.data.content);
+          // console.log('본인의 소설 목록');
+          // console.log(response.data.data.content);
         })
     },
     isNum(str) {
       if (parseInt(str).toString() === str) {
         return true;
       } else {
-        console.log(parseInt(str).toString());
-        console.log(str);
+        // console.log(parseInt(str).toString());
+        // console.log(str);
         return false;
       }
     },

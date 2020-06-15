@@ -172,7 +172,7 @@ export default {
                 })
         },
         getNovels(genrePk) {
-            console.log("getNovels 진입")
+            // console.log("getNovels 진입")
             if(genrePk !== 0){
                 http
                     .get(`/novels/genre-pk=${genrePk}`, {
