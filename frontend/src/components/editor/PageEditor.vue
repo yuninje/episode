@@ -46,6 +46,7 @@
 
           <!-- 맞춤법 검사 시작 -->
           <button class="right-menu" v-on:click="hans">맞춤법 검사</button>
+          <button class="right-menu2" v-on:click="makeAiNovel">AI 소설 생성</button>
           <div class="spell-box" v-show="spellOpen">
                 <div class="v-progress-circular" v-if="isLoading">
                   <v-progress-circular
@@ -54,33 +55,48 @@
                     :size="50"
                   />
                 </div>
-            <!-- <ol>
-              <li v-for="(item, idx) in list" v-bind:key="idx"> {{item}} </li>
-            </ol> -->
-      <v-tabs vertical>
-        <v-tab class="overflow-text" v-for="(item, idx) in list" v-bind:key="idx">
-          {{item.token}}
-        </v-tab>
-  
-        <v-tab-item v-for="(item, idx) in list" v-bind:key="idx">
-          <v-card flat>
-            <v-card-text>
-              <h3> 추천 맞춤법 </h3>
-              <p>
-                <ol>
-                  <li v-for="(sug, idx) in item.suggestions" v-bind:key="idx"> {{sug}} </li>
-                </ol>
-              </p>
-              <p class="mb-0">
-                {{item.info}}
-              </p>
-            </v-card-text>
-          </v-card>
-        </v-tab-item>
-      </v-tabs>
+
+                <v-tabs vertical>
+                  <v-tab class="overflow-text" v-for="(item, idx) in list" v-bind:key="idx">
+                    {{item.token}}
+                  </v-tab>
+            
+                  <v-tab-item v-for="(item, idx) in list" v-bind:key="idx">
+                    <v-card flat>
+                      <v-card-text>
+                        <h3> 추천 맞춤법 </h3>
+                        <p>
+                          <ol>
+                            <li v-for="(sug, idx) in item.suggestions" v-bind:key="idx"> {{sug}} </li>
+                          </ol>
+                        </p>
+                        <p class="mb-0">
+                          {{item.info}}
+                        </p>
+                      </v-card-text>
+                    </v-card>
+                  </v-tab-item>
+                </v-tabs>
 
           </div>
           <!-- 맞춤법 검사 끝 -->
+          <div class="spell-box" v-show="spellOpen2">
+                <div class="v-progress-circular" v-if="isLoading">
+                  <v-progress-circular
+                    indeterminate
+                    color="#D50000"
+                    :size="50"
+                  />
+                </div>
+                <center><h2 class="ai-title" v-if="isLoading">AI 소설 생성 중...</h2></center>
+                <div v-if="!isLoading">
+                  <h3>기준 문장</h3>
+                  <p>{{this.seed}}</p><br/>
+                  <h3>AI 소설 생성 결과</h3>
+                  <p>{{this.novelai}}</p>
+                </div>
+
+          </div>
         </div>
 
         <div class="middle-btm">
@@ -122,6 +138,7 @@ import http from "../../http-common";
 import { mapActions, mapMutations, mapGetters, mapState } from "vuex";
 
 const hanspell = require('./episode-spell');
+import axios from "axios";
 
 export default {
   name: "quill-example-snow",
@@ -153,6 +170,7 @@ export default {
       /* 에디터 글자수 프로그레스바 */
       // content: dedent``,
       htmlContent: "",
+      textContent: "" ,
       textLength: 0,  // 입력중인 글자 포함
       textCount: 0,   //  표시되는 글자 길이
       percent: 0,     // 프로그레스바 퍼센트
@@ -176,7 +194,14 @@ export default {
       spellOpen: false,
 
       // 로딩중 써클 표시
-      isLoading: false
+      isLoading: false,
+
+      // AI 소설 창 오픈 여부
+      spellOpen2: false,
+
+      // AI 소설 결과
+      seed: "",
+      novelai: ""
     };
   },
   created() {
@@ -288,7 +313,7 @@ export default {
     onEditorChange(value) {
       // console.log(value);
       this.textContent = value.text;
-      console.log(this.textContent)
+      // console.log(this.textContent)
       this.textLength = value.text.length;
       this.htmlContent = value.html;
       // 자동
@@ -350,9 +375,29 @@ export default {
     openSpellBox() {
       if(this.spellOpen === false) {
         this.spellOpen = true;
+        this.spellOpen2 = false;
       } else {
         this.spellOpen = false;
       }
+    },
+    openSpellBox2(){
+      if(this.spellOpen2 === false) {
+        this.spellOpen2 = true;
+        this.spellOpen = false;
+      } else {
+        this.spellOpen2 = false;
+      }
+    },
+    makeAiNovel(){
+      this.openSpellBox2();
+      this.isLoading = true;
+      // console.log("내용은 " + this.textContent)
+      axios.post('http://localhost:8000/test', {seed: this.textContent.replace(/\n/g, " ")})
+        .then(res => {
+          this.seed = res.data.seed;
+          this.novelai = res.data.novel;
+          this.isLoading = false;
+        })
     }
   },
   computed: {
@@ -543,6 +588,36 @@ export default {
   }
 }
 
+.right-menu2 {
+    position: absolute;
+    right: -72px;
+    top: 152px;
+    padding: 5px 20px;
+    border: solid 1px rgb(204, 197, 197);
+    outline: 0;
+    border-radius: 2px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    transition: all 0.1s;
+    transition: all 0.1s;
+
+    writing-mode:tb-rl;
+    -webkit-transform:rotate(90deg);
+    -moz-transform:rotate(90deg);
+    -o-transform: rotate(90deg);
+    white-space:nowrap;
+
+    font-family: 'Noto Sans KR', sans-serif;
+
+    &:hover {
+    color: #fff;
+    box-shadow: 300px 0 0 0 rgb(192, 0, 0) inset;
+    border: 0;
+    outline: 0;
+  }
+}
+
 .spell-box {
   width: 400px;
   height: 100%;
@@ -563,8 +638,14 @@ export default {
 }
 
 .v-progress-circular {
-position:absolute;
-left: 40%;
-top: 40%;
+  position:absolute;
+  left: 35%;
+  top: 25%;
+}
+
+.ai-title {
+  position:absolute;
+  top: 40%;
+  left: 25%;
 }
 </style>
