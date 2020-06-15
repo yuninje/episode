@@ -10,13 +10,13 @@
 
         <!-- 윗쪽 버튼 -->
         <div class="button-container">
-            <div class="previous">
+            <div class="previous" @click="gotoPrevEpisode()">
                 이전화
             </div>
-            <div class="home">
+            <div class="home" @click="gotoNovelDetail()">
                 <img src="@/assets/images/home.png"/>
             </div>
-            <div class="next">
+            <div class="next" @click="gotoNextEpisode()">
                 다음화
             </div>
         </div>
@@ -29,12 +29,13 @@
 
         <!-- 아래쪽 버튼 -->
         <div class="button-container">
-            <div class="previous">
+            <div class="previous" @click="gotoPrevEpisode()">
                 이전화
             </div>
-            <div class="home">
+            <div class="home" @click="gotoNovelDetail()">
+                <img src="@/assets/images/home.png"/>
             </div>
-            <div class="next">
+            <div class="next" @click="gotoNextEpisode()">
                 다음화
             </div>
         </div>
@@ -114,6 +115,23 @@ export default {
                 .finally(() => {
                     this.loading = false;
                 })
+        },
+        gotoNovelDetail() {
+            this.$router.push(`/novel/detail/${this.data.novel.novelPk}`)
+        },
+        gotoNextEpisode() {
+            if(this.data.nextEpisodePk !== 0) {
+                this.$router.push(`/viewer/${this.data.nextEpisodePk}`);
+            }else {
+                alert('다음화가 없습니다!!');
+            }
+        },
+        gotoPrevEpisode() {
+            if(this.data.preEpisodePk !== 0) {
+                this.$router.push(`/viewer/${this.data.preEpisodePk}`);
+            }else {
+                alert('이전화가 없습니다!!')
+            }
         }
     },
     mounted(){
@@ -148,6 +166,7 @@ export default {
     text-align: center;
     color: white;
     padding-top: 0.75rem; 
+    cursor:pointer;
 }
 
 .home {
@@ -156,6 +175,7 @@ export default {
     height: 50px;
     margin-left: 2%;
     margin-right: 2%;
+    cursor:pointer;
 }
 .home > img {
     width: 80%;
@@ -173,6 +193,7 @@ export default {
     text-align: center;
     color: white;
     padding-top: 0.75rem;
+    cursor:pointer;
 }
 .novel-content {
     margin-top: 20px;
