@@ -20,6 +20,7 @@
 - Language : Java 1.8
 - OS : Ubuntu 18.04
 - Storage : AWS S3
+- AI : Tensorflow 2.2.0, Keras, python 3.8
 
 ## ERD
 <img src="./doc/ERD.png"/>
