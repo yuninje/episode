@@ -5,7 +5,7 @@
         <v-spacer></v-spacer>
         <!-- class="pt-6" 는 padding-top:6 줌-->
         <v-text-field
-            v-model="searchText"
+            v-model="searchKeyword"
             append-icon="mdi mdi-magnify"
             @keyup.enter="gotoSearch()"
             @click:append="gotoSearch()"
@@ -18,7 +18,7 @@
         <v-spacer></v-spacer>
         <template v-if="desktopSize">
             <v-flex>
-                <v-btn color="black" text @click="gotoAll()">소설 전체보기</v-btn>
+                <v-btn color="black" text @click="gotoNovelList()">소설 전체보기</v-btn>
                 <v-btn color="black" text @click="gotoMywork()">작품쓰기</v-btn>
             </v-flex>
             <v-spacer></v-spacer>
@@ -28,7 +28,7 @@
             </v-flex>
             <v-flex v-show="getIsLogin">
                 <v-btn color="black" text @click="signout()">로그아웃</v-btn>
-                <v-btn color="black" text @click="">마이페이지</v-btn>
+                <v-btn color="black" text @click="gotoMyInfo()">마이페이지</v-btn>
             </v-flex>
         </template>
         <template v-else>
@@ -43,12 +43,12 @@
                 </template>
                 <v-list>
                     <!-- v-for로 @click에 함수 연결이 어려워 직접 코딩 -->
-                    <v-list-item @click=""><v-list-item-title>소설 전체 보기</v-list-item-title></v-list-item>
+                    <v-list-item @click="gotoNovelList()"><v-list-item-title>소설 전체 보기</v-list-item-title></v-list-item>
                     <v-list-item @click="gotoMywork()"><v-list-item-title>작품쓰기</v-list-item-title></v-list-item>
                     <v-list-item @click="gotoSignIn()" v-show="!getIsLogin"><v-list-item-title>로그인</v-list-item-title></v-list-item>
                     <v-list-item @click="gotoSignUp()" v-show="!getIsLogin"><v-list-item-title>회원가입</v-list-item-title></v-list-item>
                     <v-list-item @click="signout()" v-show="getIsLogin"><v-list-item-title>로그아웃</v-list-item-title></v-list-item>
-                    <v-list-item @click="" v-show="getIsLogin"><v-list-item-title>마이페이지</v-list-item-title></v-list-item>
+                    <v-list-item @click="gotoMyInfo()" v-show="getIsLogin"><v-list-item-title>마이페이지</v-list-item-title></v-list-item>
                     <!-- <v-list-item
                         v-for="(item, index) in items"
                         :key="index"
@@ -72,7 +72,7 @@ export default {
     name: 'NavigationBar',
     data() {
         return {
-            searchText:'',
+            searchKeyword:'',
             loading: true,
             errored: false,
             desktopSize: true,
@@ -110,11 +110,15 @@ export default {
         gotoAll() {
             this.$router.push('/all');
         },
+        gotoNovelList() {
+            this.$router.push('/novel/list/0/1');
+        },
         gotoSearch() {
-            this.$router.push(`/search/${this.searchText}`)
+            this.searchKeyword = this.searchKeyword.trim();
+            this.$router.push(`/search/${this.searchKeyword}/0/1`);
         },
         gotoMain() {
-            console.log(this.getSession.memPk)
+            // console.log(this.getSession.memPk)
             this.$router.push('/')
                         .catch(err => {});
         },
@@ -143,6 +147,9 @@ export default {
                 this.desktopSize = false;
                 return false;
             }
+        },
+        gotoMyInfo() {
+            this.$router.push('/myinfo');
         }
     }
 }

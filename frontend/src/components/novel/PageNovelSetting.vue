@@ -89,6 +89,7 @@
       </v-col>
 
       <v-col cols="12">
+        <!-- 0. 캐릭터 카드들 -->
         <v-row class="rectangle-outlined" v-show="checkButtons(0)">
           <!-- 기존 등록된 캐릭터 카드 -->
           <v-col
@@ -105,30 +106,9 @@
               :role="char.characterRole"
               :significant="char.characterSignificant"
               :src="char.characterImage"
+              :color="getRandomRgb(char.characterName)"
             />
           </v-col>
-          <!-- <v-col cols="3" v-for="(character, i) in characters" :key="i">
-            <v-card color="blue">
-              <v-row>
-                <v-col cols="8">
-                  <v-list-item color="rgba(0,0,0,0.4)" dark>
-                    <v-list-item-content>
-                      <v-list-item-title class="title">{{character.characterName}}</v-list-item-title>
-                      <v-list-item-subtitle>나이 : {{character.characterAge}}세</v-list-item-subtitle>
-                      <v-list-item-subtitle>직업 : {{character.characterJob}}</v-list-item-subtitle>
-                      <v-list-item-subtitle>역할 : {{character.characterRole}}</v-list-item-subtitle>
-                      <v-list-item-subtitle>특이사항 : {{character.characterSignificant}}</v-list-item-subtitle>
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-col>
-                <v-col cols="4">
-                  <v-avatar tile size="100%" class="px-2">
-                    <v-img :src="character.characterImage"></v-img>
-                  </v-avatar>
-                </v-col>
-              </v-row>
-            </v-card>
-          </v-col>-->
           <!-- 새로운 캐릭터 생성 카드 -->
           <v-col cols="12" sm="3">
             <v-card
@@ -143,29 +123,33 @@
             </v-card>
           </v-col>
         </v-row>
+        <!-- 1. 세계관 -->
         <v-row class="rectangle-outlined" v-show="checkButtons(1)">
           <v-col cols="12">
-            <v-textarea auto-grow flat solo></v-textarea>
+            <v-textarea auto-grow flat solo v-model="novelWorldView.novelSettingText"></v-textarea>
           </v-col>
         </v-row>
+        <!-- 2. 인물관계 -->
         <v-row v-show="checkButtons(2)">
-          <v-col cols="9" class="rectangle-outlined">
-            <make-relation class="rlt-card"/>
+          <v-col cols="9" class="rectangle-outlined rlt-wrap" >
             <relation-diagram class="rlt-diagram"/>
           </v-col>
           <v-col cols="3">
+            <make-relation class="rlt-card"/>
             <h3>인물 리스트</h3>
             <char-list-sero/>
           </v-col>
         </v-row>
+        <!-- 3. 사건 -->
         <v-row class="rectangle-outlined" v-show="checkButtons(3)">
           <v-col cols="12">
-            <v-textarea auto-grow flat solo></v-textarea>
+            <v-textarea auto-grow flat solo v-model="novelCase.novelSettingText"></v-textarea>
           </v-col>
         </v-row>
+        <!-- 4. 배경지식 -->
         <v-row class="rectangle-outlined" v-show="checkButtons(4)">
           <v-col cols="12">
-            <v-textarea auto-grow flat solo></v-textarea>
+            <v-textarea auto-grow flat solo v-model="novelBackground.novelSettingText"></v-textarea>
           </v-col>
         </v-row>
       </v-col>
@@ -179,7 +163,7 @@
           <v-icon color="rgba(255,83,83,1)">mdi mdi-pencil</v-icon>이 소설을 삭제하겠습니다.
         </v-btn>
         <v-btn
-          @click="clickUpdateNovel()"
+          @click="clickUpdateNovel(), updateNovelSettings()"
           outlined
           color="rgba(255,83,83,1)"
           style="float:right"
@@ -453,6 +437,23 @@ export default {
         significant: ""
         // 일단 more는 안함
       },
+      // 소설 설정들(세계관, 사건, 배경지식)
+      novelWorldView: {
+        novelSettingPk: -1,
+        novelSettingName: "세계관",
+        novelSettingText: ""
+      },
+      novelCase: {
+        novelSettingPk: -1,
+        novelSettingName: "사건",
+        novelSettingText: ""
+      },
+      novelBackground: {
+        novelSettingPk: -1,
+        novelSettingName: "배경지식",
+        novelSettingText: ""
+      },
+      updatedSettings: 0, //  3: 수정 완료, 0: 리셋 상태
       newCharacterImage: "",
       selectedButton: 0,
       inputStatus: 0, // -1: 삭제, 1: 새로운 사진, 0 변화 없음
@@ -478,6 +479,7 @@ export default {
   },
   mounted() {
     this.getCharacters();
+    this.getNovelSettings();
   },
   destroyed() {
     this.$store.dispatch(`storeNovSet/destroyNovelInfo`);
@@ -798,7 +800,6 @@ export default {
       http
         .get(`/characters/novelPk=${this.$route.params.novelPk}`)
         .then(response => {
-          console.log(response.data.data);
           this.characters = response.data.data;
         })
         .catch(() => {
@@ -930,6 +931,151 @@ export default {
         // 취소
       }
     },
+    // 이 부분 진짜 코드 별로임. 백엔드 수정을 통해 이쪽을 간편화 할 필요가 있음.
+    // 소설 설정부 가져오기
+    getNovelSettings() {
+      http
+        .get(`/novel-settings/novels/${this.$route.params.novelPk}`)
+        .then(response => {
+          if (response.data.data.novelSettings === [] || response.data.data.novelSettings === null) {
+            // 기존 novelSettings 가 없음 ==> 일단 -1로 세팅하고 나중에 -1 이면 post로 -1이 아닌 값을 가지면 put으로 설정
+            this.novelWorldView.novelSettingPk = - 1;
+            this.novelCase.novelSettingPk = - 1;
+            this.novelBackground.novelSettingPk = - 1;
+          } else {
+            // console.log(response.data.data.novelSettings);
+            let novelSettings = response.data.data.novelSettings;
+            for (let i in novelSettings) {
+              if(novelSettings[i].novelSettingName === "세계관") {
+                this.novelWorldView.novelSettingPk = novelSettings[i].novelSettingId;
+                this.novelWorldView.novelSettingName = novelSettings[i].novelSettingName;
+                this.novelWorldView.novelSettingText = novelSettings[i].novelSettingText;
+              } else if(novelSettings[i].novelSettingName === "사건") {
+                this.novelCase.novelSettingPk = novelSettings[i].novelSettingId;
+                this.novelCase.novelSettingName = novelSettings[i].novelSettingName;
+                this.novelCase.novelSettingText = novelSettings[i].novelSettingText;
+              } else if(novelSettings[i].novelSettingName === "배경지식") {
+                this.novelBackground.novelSettingPk = novelSettings[i].novelSettingId;
+                this.novelBackground.novelSettingName = novelSettings[i].novelSettingName;
+                this.novelBackground.novelSettingText = novelSettings[i].novelSettingText;
+              }
+            }
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+          console.log("소설 설정 정보 가져오는 중 에러 발생!");
+          this.errored = true;
+        })
+        .finally(() => {
+          this.loading = false;
+        })
+    },
+    // 소설 설정부 생성하기
+    createNovelWorldView() {
+      http
+        .post(`/novel-settings`, {
+          novelPk: this.$route.params.novelPk,
+          novelSettingName: this.novelWorldView.novelSettingName,
+          novelSettingText: this.novelWorldView.novelSettingText
+        })
+        .then(response => {
+          if(response.data.state ==="ok") {
+            this.novelWorldView.novelSettingPk = response.data.data.novelSettingId;
+            this.updatedSettings += 1;
+          }
+        })
+    },
+    createNovelCase() {
+      http
+        .post(`/novel-settings`, {
+          novelPk: this.$route.params.novelPk,
+          novelSettingName: this.novelCase.novelSettingName,
+          novelSettingText: this.novelCase.novelSettingText
+        })
+        .then(response => {
+          if(response.data.state ==="ok") {
+            this.novelCase.novelSettingPk = response.data.data.novelSettingId;
+            this.updatedSettings += 1;
+          }
+        })
+    },
+    createNovelBackground() {
+      http
+        .post(`/novel-settings`, {
+          novelPk: this.$route.params.novelPk,
+          novelSettingName: this.novelBackground.novelSettingName,
+          novelSettingText: this.novelBackground.novelSettingText
+        })
+        .then(response => {
+          if(response.data.state ==="ok") {
+            this.novelBackground.novelSettingPk = response.data.data.novelSettingId;
+            this.updatedSettings += 1;
+          }
+        })
+    },
+    // 소설 설정부 수정하기
+    updateNovelWorldView() {
+      http
+        .put(`/novel-settings/${this.novelWorldView.novelSettingPk}`, {
+          novelSettingName: this.novelWorldView.novelSettingName,
+          novelSettingText: this.novelWorldView.novelSettingText
+        })
+        .then(response => {
+          if(response.data.state === "ok") {
+            this.updatedSettings += 1;
+          }
+        })
+    },
+    updateNovelCase() {
+      http
+        .put(`/novel-settings/${this.novelCase.novelSettingPk}`, {
+          novelSettingName: this.novelCase.novelSettingName,
+          novelSettingText: this.novelCase.novelSettingText
+        })
+        .then(response => {
+          if(response.data.state === "ok") {
+            this.updatedSettings += 1;
+          }
+        })
+    },
+    updateNovelBackground() {
+      http
+        .put(`/novel-settings/${this.novelBackground.novelSettingPk}`, {
+          novelSettingName: this.novelBackground.novelSettingName,
+          novelSettingText: this.novelBackground.novelSettingText
+        })
+        .then(response => {
+          if(response.data.state === "ok") {
+            this.updatedSettings += 1;
+          }
+        })
+    },
+    // 소설 저장하기 누를 때 한번에 동작
+    updateNovelSettings() {
+      // 소설 세계관 수정
+      if(this.novelWorldView.novelSettingPk === -1) {
+        this.createNovelWorldView();
+      } else {
+        this.updateNovelWorldView();
+      }
+      // 소설 사건 수정
+      if(this.novelCase.novelSettingPk === -1) {
+        this.createNovelCase();
+      } else {
+        this.updateNovelCase();
+      }
+      // 소설 배경지식 수정
+      if(this.novelBackground.novelSettingPk === -1) {
+        this.createNovelBackground();
+      } else {
+        this.updateNovelBackground();
+      }
+      if(this.updatedSettings === 3) {
+        console.log("소설 설정 정보가 수정되었습니다!");
+        this.updatedSettings = 0;
+      }
+    },
     isNum(str) {
       if (parseInt(str).toString() === str) {
         return true;
@@ -938,6 +1084,20 @@ export default {
         console.log(str);
         return false;
       }
+    },
+    djb2(str){
+      let hash = 5381;
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) + hash) + str.charCodeAt(i); /* hash * 33 + c */
+      }
+      return hash;
+    }
+    ,getRandomRgb(str) {
+      let hash = this.djb2(str);
+      let r = (hash & 0xFF0000) >> 16;
+      let g = (hash & 0x00FF00) >> 8;
+      let b = hash & 0x0000FF;
+      return "#" + ("0" + r.toString(16)).substr(-2) + ("0" + g.toString(16)).substr(-2) + ("0" + b.toString(16)).substr(-2);
     }
   }
 };
@@ -1030,20 +1190,23 @@ export default {
   -khtml-opacity: 0;
   -moz-opacity: 0;
 }
-.rlt-diagram {
-  position: relative;
-}
-.rlt-card {
-  position: relative;
-  float: right;
-  width: 33%;
-  z-index: 500;
-}
-.fd-bg {
-  // background-image: url('../../assets/images/foldersvg.svg');
-  // background-repeat: no-repeat;
-  // // background-size: cover;
-  // background-size: 150% 150%;
-  // background-position: center;
+.rlt-wrap {
+  position: relative;;
+  overflow: scroll;
+  resize: both;
+  text-align: center;
+
+  .rlt-diagram {
+    position: relative;
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+  }
+  .rlt-card {
+    position: absolute;
+    // left:65.5%;
+    // width: 33%;
+    z-index: 500;
+  }
 }
 </style>

@@ -1,22 +1,26 @@
 <template>
     <v-container>
         <v-row>
-            <v-col cols="12">
-                 <p class="search-result">'{{searchKeyword}}'에 대한 검색결과 입니다.</p>
+            <v-col cols="12" v-show="false">
+                 <p class="search-result">소설 전체보기 페이지입니다.</p>
             </v-col>
             <v-col cols="12">
-                <p class="no-result">이런 소설은 어떤가요?</p>
+                <p class="no-result">소설 전체보기</p>
             </v-col>
             <v-col cols="12" class="d-flex justify-center">
                 <v-card
                     flat
-                    width="75%"
+                    width="95%"
+                    max-width="1440"
                 >
                   <v-row>
-                    <!-- 검색 옵션 바 -->
                     <v-col cols="12">
-                      <SearchOptionBar></SearchOptionBar>
+                      <!-- 여기에 카테고리바를 집어넣는다. props를 주면서 -->
+                      <CategoriBar
+                        :tab = tab
+                      ></CategoriBar>
                     </v-col>
+                    <!-- 여기에서 소설 데이터 받은 걸 반복문으로 돌린다. -->
                     <v-col cols="12">
                       <v-row>
                         <v-col 
@@ -51,7 +55,7 @@
                         v-model="page"
                         :length="pageLength"
                         color="rgba(255,83,83,1)"
-                        @input="gotoSearch(searchKeyword, typeNum, page)"
+                        @input="gotoNovelListPage(tab, page)"
                       ></v-pagination>
                     </v-col>
                   </v-row>
@@ -62,95 +66,85 @@
 </template>
 
 <script>
-import http from "../../http-common"
-import { mapActions, mapMutations, mapGetters } from "vuex";
-import NovelCard from '../card/NovelCard';
-import NovelCard2 from '../card/NovelCard2';
-import SearchOptionBar from '../search/SearchOptionBar';
+import http from '../../http-common'
+import NovelCard from '../card/NovelCard'
+import NovelCard2 from '../card/NovelCard2'
+import CategoriBar from '../all/CategoriBar'
 
 export default {
-    data() {
-      return {
-        data:[],
-        novels:[],
-        searchKeyword:'',
-        sort:'updated',
-        type:'all', // search 옵션을 type으로 두었고
-        typeNum: 0, // 현재 searchPk를 typeNum에 저장
-        page: 1,
-        pageLength: 0,
-        errored: false,
-        loading: true
-      }
-    },
-    computed: {
-      ...mapGetters(["getIsLogin"]),
-      ...mapGetters(["getSession"])
-    },
-    created() {
-      this.getType();
-    },
-    mounted() {
-      // console.log("여긴 마운티드입니다!");
-      this.getSearchResult();
-      this.searchKeyword = this.$route.params.searchKeyword;
-      // console.log("여기에서 마운티드가 끝납니다!");
-    },
-    methods: {
-      getType() {
-        if(this.$route.params.searchPk === '0' || this.$route.params.searchPk === 0) {
-          this.type = 'all';
-          this.typeNum = 0;
-        } else if(this.$route.params.searchPk === '1' || this.$route.params.searchPk === 1) {
-          this.type = 'author_name';
-          this.typeNum = 1;
-        } else if(this.$route.params.searchPk === '2' || this.$route.params.searchPk === 2) {
-          this.type = 'novel_name';
-          this.typeNum = 2;
-        } else if(this.$route.params.searchPk === '3' || this.$route.params.searchPk === 3) {
-          this.type = 'hashtag';
-          this.typeNum = 3;
-        } else {
-          this.type = 'all';
-          this.typeNum = 0;
-        }
-      },
-      getSearchResult() {
-        // console.log("함수 실행");
+  data() {
+    return {
+      page:1,
+      pageLength:0,
+      genres:[
+          {genrePk:0, genreName: "전체"},
+      ],
+      novels:[],
+      tab: null,
+      errored: false,
+      loading: true
+    }
+  },
+  created() {
+
+  },
+  mounted() {
+    this.tab = this.$route.params.genrePk;
+    this.getNovels(Number(this.$route.params.genrePk), this.$route.params.pageNum);
+  },
+  methods: {
+    getNovels(genrePk, pageNum) {
+      if(genrePk === '0' || genrePk === 0) {
         http
-          .get(`/search/${this.type}`, {
-            params:{
-              genrePk: 0,
-              memPk: this.getSession.memPk,
-              page: Number(this.$route.params.pageNum),
+          .get(`/novels`, {
+            params: {
+              page: pageNum,
               size: 10,
-              sort: this.sort,
-              word: this.$route.params.searchKeyword,
+              sort: "updated"
             }
           })
           .then(response => {
-            // console.log(response.data.data.content);
             this.novels = response.data.data.content;
             this.pageLength = response.data.data.totalPages;
             this.page = Number(this.$route.params.pageNum);
           })
-          .catch((e) => {
-            console.log(e);
+          .catch(() => {
             this.errored = true;
           })
           .finally(() => {
             this.loading = false;
           })
-      },
-      gotoSearch(searchKeyword, searchPk, pageNum) {
-        this.$router.push(`/search/${searchKeyword}/${searchPk}/${pageNum}`)
+      } else {
+        http
+          .get(`/novels/genre-pk=${genrePk}`, {
+            params: {
+              page: pageNum,
+              size: 10,
+              sort: "updated"
+            }
+          })
+          .then(response => {
+            this.novels = response.data.data.content;
+            this.pageLength = response.data.data.totalPages;
+            this.page = Number(this.$route.params.pageNum);
+          })
+          .catch(() => {
+            this.errored = true;
+          })
+          .finally(() => {
+            this.loading = false;
+          })
       }
     },
-    components: {
-      NovelCard,
-      NovelCard2,
-      SearchOptionBar
+    gotoNovelListPage(genrePk, pageNum) {
+      this.$router.push(`/novel/list/${genrePk}/${pageNum}`);
     }
+  },
+  components: {
+    NovelCard,
+    NovelCard2,
+    CategoriBar
+  }
 }
 </script>
 
@@ -174,7 +168,6 @@ body {
   flex-direction: row;
   border-radius: 25px;
   position: relative;
-  cursor:pointer;
 }
 .card h2 {
   margin: 0;
@@ -190,6 +183,10 @@ body {
 .card .desc {
   padding: 0.5rem 1rem;
   font-size: 12px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
 }
 .card .actions {
   display: grid;
@@ -239,8 +236,8 @@ path {
 }
 
 .portada {
-  width: 100%;
-  height: 100%;
+  width: 196px;
+  height: 280px;
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
   // background-image: url("https://comicthumb-phinf.pstatic.net/20190325_108/pocket_1553525187132gW0BF_JPEG/untitled.jpg");
@@ -301,7 +298,7 @@ button {
 .overflow-text {
   overflow:hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
-  width: 100px;
+  white-space: pre-line;
+  max-height: 60px;
 }
 </style>

@@ -179,8 +179,9 @@ export default {
 
 <style lang="scss" scoped>
 .make-rdt-card {
-  width: 50%;
-  background-color: transparent;
+  width: 100%;
+  background-color: white;
+  margin-bottom: 35px;
 }
 input {
   text-align: center;

@@ -11,13 +11,14 @@
                 v-for="i in Math.min(topNovels.length, limit)"
                 :key="i"
             >
-                <NovelCard
+                <!-- 메인용 카드 사용 -->
+                <NovelCard2
                     :novelImage="topNovels[i-1].novelImage"
                     :novelName="topNovels[i-1].novelName"
                     :novelIntro="topNovels[i-1].novelIntro"
                     :novelPk="topNovels[i-1].novelPk"
                     :episodeCount="topNovels[i-1].episodeCount"
-                ></NovelCard>
+                ></NovelCard2>
             </v-col>
         </v-row>
     </v-container>
@@ -25,7 +26,7 @@
 
 <script>
 import http from "../../http-common"
-import NovelCard from "../card/NovelCard"
+import NovelCard2 from "../card/NovelCard2"
 
 export default {
     name: 'MainHotFanfic',
@@ -60,7 +61,7 @@ export default {
         }
     },
     components: {
-        NovelCard
+        NovelCard2
     }
 }
 </script>

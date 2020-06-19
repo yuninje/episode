@@ -5,6 +5,7 @@ import store from '../store';
 import Main from '../components/main/PageMain'
 import Signup from '../components/member/PageSignUp'
 import Signin from '../components/member/PageSignIn'
+import MyInfo from '../components/member/PageMyInfo'
 import Editor from '../components/editor/PageEditor'
 import Mywork from '../components/work/PageMyWork'
 import Feel from '../components/feel/PageFeel'  //  여긴 나중에 바뀔 예정
@@ -13,7 +14,9 @@ import NovelDetail from '../components/novel/PageNovelDetail'
 import NovelGen from '../components/novel/PageNovelGenerate'
 import NovelSet from '../components/novel/PageNovelSetting'
 import Search from '../components/search/PageSearch'
-import All from '../components/all/PageAll'
+
+import All from '../components/all/PageAll' //  (구)소설 전체 보기
+import NovelList from '../components/all/PageNovelList' //  (현)소설 전체 보기
 
 import Viewer from '../components/viewer/PageViewer'
 import CharacterSet from '../components/characterset/PageCharacterSet'
@@ -37,6 +40,12 @@ const routes = [
     component: Signin, 
     beforeEnter: rejectAuthUser
 
+  },
+  {
+    path: '/myinfo',
+    name: MyInfo,
+    component: MyInfo,
+    beforeEnter: rejectUnAuthUser
   },
   {
     path: '/novel/edit',
@@ -77,7 +86,7 @@ const routes = [
     beforeEnter: rejectUnAuthUser
   },
   { 
-    path: '/search/:searchKeyword',
+    path: '/search/:searchKeyword/:searchPk/:pageNum',
     name: 'Search',
     component: Search
   },
@@ -85,6 +94,11 @@ const routes = [
     path: '/all',
     name: 'All',
     component: All
+  },
+  {
+    path: '/novel/list/:genrePk/:pageNum',
+    name: 'NovelList',
+    component: NovelList
   },
   {
     path: '/novel/setting/:novelPk',

@@ -1,11 +1,11 @@
 <template>
     <v-container>
         <v-row>
-            <v-col cols="12" v-show="false">
-                 <p class="search-result">소설 전체보기 페이지입니다.</p>
+            <v-col cols="12">
+                 <p class="search-result">'{{searchKeyword}}'에 대한 검색결과 입니다.</p>
             </v-col>
             <v-col cols="12">
-                <p class="no-result">소설 전체보기</p>
+                <p class="no-result">이런 소설은 어떤가요?</p>
             </v-col>
             <v-col cols="12" class="d-flex justify-center">
                 <v-card
@@ -13,7 +13,7 @@
                     width="75%"
                 >
                     <v-tabs
-                        v-model="tab"
+                        v-model="genrePk"
                         background-color="white"
                         color="rgba(255,83,83,1)"
                         class="tabs"
@@ -23,12 +23,11 @@
                             v-for="genre in genres"
                             :key="genre.genrePk"
                             class="tab"
-                            @click="getNovels(genre.genrePk)"
                         >
                             {{genre.genreName}}
                         </v-tab>
                     </v-tabs>
-                    <v-tabs-items v-model="tab">
+                    <v-tabs-items v-model="genrePk">
                         <v-tab-item
                             v-for="genre in genres"
                             :key="genre.genrePk"
@@ -36,19 +35,20 @@
                         <v-container>
                           <v-row>
                             <v-col
-                              v-for="(novel, index) in novels[genre.genrePk]"
+                              v-for="(novel, index) in data.content"
                               :key="index"
                               cols="6"
                               md="6"
-                              >
-                                <NovelCard
-                                  :novelImage = "novel.novelImage"
-                                  :novelName = "novel.novelName"
-                                  :novelIntro = "novel.novelIntro"
-                                  :novelPk = "novel.novelPk"
-                                  :episodeCount = "novel.episodeCount"
-                                ></NovelCard>
-                        <!-- <div class="card">
+                            >
+                              <NovelCard
+                                :novelImage= "novel.novelImage"
+                                :novelName= "novel.novelName"
+                                :novelIntro= "novel.novelIntro"
+                                :novelPk= "novel.novelPK"
+                                :episodeCount= "novel.episodeCount"
+                              ></NovelCard>
+
+                        <!-- <div class="card" v-on:click="gotoNovelDetail(novel.novelPk)">
   <div class="img-avatar">
     <svg viewBox="0 0 100 100">
     <path 
@@ -62,13 +62,9 @@
     <img class="portada" :src="novel.novelImage">
     <div class="title-total">   
       <div class="total">총 152화</div>
-      <h2 style="overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;"
-      >{{novel.novelName}}</h2>
+      <h2>{{novel.novelName}}</h2>
   
-  <div class="desc">{{novel.novelIntro}}</div>
+  <div class="des">{{novel.novelIntro}}</div>
   <div class="actions">
     <button><i class="far fa-heart"></i></button>
     <button><i class="far fa-envelope"></i></button>
@@ -92,54 +88,67 @@
 </template>
 
 <script>
-import http from '../../http-common'
-import NovelCard from '../card/NovelCard'
+import http from "../../http-common"
+import { mapActions, mapMutations, mapGetters } from "vuex";
+import NovelCard from '../card/NovelCard';
 
 export default {
     data() {
         return {
-            genres:[
-                {genrePk:0, genreName: "전체"},
-            ],
-            novels:[],
-            tab: null,
-            items: [
-                { tab: '전체', content: 'Tab 1 Content' },
-                { tab: '판타지', content: 'Tab 2 Content' },
-                { tab: '무협', content: 'Tab 3 Content' },
-                { tab: '로맨스', content: 'Tab 4 Content' },
-                { tab: '현판', content: 'Tab 5 Content' },
-            ],
+            genrePk: null,
+            data:[],
+            genres:[],
+            searchKeyword:'',
+            genrePk: 0,
+            sort:'updated',
+            type:'all',
             errored: false,
             loading: true
         }
+    },
+    computed: {
+        ...mapGetters(["getIsLogin"]),
+        ...mapGetters(["getSession"])
     },
     created() {
         this.getGenres();
     },
     mounted() {
-        this.getAllNovels(0, "updated");
-        // this.getNovels(1);
-        // this.getNovels(2);
-        // this.getNovels(3);
-        // this.getNovels(4);
+        // console.log("여긴 마운티드입니다!");
+        this.getSearchResult();
+        this.searchKeyword = this.$route.params.searchKeyword;
+        // console.log("여기에서 마운티드가 끝납니다!");
     },
     methods: {
+        getSearchResult() {
+            // console.log("함수 실행");
+            http
+                .get(`/search/${this.type}`, {
+                    params:{
+                        genrePk: 0,
+                        memPk: this.getSession.memPk,
+                        sort: this.sort,
+                        word: this.$route.params.searchKeyword
+                    }
+                })
+                .then(response => {
+                    // console.log(response.data.data);
+                    this.data = response.data.data;
+                })
+                .catch((e) => {
+                    console.log(e);
+                    this.errored = true;
+                })
+                .finally(() => {
+                    this.loading = false;
+                })
+        },
         getGenres() {
             http
                 .get('/genres')
                 .then(response => {
                     // console.log(response.data.data);
-                    // console.log('장르 푸쉬 전');
-                    // console.log(this.genres);
-                    if(this.genres.length === 1) {
-                        for(var i in response.data.data) {
-                            this.genres.push(response.data.data[i]);
-                        }
-                        this.novels = new Array(this.genres.length);
-                    }
-                    // this.genres = response.data.data;
-                    // console.log('장르 푸쉬 후');
+                    this.genres = response.data.data;
                     // console.log(this.genres);
                 })
                 .catch(() => {
@@ -149,48 +158,8 @@ export default {
                     this.loading = false;
                 })
         },
-        getAllNovels(pageNum, sortOpt) {    //  소설 전체 조회
-            http
-                .get('/novels', {
-                    params: {
-                        page: pageNum,
-                        size: 10,
-                        sort: sortOpt
-                    }
-                })
-                .then(response => {
-                    // console.log(response.data.data);
-                    this.novels[0] = response.data.data.content;
-                    // console.log(this.novels[0]);
-                    // console.log(this.novels);
-                })
-                .catch(() => {
-                    this.errored = true;
-                })
-                .finally(() => {
-                    this.loading = false;
-                })
-        },
-        getNovels(genrePk) {
-            // console.log("getNovels 진입")
-            if(genrePk !== 0){
-                http
-                    .get(`/novels/genre-pk=${genrePk}`, {
-                      params: {
-                        sort: "updated"
-                      }
-                    })
-                    .then(response => {
-                        this.novels[genrePk] = response.data.data.content;
-                        // console.log(response.data.data);
-                    })
-                    .catch(() => {
-                        this.errored = true;
-                    })
-                    .finally(() => {
-                        this.loading = false;
-                    })
-            }
+        gotoNovelDetail(novelPk){
+          this.$router.push(`/novel/detail/${novelPk}`)
         }
     },
     components: {
@@ -219,6 +188,7 @@ body {
   flex-direction: row;
   border-radius: 25px;
   position: relative;
+  cursor:pointer;
 }
 .card h2 {
   margin: 0;
@@ -234,10 +204,6 @@ body {
 .card .desc {
   padding: 0.5rem 1rem;
   font-size: 12px;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
 }
 .card .actions {
   display: grid;
@@ -287,8 +253,8 @@ path {
 }
 
 .portada {
-  width: 196px;
-  height: 280px;
+  width: 100%;
+  height: 100%;
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
   // background-image: url("https://comicthumb-phinf.pstatic.net/20190325_108/pocket_1553525187132gW0BF_JPEG/untitled.jpg");
@@ -349,7 +315,7 @@ button {
 .overflow-text {
   overflow:hidden;
   text-overflow: ellipsis;
-  white-space: pre-line;
-  max-height: 60px;
+  white-space: nowrap;
+  width: 100px;
 }
 </style>

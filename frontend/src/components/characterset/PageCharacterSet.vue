@@ -35,13 +35,14 @@
       </v-col>
       <v-col cols="12" md="8" lg="9">
         <v-row>
-          <v-col cols="12">
+          <!-- <v-col cols="12">
             <p class="write-info">작가 | {{ novelInfo.member.memId }}</p>
             <p class="write-info">생성일 | {{ novelInfo.novelUpdatedAt.substr(0,10) }}</p>
-          </v-col>
+          </v-col> -->
           <v-col cols="12" sm="5">
-            <p class="sub-title">제목</p>
-            <v-text-field
+            <!-- <p class="sub-title">제목</p> -->
+            <p class="sub-title">{{novelInfo.novelName}}</p>
+            <!-- <v-text-field
               v-model="novelInfo.novelName"
               placeholder="소설의 제목를 입력하세요."
               solo
@@ -50,10 +51,10 @@
               row-height="15"
               readonly
             ></v-text-field>
-            <p class="write-info"></p>
+            <p class="write-info"></p> -->
           </v-col>
           <v-col cols="12">
-            <p class="sub-title">작품 소개</p>
+            <p class="sub-title">소개</p>
             <v-textarea
               v-model="novelInfo.novelIntro"
               placeholder="작품소개를 입력하세요."
@@ -110,6 +111,7 @@
               :role="char.characterRole"
               :significant="char.characterSignificant"
               :src="char.characterImage"
+              :color="getRandomRgb(char.characterName)"
             />
           </v-col>
           <!-- <v-col cols="3" v-for="(character, i) in characters" :key="i">
@@ -687,7 +689,7 @@ export default {
         .get(`/characters/${characterPk}`)
         .then(response=>{
           this.character = response.data.data;
-          console.log(this.character);
+          // console.log(this.character);
           this.dialog2 = true;
         })
         .catch(() => {
@@ -701,7 +703,7 @@ export default {
       http
         .get(`/characters/novelPk=${this.$route.params.novelPk}`)
         .then(response => {
-          console.log(response.data.data);
+          // console.log(response.data.data);
           this.characters = response.data.data;
         })
         .catch(() => {
@@ -715,6 +717,26 @@ export default {
       this.character = {};
     },
     copyCharacters(novelPk) {
+      if(novelPk === null || novelPk === "") {
+        alert('캐릭터 카드를 복사하여 저장할 소설을 골라주세요.');
+      } else {
+        http
+          .post(`/characters/from/${this.$route.params.novelPk}/to/${novelPk}`)
+          .then(response => {
+            if(response.data.state === "ok") {
+              alert("캐릭터 복사 완료!");
+            }
+          })
+          .catch(() => {
+            alert("캐릭터 복사 중 에러 발생!");
+          })
+          .finally(() => {
+
+          })
+      }
+    },
+    copyCharacters2(novelPk) {
+      let checkNum = 0;
       if(novelPk === null || novelPk === "") {
         alert('캐릭터 카드를 복사하여 저장할 소설을 골라주세요.');
       } else {
@@ -734,6 +756,10 @@ export default {
             .then(response => {
               if(response.data.state === "ok") {
                 console.log("등록 완료");
+                checkNum += 1;
+              }
+              if(checkNum === this.characters.length) {
+                alert("캐릭터 복사 완료!");
               }
             })
         }
@@ -748,21 +774,35 @@ export default {
         })
         .then(response => {
           this.novels = response.data.data.content;
-          console.log('본인의 소설 목록');
-          console.log(response.data.data.content);
+          // console.log('본인의 소설 목록');
+          // console.log(response.data.data.content);
         })
     },
     isNum(str) {
       if (parseInt(str).toString() === str) {
         return true;
       } else {
-        console.log(parseInt(str).toString());
-        console.log(str);
+        // console.log(parseInt(str).toString());
+        // console.log(str);
         return false;
       }
     },
     gotoMain() {
       this.$router.push("/");
+    },
+    djb2(str){
+      let hash = 5381;
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) + hash) + str.charCodeAt(i); /* hash * 33 + c */
+      }
+      return hash;
+    }
+    ,getRandomRgb(str) {
+      let hash = this.djb2(str);
+      let r = (hash & 0xFF0000) >> 16;
+      let g = (hash & 0x00FF00) >> 8;
+      let b = hash & 0x0000FF;
+      return "#" + ("0" + r.toString(16)).substr(-2) + ("0" + g.toString(16)).substr(-2) + ("0" + b.toString(16)).substr(-2);
     }
   }
 };

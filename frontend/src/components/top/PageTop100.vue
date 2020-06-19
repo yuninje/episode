@@ -2,7 +2,7 @@
     <v-container>
         <v-row>
             <v-col cols="12">
-                <p class="no-result">Top 100</p>
+                <p class="no-result">HOT FANFIC - TOP 100</p>
             </v-col>
             <v-col cols="12" class="d-flex justify-center">
                 <v-card
