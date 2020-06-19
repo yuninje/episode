@@ -1,5 +1,6 @@
 package com.ssafy.model.service;
 
+import com.ssafy.model.dto.episode.EpisodeResponseContainsPreNextPkDto;
 import com.ssafy.model.dto.episode.EpisodeResponseDto;
 import com.ssafy.model.dto.episode.EpisodeSaveRequestDto;
 import com.ssafy.model.dto.episode.EpisodeUpdateRequestDto;
@@ -13,7 +14,7 @@ public interface EpisodeService {
 	// 기본적인 CRUD
 	EpisodeResponseDto registEpisode(EpisodeSaveRequestDto requestDto);
 	Page<EpisodeResponseDto> getEpisodes(Pageable pageable);
-	EpisodeResponseDto getEpisode(int episodePk);
+	EpisodeResponseContainsPreNextPkDto getEpisode(int episodePk);
 	void updateViewEpisode(int episodePk);
 	EpisodeResponseDto updateEpisode(int episodePk, EpisodeUpdateRequestDto requestDto);
 	void deleteEpisode(int episodePk);

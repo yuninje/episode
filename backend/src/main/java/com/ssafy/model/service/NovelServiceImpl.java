@@ -92,13 +92,16 @@ public class NovelServiceImpl implements NovelService {
     public NovelResponseDto registNovel(NovelSaveRequestDto requestDto) {
         Member member = mRepo.findById(requestDto.getMemberPk()).orElseThrow(() ->
                 new MemberException(MemberException.NOT_EXIST));
+        
+        int elements = nRepo.findByMember(member, null).getNumberOfElements();
+        if(elements >= 20) return null;
 
         List<Genre> genres = requestDto.getGenrePks().stream().map(genrePk ->
                 gRepo.findById(genrePk).orElseThrow(() ->
                         new GenreException(GenreException.NOT_EXIST))).collect(Collectors.toList());
         List<HashTag> hashTags = requestDto.getHashTagStrs().stream().map(hashTagStr ->
                 hashTagService.findOrRegistHashTag(hashTagStr)).collect(Collectors.toList());
-
+        
     	Novel novel = nRepo.save(requestDto.toEntity(member, genres, hashTags));
 
         // 장르 추가

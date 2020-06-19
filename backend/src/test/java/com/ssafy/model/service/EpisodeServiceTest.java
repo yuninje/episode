@@ -1,6 +1,7 @@
 package com.ssafy.model.service;
 
 import com.ssafy.Dummy;
+import com.ssafy.model.dto.episode.EpisodeResponseContainsPreNextPkDto;
 import com.ssafy.model.dto.episode.EpisodeResponseDto;
 import com.ssafy.model.dto.episode.EpisodeResponseNoNovelDto;
 import com.ssafy.model.dto.episode.EpisodeSaveRequestDto;
@@ -195,7 +196,7 @@ public class EpisodeServiceTest {
 
     @Test
     public void 에피소드_하나_가져오기(){
-        EpisodeResponseDto responseDto = episodeService.getEpisode(episodePk);
+        EpisodeResponseContainsPreNextPkDto responseDto = episodeService.getEpisode(episodePk);
 
         assertThat(episode.getEpisodeTitle()).isEqualTo(responseDto.getEpisodeTitle());
         assertThat(episode.getEpisodeContent()).isEqualTo(responseDto.getEpisodeContent());

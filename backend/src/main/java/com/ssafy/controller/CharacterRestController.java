@@ -45,6 +45,14 @@ public class CharacterRestController {
 		return handleSuccess(cService.registCharacter(requestDto));
 	}
 	
+	@ApiOperation("소설의 캐릭터셋 원하는 소설로 복사하기")
+	@PostMapping("/from/{fromNovelPk}/to/{toNovelPk}")
+	ResponseEntity<Map<String, Object>> copyCharacters(@PathVariable int fromNovelPk, @PathVariable int toNovelPk){
+		cService.copyCharacters(fromNovelPk, toNovelPk);
+		
+		return handleSuccess("캐릭터셋 복사 완료");
+	}
+	
 	@ApiOperation("캐릭터 수정")
 	@PutMapping("/{characterPk}")
 	ResponseEntity<Map<String, Object>> updateCharacter(@PathVariable int characterPk, @RequestBody CharacterUpdateRequestDto requestDto){

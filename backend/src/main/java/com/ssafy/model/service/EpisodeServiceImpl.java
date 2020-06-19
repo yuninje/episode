@@ -1,5 +1,6 @@
 package com.ssafy.model.service;
 
+import com.ssafy.model.dto.episode.EpisodeResponseContainsPreNextPkDto;
 import com.ssafy.model.dto.episode.EpisodeResponseDto;
 import com.ssafy.model.dto.episode.EpisodeResponseNoNovelDto;
 import com.ssafy.model.dto.episode.EpisodeSaveRequestDto;
@@ -15,6 +16,7 @@ import com.ssafy.model.repository.NovelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,11 +60,23 @@ public class EpisodeServiceImpl implements EpisodeService {
     }
 
     @Override
-    public EpisodeResponseDto getEpisode(int episodePk) {    // 조회수 + 1
+    public EpisodeResponseContainsPreNextPkDto getEpisode(int episodePk) {    // 조회수 + 1
         Episode episode = eRepo.findById(episodePk).orElseThrow(() ->
                 new EpisodeException(EpisodeException.NOT_EXIST));
+        
+        Novel novel = episode.getNovel();
 
-        EpisodeResponseDto responseDto = new EpisodeResponseDto(episode);
+        EpisodeResponseContainsPreNextPkDto responseDto = new EpisodeResponseContainsPreNextPkDto(episode);
+        
+        Episode preEpisode = eRepo.findFirstEpisodeByEpisodePkLessThanAndNovelEquals(episodePk, novel, Sort.by("episodePk").descending());
+        int pre = preEpisode == null ? 0 : preEpisode.getEpisodePk();
+        
+        Episode nextEpisode = eRepo.findFirstEpisodeByEpisodePkGreaterThanAndNovelEquals(episodePk, novel, Sort.by("episodePk").ascending());
+        int next = nextEpisode == null ? 0 : nextEpisode.getEpisodePk();
+        
+        responseDto.setPreEpisodePk(pre);
+        responseDto.setNextEpisodePk(next);
+        
         return responseDto;
     }
 

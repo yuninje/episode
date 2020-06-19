@@ -22,6 +22,30 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 	}
 	
 	@Override
+	public Page<Novel> findAll(Pageable pageable) {
+		JPAQuery<Novel> query = 
+				queryFactory.select(novel)
+				.from(novel)
+				.where(novel.member.memPk.eq(8).not());
+		
+		List<Novel> novels = getQuerydsl().applyPagination(pageable, query).fetch();
+		
+		return new PageImpl<>(novels, pageable, query.fetchCount()); 
+	}
+	
+	@Override
+	public List<Novel> findTop100ByOrderByNovelViewDesc() {
+		JPAQuery<Novel> query = 
+				queryFactory.select(novel)
+				.from(novel)
+				.where(novel.member.memPk.eq(8).not())
+				.orderBy(novel.novelView.desc())
+				.limit(100);
+		
+		return query.fetch();
+	}
+	
+	@Override
 	public Page<Novel> findBySearchWord(String type, String word, Pageable pageable) {
 		JPAQuery<Novel> query = 
 			queryFactory.select(novel)
@@ -31,16 +55,20 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 		case "all":
 			query.where(authorNameLike(word)
 					.or(novelNameLike(word))
-					.or(hashTagLike(word)));
+					.or(hashTagLike(word))
+					.and(novel.member.memPk.eq(8).not()));
 			break;
 		case "author_name":
-			query.where(authorNameLike(word));
+			query.where(authorNameLike(word)
+					.and(novel.member.memPk.eq(8).not()));
 			break;
 		case "novel_name":
-			query.where(novelNameLike(word));
+			query.where(novelNameLike(word)
+					.and(novel.member.memPk.eq(8).not()));
 			break;
 		case "hashtag":
-			query.where(hashTagLike(word));
+			query.where(hashTagLike(word)
+					.and(novel.member.memPk.eq(8).not()));
 			break;
 		}
 		
@@ -60,19 +88,23 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 			query.where((authorNameLike(word)
 					.or(novelNameLike(word))
 					.or(hashTagLike(word)))
-					.and(novel.genres.any().genrePk.eq(genrePk)));
+					.and(novel.genres.any().genrePk.eq(genrePk))
+					.and(novel.member.memPk.eq(8).not()));
 			break;
 		case "author_name":
 			query.where(authorNameLike(word)
-					.and(novel.genres.any().genrePk.eq(genrePk)));
+					.and(novel.genres.any().genrePk.eq(genrePk))
+					.and(novel.member.memPk.eq(8).not()));
 			break;
 		case "novel_name":
 			query.where(novelNameLike(word)
-					.and(novel.genres.any().genrePk.eq(genrePk)));
+					.and(novel.genres.any().genrePk.eq(genrePk))
+					.and(novel.member.memPk.eq(8).not()));
 			break;
 		case "hashtag":
 			query.where(hashTagLike(word)
-					.and(novel.genres.any().genrePk.eq(genrePk)));
+					.and(novel.genres.any().genrePk.eq(genrePk))
+					.and(novel.member.memPk.eq(8).not()));
 			break;
 		}
 		
@@ -108,7 +140,7 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 	}
 	
 	private BooleanBuilder authorNameLike(String word) {
-		String[] wordArr = word.split(" ");
+		String[] wordArr = word.trim().split(" ");
 		BooleanBuilder builder = new BooleanBuilder();
 		
 		for(int i=0; i<wordArr.length; i++) {
@@ -119,7 +151,7 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 	}
 	
 	private BooleanBuilder novelNameLike(String word) {
-		String[] wordArr = word.split(" ");
+		String[] wordArr = word.trim().split(" ");
 		BooleanBuilder builder = new BooleanBuilder();
 		
 		for(int i=0; i<wordArr.length; i++) {
@@ -130,7 +162,7 @@ public class NovelCustomRepositoryImpl extends QuerydslRepositorySupport impleme
 	}
 	
 	private BooleanBuilder hashTagLike(String word) {
-		String[] wordArr = word.split(" ");
+		String[] wordArr = word.trim().split(" ");
 		BooleanBuilder builder = new BooleanBuilder();
 		
 		for(int i=0; i<wordArr.length; i++) {

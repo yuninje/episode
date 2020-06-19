@@ -75,6 +75,21 @@ public class CharacterServiceImpl implements CharacterService {
 	}
 	
 	@Override
+	public void copyCharacters(int fromNovelPk, int toNovelPk) {
+		Novel fromNovel = nRepo.findById(fromNovelPk)
+				.orElseThrow(() -> new NovelException(NovelException.NOT_EXIST));
+		Novel toNovel = nRepo.findById(toNovelPk)
+				.orElseThrow(() -> new NovelException(NovelException.NOT_EXIST));
+		
+		List<Character> characters = fromNovel.getCharacters();
+		
+		for(Character character : characters) {
+			character.setNovel(toNovel);
+			cRepo.save(character);
+		}
+	}
+	
+	@Override
 	public CharacterResponseNoNovelDto updateCharacter(int characterPk, CharacterUpdateRequestDto requestDto) {
 		Character characterEntity = cRepo.findById(characterPk)
 				.orElseThrow(() -> new CharacterException(CharacterException.NOT_EXIST));
